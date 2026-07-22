@@ -3,7 +3,13 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
-export default function InvitationIntro() {
+interface InvitationIntroProps {
+  invitePath?: string;
+}
+
+export default function InvitationIntro({
+  invitePath = "/invitation",
+}: InvitationIntroProps) {
   const router = useRouter();
 
   return (
@@ -82,21 +88,6 @@ export default function InvitationIntro() {
               Isuru
             </motion.p>
 
-            {/* Sinhala names */}
-            {/* <motion.p
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.52, duration: 0.7 }}
-              className="mt-4 text-wedding-primary"
-              style={{
-                fontFamily: "var(--font-sinhala)",
-                fontSize: "clamp(1.1rem, 3vw, 1.45rem)",
-                lineHeight: 1.8,
-              }}
-            >
-              දිල්මා සහ ඉසුරු
-            </motion.p> */}
-
             {/* Invitation text */}
             <motion.p
               initial={{ opacity: 0, y: 18 }}
@@ -112,7 +103,6 @@ export default function InvitationIntro() {
               අපගේ විවාහ මංගල උත්සවය සඳහා අප ඔබව මහත් ප්‍රීතියෙන් යුතුව
               පිළිගන්නෙමු
             </motion.p>
-
           </motion.div>
         </div>
       </div>
@@ -137,7 +127,7 @@ export default function InvitationIntro() {
         {/* Glowing animated button */}
         <motion.button
           id="open-invitation-btn"
-          onClick={() => router.push("/invitation")}
+          onClick={() => router.push(invitePath)}
           aria-label="ආරාධනාව විවෘත කරන්න"
           className="relative px-12 py-4 rounded-full text-white font-medium overflow-hidden"
           style={{
@@ -165,7 +155,6 @@ export default function InvitationIntro() {
             scale: { duration: 0.2 },
           }}
         >
-          {/* Shimmer overlay */}
           <motion.span
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -178,15 +167,6 @@ export default function InvitationIntro() {
           />
           ආරාධනාව විවෘත කරන්න
         </motion.button>
-
-        {/* Subtle arrow */}
-        {/* <motion.span
-          className="text-wedding-primary text-lg"
-          animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
-        >
-          ↓
-        </motion.span> */}
       </motion.div>
     </section>
   );

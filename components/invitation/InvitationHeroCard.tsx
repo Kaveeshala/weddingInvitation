@@ -1,8 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ArrowDown } from "lucide-react";
 
-export default function InvitationHeroCard() {
+interface InvitationHeroCardProps {
+  guestName?: string;
+}
+
+export default function InvitationHeroCard({
+  guestName,
+}: InvitationHeroCardProps) {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -17,7 +24,6 @@ export default function InvitationHeroCard() {
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center text-center"
         >
-          {/* ── Topic image ─────────────────────────────── */}
           <motion.img
             src="/images/texts/topic2.png"
             alt="Wedding invitation topic"
@@ -27,14 +33,12 @@ export default function InvitationHeroCard() {
             transition={{ delay: 0.1, duration: 0.7 }}
           />
 
-          {/* ── Three-column: Dilma | Photo | Isuru ─────── */}
           <motion.div
             className="mt-10 w-full grid grid-cols-[1fr_auto_1fr] items-center gap-4 sm:gap-8"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
           >
-            {/* Left — Dilma */}
             <div className="flex flex-col items-center text-center gap-1">
               <p
                 style={{
@@ -63,7 +67,6 @@ export default function InvitationHeroCard() {
               </p>
             </div>
 
-            {/* Center — small photo */}
             <div className="flex justify-center">
               <div
                 className="rounded-[50px] overflow-hidden border-[4px] border-wedding-highlight shadow-[0_8px_30px_rgba(124,92,61,0.18)] bg-wedding-surface"
@@ -77,7 +80,6 @@ export default function InvitationHeroCard() {
               </div>
             </div>
 
-            {/* Right — Isuru */}
             <div className="flex flex-col items-center text-center gap-1">
               <p
                 style={{
@@ -107,19 +109,6 @@ export default function InvitationHeroCard() {
             </div>
           </motion.div>
 
-          {/* ── Thin ornamental rule ─────────────────────── */}
-          {/* <motion.div
-            className="mt-10 flex items-center gap-3 w-full max-w-xs"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="flex-1 h-px bg-wedding-border" />
-            <span className="text-wedding-primary text-xs">✦</span>
-            <div className="flex-1 h-px bg-wedding-border" />
-          </motion.div> */}
-
-          {/* ── Invitation body text ─────────────────────── */}
           <motion.p
             className="mt-8 max-w-sm text-wedding-muted"
             style={{
@@ -131,32 +120,29 @@ export default function InvitationHeroCard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.7 }}
           >
-            අතිනත ගැනීමේ ප්‍රීතිය නිමිත්තෙන් පැවැත්වෙන ප්‍රිය සම්භාවනයට
-            සහභාගි වන මෙන්
+            අතිනත ගැනීමේ ප්‍රීතිය නිමිත්තෙන් පැවැත්වෙන ප්‍රිය සම්භාවනයට සහභාගි
+            වන මෙන්
           </motion.p>
 
-          {/* ── Salutation + dotted line ─────────────────── */}
           <motion.div
-            className="mt-6 flex items-end gap-2 w-full max-w-sm"
+            className="mt-6 w-full max-w-xl mx-auto text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.6 }}
           >
-            <span
+            <p
               style={{
                 fontFamily: "var(--font-geist-sans)",
-                fontSize: "0.78rem",
-                color: "var(--wedding-muted)",
-                whiteSpace: "nowrap",
-                letterSpacing: "0.04em",
+                fontSize: "clamp(1.05rem, 3vw, 1.45rem)",
+                color: "var(--wedding-heading)",
+                letterSpacing: "0.05em",
+                lineHeight: 1.6,
               }}
             >
-              Mr / Mrs / Mr &amp; Mrs / Ms
-            </span>
-            <span className="flex-1 border-b border-dotted border-wedding-border mb-[3px]" />
+              {guestName || "Mr / Mrs / Mr & Mrs / Ms"}
+            </p>
           </motion.div>
 
-          {/* ── Closing honour text ──────────────────────── */}
           <motion.p
             className="mt-6 text-wedding-heading"
             style={{
@@ -171,19 +157,6 @@ export default function InvitationHeroCard() {
             කෙරෙන ගෞරවනීය ආරාධනනයයි!
           </motion.p>
 
-          {/* ── Rule ────────────────────────────────────── */}
-          {/* <motion.div
-            className="mt-8 flex items-center gap-3 w-full max-w-xs"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-          >
-            <div className="flex-1 h-px bg-wedding-border" />
-            <span className="text-wedding-primary text-xs">✦</span>
-            <div className="flex-1 h-px bg-wedding-border" />
-          </motion.div> */}
-
-          {/* ── Date block — click → countdown ──────────── */}
           <motion.button
             id="date-block"
             onClick={() => scrollTo("countdown-section")}
@@ -195,8 +168,10 @@ export default function InvitationHeroCard() {
             whileTap={{ scale: 0.97 }}
             aria-label="ගණන් කිරීම බලන්න"
           >
-            {/* Left — Month with top/bottom lines */}
-            <div className="flex flex-col items-center py-1 border-t border-b-2 double border-wedding-border px-2" style={{ borderStyle: "double none double none" }}>
+            <div
+              className="flex flex-col items-center py-1 border-t border-b-2 double border-wedding-border px-2"
+              style={{ borderStyle: "double none double none" }}
+            >
               <span
                 style={{
                   fontFamily: "var(--font-sinhala)",
@@ -208,7 +183,6 @@ export default function InvitationHeroCard() {
               </span>
             </div>
 
-            {/* Center — Date & Year */}
             <div className="flex flex-col items-center">
               <span
                 style={{
@@ -231,12 +205,14 @@ export default function InvitationHeroCard() {
                   marginTop: "2px",
                 }}
               >
-                2026
+                2027
               </span>
             </div>
 
-            {/* Right — Day name with top/bottom lines */}
-            <div className="flex flex-col items-center py-1 border-t border-b-2 double border-wedding-border px-2" style={{ borderStyle: "double none double none" }}>
+            <div
+              className="flex flex-col items-center py-1 border-t border-b-2 double border-wedding-border px-2"
+              style={{ borderStyle: "double none double none" }}
+            >
               <span
                 style={{
                   fontFamily: "var(--font-sinhala)",
@@ -249,7 +225,6 @@ export default function InvitationHeroCard() {
             </div>
           </motion.button>
 
-          {/* ── Time ────────────────────────────────────── */}
           <motion.p
             className="mt-6 text-wedding-muted"
             style={{
@@ -264,7 +239,6 @@ export default function InvitationHeroCard() {
             පෙරවරු 09:00 සිට පස්වරු 04:30 දක්වා
           </motion.p>
 
-          {/* ── Poruwa note ─────────────────────────────── */}
           <motion.p
             className="text-wedding-muted"
             style={{
@@ -279,26 +253,19 @@ export default function InvitationHeroCard() {
             (පෝරුවේ චාරිත්‍ර&nbsp;&nbsp;පෙ:ව: 09:00 ට)
           </motion.p>
 
-          {/* ── Rule ────────────────────────────────────── */}
-          {/* <motion.div
-            className="mt-8 flex items-center gap-3 w-full max-w-xs"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.88 }}
-          >
-            <div className="flex-1 h-px bg-wedding-border" />
-            <span className="text-wedding-primary text-xs">✦</span>
-            <div className="flex-1 h-px bg-wedding-border" />
-          </motion.div> */}
-
-          {/* ── Venue ───────────────────────────────────── */}
-          <motion.div
-            className="mt-8 flex flex-col items-center"
+          <motion.button
+            type="button"
+            onClick={() => scrollTo("location-section")}
+            className="mt-8 flex flex-col items-center cursor-pointer group focus:outline-none"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.7 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            aria-label="Live Location section"
           >
             <p
+              className="group-hover:text-wedding-primary transition-colors duration-200"
               style={{
                 fontFamily: "var(--font-geist-sans)",
                 fontSize: "clamp(1.8rem, 5vw, 2.8rem)",
@@ -310,6 +277,7 @@ export default function InvitationHeroCard() {
               Royal Arcade
             </p>
             <p
+              className="group-hover:text-wedding-primary transition-colors duration-200"
               style={{
                 fontFamily: "var(--font-geist-sans)",
                 fontSize: "clamp(0.95rem, 2.4vw, 1.15rem)",
@@ -320,21 +288,20 @@ export default function InvitationHeroCard() {
             >
               Gampaha
             </p>
-          </motion.div>
+          </motion.button>
 
-          {/* ── RSVP — click → rsvp section ─────────────── */}
           <motion.button
             onClick={() => scrollTo("rsvp-section")}
-            className="mt-10 group focus:outline-none"
+            className="mt-10 flex flex-col items-center group focus:outline-none"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0, duration: 0.6 }}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.96 }}
             aria-label="RSVP — ප්‍රතිචාරය"
           >
             <span
-              className="group-hover:text-wedding-primary-hover transition-colors duration-200"
+              className="group-hover:text-wedding-primary-hover transition-colors duration-200 cursor-pointer"
               style={{
                 fontFamily: "var(--font-geist-sans)",
                 fontSize: "0.78rem",
@@ -347,6 +314,19 @@ export default function InvitationHeroCard() {
             >
               RSVP
             </span>
+
+            <motion.span
+              className="mt-2 flex items-center justify-center text-wedding-primary"
+              animate={{ y: [0, 5, 0], opacity: [0.65, 1, 0.65] }}
+              transition={{
+                duration: 1.6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              aria-hidden="true"
+            >
+              <ArrowDown size={24} strokeWidth={1.8} />
+            </motion.span>
           </motion.button>
         </motion.div>
       </div>
