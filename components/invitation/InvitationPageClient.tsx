@@ -9,7 +9,9 @@ interface InvitationPageClientProps {
     name: string;
     token: string;
     partySize: number;
-    rsvpStatus: "pending" | "accepted" | "declined";
+    rsvpStatus: "default" | "invited" | "attending" | "declined";
+    responseMessage?: string;
+    respondedGuestCount?: number;
   };
 }
 
@@ -18,12 +20,15 @@ export default function InvitationPageClient({
 }: InvitationPageClientProps) {
   const weddingDate = new Date("2027-01-28T00:00:00+05:30");
 
-  const [submitted, setSubmitted] = useState(guest.rsvpStatus !== "pending");
+  const alreadySubmitted =
+    guest.rsvpStatus === "attending" || guest.rsvpStatus === "declined";
+
+  const [submitted, setSubmitted] = useState(alreadySubmitted);
   const [form, setForm] = useState({
     name: guest.name,
     attending: guest.rsvpStatus === "declined" ? "no" : "yes",
-    guests: String(guest.partySize),
-    message: "",
+    guests: String(guest.respondedGuestCount || guest.partySize || 1),
+    message: guest.responseMessage || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {

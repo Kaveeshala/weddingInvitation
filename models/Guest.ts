@@ -1,47 +1,38 @@
 import mongoose, { Schema, models, model } from "mongoose";
 
-export interface IGuest {
-  name: string;
-  token: string;
-  partySize: number;
-  inviteSent: boolean;
-  rsvpStatus: "pending" | "accepted" | "declined";
-  respondedGuestCount: number;
-  responseMessage?: string;
-  phone?: string;
-  notes?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-const GuestSchema = new Schema<IGuest>(
+const GuestSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Guest name is required"],
       trim: true,
     },
     token: {
       type: String,
       required: true,
       unique: true,
-      trim: true,
-      index: true,
     },
     partySize: {
       type: Number,
-      required: true,
+      required: [true, "Party size is required"],
+      min: [1, "Party size must be at least 1"],
       default: 1,
-      min: 1,
     },
-    inviteSent: {
-      type: Boolean,
-      default: false,
+    side: {
+      type: String,
+      enum: {
+        values: ["bride", "groom"],
+        message: "Guest side must be bride or groom",
+      },
+      required: [true, "Guest side is required"],
     },
     rsvpStatus: {
       type: String,
-      enum: ["pending", "accepted", "declined"],
-      default: "pending",
+      enum: {
+        values: ["default", "invited", "attending", "declined"],
+        message: "Invalid RSVP status",
+      },
+      default: "default",
     },
     respondedGuestCount: {
       type: Number,
@@ -53,22 +44,12 @@ const GuestSchema = new Schema<IGuest>(
       default: "",
       trim: true,
     },
-    phone: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-    notes: {
-      type: String,
-      default: "",
-      trim: true,
-    },
   },
   {
     timestamps: true,
   }
 );
 
-const Guest = models.Guest || model<IGuest>("Guest", GuestSchema);
+const Guest = models.Guest || model("Guest", GuestSchema);
 
 export default Guest;
