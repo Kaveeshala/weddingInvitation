@@ -31,13 +31,33 @@ export async function POST(req: Request) {
     await dbConnect();
 
     const body = await req.json();
-    const { name, partySize, phone, notes } = body;
+    const { name, partySize, side } = body;
 
-    if (!name) {
+    if (!name || !String(name).trim()) {
       return NextResponse.json(
         {
           success: false,
           message: "Guest name is required",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!partySize || Number(partySize) < 1) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Party size must be at least 1",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!side || !["bride", "groom"].includes(side)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Guest side is required",
         },
         { status: 400 }
       );
@@ -50,11 +70,11 @@ export async function POST(req: Request) {
     }
 
     const guest = await Guest.create({
-      name,
+      name: String(name).trim(),
       token,
-      partySize: Number(partySize) || 1,
-      phone: phone || "",
-      notes: notes || "",
+      partySize: Number(partySize),
+      side,
+      rsvpStatus: "default",
     });
 
     return NextResponse.json(

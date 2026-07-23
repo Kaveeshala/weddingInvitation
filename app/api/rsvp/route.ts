@@ -19,6 +19,16 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!["yes", "no"].includes(attending)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Attendance response is required",
+        },
+        { status: 400 }
+      );
+    }
+
     const guest = await Guest.findOne({ token });
 
     if (!guest) {
@@ -33,9 +43,9 @@ export async function POST(req: Request) {
 
     const isAttending = attending === "yes";
 
-    guest.rsvpStatus = isAttending ? "accepted" : "declined";
+    guest.rsvpStatus = isAttending ? "attending" : "declined";
     guest.respondedGuestCount = isAttending ? Number(guests) || 1 : 0;
-    guest.responseMessage = message || "";
+    guest.responseMessage = message?.trim() || "";
 
     await guest.save();
 
