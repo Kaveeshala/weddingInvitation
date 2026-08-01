@@ -18,6 +18,7 @@ interface RSVPSectionProps {
   setForm: React.Dispatch<React.SetStateAction<RSVPFormState>>;
   handleSubmit: (e: React.FormEvent) => void;
   weddingDate: Date;
+  maxGuests: number;
 }
 
 export default function RSVPSection({
@@ -26,7 +27,13 @@ export default function RSVPSection({
   setForm,
   handleSubmit,
   weddingDate,
+  maxGuests,
 }: RSVPSectionProps) {
+  const guestOptions = Array.from(
+    { length: Math.max(1, maxGuests) },
+    (_, index) => String(index + 1)
+  );
+
   return (
     <>
       <motion.section
@@ -195,7 +202,7 @@ export default function RSVPSection({
                     }
                     className="w-full rounded-xl bg-white/90 px-4 py-3 text-sm text-wedding-heading focus:outline-none focus:ring-2 focus:ring-wedding-primary/20"
                   >
-                    {["1", "2", "3", "4"].map((n) => (
+                    {guestOptions.map((n) => (
                       <option key={n} value={n}>
                         {n}
                       </option>

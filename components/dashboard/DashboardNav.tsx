@@ -5,12 +5,12 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/dashboard", label: "Overview" },
-   { href: "/dashboard/budget", label: "Budget" },
+  { href: "/dashboard/budget", label: "Budget" },
   { href: "/dashboard/guests", label: "Guests" },
   { href: "/dashboard/rsvps", label: "RSVPs" },
+  { href: "/dashboard/seating", label: "Seat Management" },
   { href: "/dashboard/invitations", label: "Invitation Card" },
   { href: "/dashboard/thankyoucard", label: "Thankyou Card" },
- 
 ];
 
 export default function DashboardNav() {

@@ -2,10 +2,13 @@
 
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 interface InvitationIntroProps {
   invitePath?: string;
 }
+
+const MotionButton = motion(Button);
 
 export default function InvitationIntro({
   invitePath = "/invitation",
@@ -13,17 +16,15 @@ export default function InvitationIntro({
   const router = useRouter();
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col items-center justify-between bg-wedding-bg px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-      {/* Main content — centred vertically */}
-      <div className="flex-1 flex items-center justify-center w-full">
-        <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center">
+    <section className="relative flex min-h-screen w-full flex-col items-center justify-between bg-wedding-bg px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+      <div className="flex w-full flex-1 items-center justify-center">
+        <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center"
           >
-            {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
@@ -39,7 +40,6 @@ export default function InvitationIntro({
               ආදරණීය විවාහ මංගල උත්සවය
             </motion.p>
 
-            {/* Bride name */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -56,7 +56,6 @@ export default function InvitationIntro({
               Dilma
             </motion.p>
 
-            {/* & */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -71,7 +70,6 @@ export default function InvitationIntro({
               &
             </motion.p>
 
-            {/* Groom name */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -88,7 +86,6 @@ export default function InvitationIntro({
               Isuru
             </motion.p>
 
-            {/* Invitation text */}
             <motion.p
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
@@ -107,14 +104,12 @@ export default function InvitationIntro({
         </div>
       </div>
 
-      {/* Open Invitation Button — pinned at bottom */}
       <motion.div
         className="mt-12 mb-4 flex flex-col items-center gap-3"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.0, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* Hint text */}
         <motion.p
           className="text-wedding-muted text-xs tracking-widest uppercase"
           style={{ fontFamily: "var(--font-sinhala)", fontSize: "0.85rem" }}
@@ -124,18 +119,17 @@ export default function InvitationIntro({
           ආරාධනාව බලන්න
         </motion.p>
 
-        {/* Glowing animated button */}
-        <motion.button
+        <MotionButton
           id="open-invitation-btn"
+          type="button"
           onClick={() => router.push(invitePath)}
           aria-label="ආරාධනාව විවෘත කරන්න"
-          className="relative px-12 py-4 rounded-full text-white font-medium overflow-hidden"
+          className="relative overflow-hidden rounded-full px-12 py-7 text-white shadow-none hover:opacity-95"
           style={{
             background: "var(--wedding-gradient)",
             fontFamily: "var(--font-sinhala)",
             fontSize: "clamp(1rem, 2.5vw, 1.1rem)",
             letterSpacing: "0.08em",
-            boxShadow: "0 0 0 0 rgba(176, 141, 87, 0.5)",
           }}
           whileHover={{ scale: 1.06 }}
           whileTap={{ scale: 0.96 }}
@@ -156,7 +150,7 @@ export default function InvitationIntro({
           }}
         >
           <motion.span
-            className="absolute inset-0 pointer-events-none"
+            className="pointer-events-none absolute inset-0"
             style={{
               background:
                 "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%)",
@@ -165,8 +159,8 @@ export default function InvitationIntro({
             animate={{ backgroundPosition: ["200% 0", "-200% 0"] }}
             transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
           />
-          ආරාධනාව විවෘත කරන්න
-        </motion.button>
+          <span className="relative z-10">ආරාධනාව විවෘත කරන්න</span>
+        </MotionButton>
       </motion.div>
     </section>
   );

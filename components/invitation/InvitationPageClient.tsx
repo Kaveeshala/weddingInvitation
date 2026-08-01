@@ -23,16 +23,27 @@ export default function InvitationPageClient({
   const alreadySubmitted =
     guest.rsvpStatus === "attending" || guest.rsvpStatus === "declined";
 
+  const maxGuests = Math.max(1, guest.partySize || 1);
+  const initialGuests = Math.min(
+    Math.max(1, guest.respondedGuestCount || guest.partySize || 1),
+    maxGuests
+  );
+
   const [submitted, setSubmitted] = useState(alreadySubmitted);
   const [form, setForm] = useState({
     name: guest.name,
     attending: guest.rsvpStatus === "declined" ? "no" : "yes",
-    guests: String(guest.respondedGuestCount || guest.partySize || 1),
+    guests: String(initialGuests),
     message: guest.responseMessage || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const selectedGuests = Math.min(
+      maxGuests,
+      Math.max(1, Number(form.guests) || 1)
+    );
 
     const res = await fetch("/api/rsvp", {
       method: "POST",
@@ -42,7 +53,7 @@ export default function InvitationPageClient({
       body: JSON.stringify({
         token: guest.token,
         attending: form.attending,
-        guests: form.guests,
+        guests: selectedGuests,
         message: form.message,
       }),
     });
@@ -70,6 +81,7 @@ export default function InvitationPageClient({
           setForm={setForm}
           handleSubmit={handleSubmit}
           weddingDate={weddingDate}
+          maxGuests={maxGuests}
         />
       </div>
     </main>

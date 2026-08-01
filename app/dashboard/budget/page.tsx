@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type BudgetItem = {
   _id: string;
@@ -68,7 +69,10 @@ export default function BudgetPage() {
     return categories.reduce((categoryTotal, category) => {
       return (
         categoryTotal +
-        category.items.reduce((itemTotal, item) => itemTotal + Number(item.price || 0), 0)
+        category.items.reduce(
+          (itemTotal, item) => itemTotal + Number(item.price || 0),
+          0
+        )
       );
     }, 0);
   }, [categories]);
@@ -182,21 +186,9 @@ export default function BudgetPage() {
   return (
     <div className="space-y-8">
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <BudgetCard
-          label="Target Budget"
-          value={targetBudget}
-          tone="neutral"
-        />
-        <BudgetCard
-          label="Spent Amount"
-          value={spentAmount}
-          tone="rose"
-        />
-        <BudgetCard
-          label="Remaining Amount"
-          value={remainingAmount}
-          tone="green"
-        />
+        <BudgetCard label="Target Budget" value={targetBudget} tone="neutral" />
+        <BudgetCard label="Spent Amount" value={spentAmount} tone="rose" />
+        <BudgetCard label="Remaining Amount" value={remainingAmount} tone="green" />
       </section>
 
       <section className="rounded-[1.75rem] border border-[#eadfce] bg-white p-6 shadow-sm">
@@ -211,13 +203,13 @@ export default function BudgetPage() {
           </div>
 
           {!editingTarget ? (
-            <button
+            <Button
               type="button"
               onClick={() => setEditingTarget(true)}
-              className="cursor-pointer rounded-full bg-[#b08d57] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#9a7847]"
+              className="px-5 py-3"
             >
               Change Target Budget
-            </button>
+            </Button>
           ) : null}
         </div>
 
@@ -234,22 +226,20 @@ export default function BudgetPage() {
               className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
               placeholder="Enter target budget"
             />
-            <button
-              type="submit"
-              className="cursor-pointer rounded-full bg-[#b08d57] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#9a7847]"
-            >
+            <Button type="submit" className="px-5 py-3">
               Save
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="outline"
               onClick={() => {
                 setEditingTarget(false);
                 setTargetInput(String(targetBudget));
               }}
-              className="cursor-pointer rounded-full border border-[#dbc7ae] bg-white px-5 py-3 text-sm font-medium text-[#6f5f51] transition hover:border-[#b08d57] hover:text-[#b08d57]"
+              className="px-5 py-3"
             >
               Cancel
-            </button>
+            </Button>
           </form>
         ) : null}
       </section>
@@ -274,12 +264,9 @@ export default function BudgetPage() {
             placeholder="Add category name"
             className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
           />
-          <button
-            type="submit"
-            className="cursor-pointer rounded-full bg-[#b08d57] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#9a7847]"
-          >
+          <Button type="submit" className="px-5 py-3">
             Add Category
-          </button>
+          </Button>
         </form>
 
         {message ? (
@@ -350,12 +337,9 @@ export default function BudgetPage() {
                     className="rounded-2xl border border-[#e7d9c8] bg-white px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
                   />
 
-                  <button
-                    type="submit"
-                    className="cursor-pointer rounded-full bg-[#b08d57] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#9a7847]"
-                  >
+                  <Button type="submit" className="px-5 py-3">
                     Add Item
-                  </button>
+                  </Button>
                 </form>
 
                 <div className="mt-5 overflow-hidden rounded-[1.25rem] border border-[#efe3d4]">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export type Guest = {
   _id: string;
@@ -112,41 +113,29 @@ export default function GuestListTable({
     <div className="rounded-[1.75rem] border border-[#eadfce] bg-white p-6 shadow-sm">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex flex-wrap items-center gap-3">
-          <button
+          <Button
             type="button"
+            variant={sideFilter === "all" ? "default" : "outline"}
             onClick={() => setSideFilter("all")}
-            className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition ${
-              sideFilter === "all"
-                ? "bg-[#b08d57] text-white"
-                : "border border-[#eadfce] bg-[#fcf8f3] text-[#6f5f51]"
-            }`}
           >
             All
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
+            variant={sideFilter === "bride" ? "default" : "outline"}
             onClick={() => setSideFilter("bride")}
-            className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition ${
-              sideFilter === "bride"
-                ? "bg-[#b08d57] text-white"
-                : "border border-[#eadfce] bg-[#fcf8f3] text-[#6f5f51]"
-            }`}
           >
             Bride Side
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
+            variant={sideFilter === "groom" ? "default" : "outline"}
             onClick={() => setSideFilter("groom")}
-            className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition ${
-              sideFilter === "groom"
-                ? "bg-[#b08d57] text-white"
-                : "border border-[#eadfce] bg-[#fcf8f3] text-[#6f5f51]"
-            }`}
           >
             Groom Side
-          </button>
+          </Button>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -158,13 +147,9 @@ export default function GuestListTable({
             className="w-full max-w-sm rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
           />
 
-          <button
-            type="button"
-            onClick={onAddGuest}
-            className="cursor-pointer rounded-md bg-[#b08d57] px-6 py-2 text-sm text-white transition hover:bg-[#9a7847]"
-          >
+          <Button type="button" onClick={onAddGuest}>
             Add Guest
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -264,22 +249,22 @@ export default function GuestListTable({
 
                     <td className="px-4 py-4">
                       <div className="flex flex-wrap gap-2">
-                        <button
+                        <Button
                           type="button"
+                          variant="outline"
                           onClick={() => copyInviteLink(guest.token, guest._id)}
-                          className="rounded-full border border-[#dbc7ae] bg-[#faf6f0] px-4 py-2 text-sm font-medium text-[#6f5f51] transition hover:border-[#b08d57] hover:text-[#b08d57]"
                         >
                           {copiedId === guest._id ? "Copied" : "Copy Link"}
-                        </button>
+                        </Button>
 
-                        <button
+                        <Button
                           type="button"
+                          variant="destructive"
                           onClick={() => handleDelete(guest._id)}
                           disabled={deletingId === guest._id}
-                          className="rounded-full border border-[#efc8c8] bg-[#fff6f6] px-4 py-2 text-sm font-medium text-[#b45252] transition hover:border-[#d89a9a] disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           {deletingId === guest._id ? "Deleting..." : "Delete"}
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>

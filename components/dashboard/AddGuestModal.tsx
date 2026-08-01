@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type AddGuestModalProps = {
   open: boolean;
@@ -94,13 +95,9 @@ export default function AddGuestModal({
             </h3>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full border border-[#eadfce] px-3 py-1 text-sm text-[#6f5f51] transition hover:border-[#b08d57] hover:text-[#b08d57] cursor-pointer"
-          >
+          <Button type="button" variant="outline" onClick={onClose}>
             Close
-          </button>
+          </Button>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -176,21 +173,13 @@ export default function AddGuestModal({
           ) : null}
 
           <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-full border border-[#dbc7ae] cursor-pointer bg-white px-5 py-3 text-sm font-medium text-[#6f5f51] transition hover:border-[#b08d57] hover:text-[#b08d57]"
-            >
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
-            </button>
+            </Button>
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="rounded-full bg-[#b08d57] px-5 py-3 text-sm font-medium cursor-pointer text-white transition hover:bg-[#9a7847] disabled:cursor-not-allowed disabled:opacity-60"
-            >
+            <Button type="submit" disabled={submitting}>
               {submitting ? "Adding..." : "Add Guest"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
