@@ -46,9 +46,9 @@ export async function getCurrentAdmin() {
     const payload = await verifyAdminToken(token);
 
     return {
-      id: payload.sub,
-      email: payload.email,
-      role: payload.role,
+      id: payload.sub!,
+      email: String(payload.email),
+      role: payload.role as "admin",
     };
   } catch {
     return null;
