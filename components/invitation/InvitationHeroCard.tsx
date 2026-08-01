@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
+import { useLanguage } from "./InvitationLanguageContext";
 
 interface InvitationHeroCardProps {
   guestName?: string;
@@ -10,6 +11,9 @@ interface InvitationHeroCardProps {
 export default function InvitationHeroCard({
   guestName,
 }: InvitationHeroCardProps) {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -24,14 +28,46 @@ export default function InvitationHeroCard({
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center text-center"
         >
-          <motion.img
-            src="/images/texts/topic2.png"
-            alt="Wedding invitation topic"
-            className="w-[200px] sm:w-[260px] md:w-[320px] h-auto object-contain"
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.7 }}
-          />
+          {/* Header image switcher */}
+          {!isEn ? (
+            <motion.img
+              key="sinhala-topic-img"
+              src="/images/texts/topic2.png"
+              alt="විවාහ මංගල ආරාධනාව"
+              className="w-[200px] sm:w-[260px] md:w-[320px] h-auto object-contain"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.7 }}
+            />
+          ) : (
+            <motion.div
+              key="english-topic-header"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.7 }}
+              className="flex flex-col items-center gap-1.5"
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-geist-sans)",
+                  fontSize: "clamp(0.75rem, 2vw, 0.9rem)",
+                  letterSpacing: "0.4em",
+                  color: "var(--wedding-primary)",
+                  textTransform: "uppercase",
+                  fontWeight: 500,
+                }}
+              >
+                Wedding Invitation
+              </span>
+              <div
+                className="h-[1.5px] w-24 sm:w-32 my-1"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, var(--wedding-primary), transparent)",
+                }}
+              />
+            </motion.div>
+          )}
 
           <motion.div
             className="mt-10 w-full grid grid-cols-[1fr_auto_1fr] items-center gap-4 sm:gap-8"
@@ -39,34 +75,52 @@ export default function InvitationHeroCard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
           >
+            {/* Bride */}
             <div className="flex flex-col items-center text-center gap-1">
               <p
                 style={{
-                  fontFamily: "var(--font-geist-sans)",
+                  fontFamily: isEn
+                    ? "var(--font-geist-sans)"
+                    : "var(--font-sinhala)",
                   fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
                   fontWeight: 500,
                   color: "var(--wedding-heading)",
                   letterSpacing: "0.04em",
                 }}
               >
-                Dilma
+                {isEn ? "Dilma" : "දිල්මා"}
               </p>
               <p
                 style={{
-                  fontFamily: "var(--font-sinhala)",
-                  fontSize: "clamp(0.7rem, 1.8vw, 0.88rem)",
-                  lineHeight: 1.95,
+                  fontFamily: isEn
+                    ? "var(--font-geist-sans)"
+                    : "var(--font-sinhala)",
+                  fontSize: isEn
+                    ? "clamp(0.7rem, 1.7vw, 0.85rem)"
+                    : "clamp(0.7rem, 1.8vw, 0.88rem)",
+                  lineHeight: isEn ? 1.5 : 1.95,
                   color: "var(--wedding-muted)",
                 }}
               >
-                මිරහවත්ත මහතා සහ
-                <br />
-                එම මැතිණියගේ
-                <br />
-                ආදරණීය දියණිය
+                {isEn ? (
+                  <>
+                    Beloved daughter of
+                    <br />
+                    Mr. &amp; Mrs. Mirahawatta
+                  </>
+                ) : (
+                  <>
+                    මිරහවත්ත මහතා සහ
+                    <br />
+                    එම මැතිණියගේ
+                    <br />
+                    ආදරණීය දියණිය
+                  </>
+                )}
               </p>
             </div>
 
+            {/* Couple photo */}
             <div className="flex justify-center">
               <div
                 className="rounded-[50px] overflow-hidden border-[4px] border-wedding-highlight shadow-[0_8px_30px_rgba(124,92,61,0.18)] bg-wedding-surface"
@@ -80,48 +134,70 @@ export default function InvitationHeroCard({
               </div>
             </div>
 
+            {/* Groom */}
             <div className="flex flex-col items-center text-center gap-1">
               <p
                 style={{
-                  fontFamily: "var(--font-geist-sans)",
+                  fontFamily: isEn
+                    ? "var(--font-geist-sans)"
+                    : "var(--font-sinhala)",
                   fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
                   fontWeight: 500,
                   color: "var(--wedding-heading)",
                   letterSpacing: "0.04em",
                 }}
               >
-                Isuru
+                {isEn ? "Isuru" : "ඉසුරු"}
               </p>
               <p
                 style={{
-                  fontFamily: "var(--font-sinhala)",
-                  fontSize: "clamp(0.7rem, 1.8vw, 0.88rem)",
-                  lineHeight: 1.95,
+                  fontFamily: isEn
+                    ? "var(--font-geist-sans)"
+                    : "var(--font-sinhala)",
+                  fontSize: isEn
+                    ? "clamp(0.7rem, 1.7vw, 0.85rem)"
+                    : "clamp(0.7rem, 1.8vw, 0.88rem)",
+                  lineHeight: isEn ? 1.5 : 1.95,
                   color: "var(--wedding-muted)",
                 }}
               >
-                සමුනවීර මහතා සහ
-                <br />
-                එම මැතිණියගේ
-                <br />
-                ආදරණීය පුතණුවන්
+                {isEn ? (
+                  <>
+                    Beloved son of
+                    <br />
+                    Mr. &amp; Mrs. Samunaweera
+                  </>
+                ) : (
+                  <>
+                    සමුනවීර මහතා සහ
+                    <br />
+                    එම මැතිණියගේ
+                    <br />
+                    ආදරණීය පුතණුවන්
+                  </>
+                )}
               </p>
             </div>
           </motion.div>
 
           <motion.p
-            className="mt-8 max-w-sm text-wedding-muted"
+            className="mt-8 max-w-md text-wedding-muted"
             style={{
-              fontFamily: "var(--font-sinhala)",
-              fontSize: "clamp(0.88rem, 2.2vw, 1rem)",
-              lineHeight: 2.1,
+              fontFamily: isEn
+                ? "var(--font-geist-sans)"
+                : "var(--font-sinhala)",
+              fontSize: isEn
+                ? "clamp(0.85rem, 2vw, 0.95rem)"
+                : "clamp(0.88rem, 2.2vw, 1rem)",
+              lineHeight: isEn ? 1.7 : 2.1,
             }}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.7 }}
           >
-            අතිනත ගැනීමේ ප්‍රීතිය නිමිත්තෙන් පැවැත්වෙන ප්‍රිය සම්භාවනයට සහභාගි
-            වන මෙන්
+            {isEn
+              ? "Request the pleasure of your company to celebrate their wedding reception"
+              : "අතිනත ගැනීමේ ප්‍රීතිය නිමිත්තෙන් පැවැත්වෙන ප්‍රිය සම්භාවනයට සහභාගි වන මෙන්"}
           </motion.p>
 
           <motion.div
@@ -139,22 +215,29 @@ export default function InvitationHeroCard({
                 lineHeight: 1.6,
               }}
             >
-              {guestName || "Mr / Mrs / Mr & Mrs / Ms"}
+              {guestName || (isEn ? "Dear Guest" : "හිතවත් අමුත්තා වෙත")}
             </p>
           </motion.div>
 
           <motion.p
             className="mt-6 text-wedding-heading"
             style={{
-              fontFamily: "var(--font-sinhala)",
-              fontSize: "clamp(0.88rem, 2.2vw, 1rem)",
+              fontFamily: isEn
+                ? "var(--font-geist-sans)"
+                : "var(--font-sinhala)",
+              fontSize: isEn
+                ? "clamp(0.85rem, 2vw, 0.95rem)"
+                : "clamp(0.88rem, 2.2vw, 1rem)",
               lineHeight: 2,
+              letterSpacing: isEn ? "0.04em" : "normal",
             }}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.65, duration: 0.7 }}
           >
-            කෙරෙන ගෞරවනීය ආරාධනනයයි!
+            {isEn
+              ? "You are cordially invited!"
+              : "කෙරෙන ගෞරවනීය ආරාධනයයි!"}
           </motion.p>
 
           <motion.button
@@ -166,7 +249,7 @@ export default function InvitationHeroCard({
             transition={{ delay: 0.75, duration: 0.7 }}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            aria-label="ගණන් කිරීම බලන්න"
+            aria-label={isEn ? "View countdown" : "ගණන් කිරීම බලන්න"}
           >
             <div
               className="flex flex-col items-center py-1 border-t border-b-2 double border-wedding-border px-2"
@@ -174,12 +257,15 @@ export default function InvitationHeroCard({
             >
               <span
                 style={{
-                  fontFamily: "var(--font-sinhala)",
+                  fontFamily: isEn
+                    ? "var(--font-geist-sans)"
+                    : "var(--font-sinhala)",
                   fontSize: "0.95rem",
                   color: "var(--wedding-primary)",
+                  letterSpacing: isEn ? "0.1em" : "normal",
                 }}
               >
-                ජනවාරි
+                {isEn ? "JANUARY" : "ජනවාරි"}
               </span>
             </div>
 
@@ -215,12 +301,15 @@ export default function InvitationHeroCard({
             >
               <span
                 style={{
-                  fontFamily: "var(--font-sinhala)",
+                  fontFamily: isEn
+                    ? "var(--font-geist-sans)"
+                    : "var(--font-sinhala)",
                   fontSize: "0.95rem",
                   color: "var(--wedding-primary)",
+                  letterSpacing: isEn ? "0.08em" : "normal",
                 }}
               >
-                බ්‍රහස්පතින්දා
+                {isEn ? "THURSDAY" : "බ්‍රහස්පතින්දා"}
               </span>
             </div>
           </motion.button>
@@ -228,29 +317,41 @@ export default function InvitationHeroCard({
           <motion.p
             className="mt-6 text-wedding-muted"
             style={{
-              fontFamily: "var(--font-sinhala)",
-              fontSize: "clamp(0.85rem, 2.2vw, 0.98rem)",
+              fontFamily: isEn
+                ? "var(--font-geist-sans)"
+                : "var(--font-sinhala)",
+              fontSize: isEn
+                ? "clamp(0.85rem, 2vw, 0.95rem)"
+                : "clamp(0.85rem, 2.2vw, 0.98rem)",
               lineHeight: 2,
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
-            පෙරවරු 09:00 සිට පස්වරු 04:30 දක්වා
+            {isEn
+              ? "From 09:00 AM to 04:30 PM"
+              : "පෙරවරු 09:00 සිට පස්වරු 04:30 දක්වා"}
           </motion.p>
 
           <motion.p
             className="text-wedding-muted"
             style={{
-              fontFamily: "var(--font-sinhala)",
-              fontSize: "clamp(0.78rem, 1.9vw, 0.9rem)",
+              fontFamily: isEn
+                ? "var(--font-geist-sans)"
+                : "var(--font-sinhala)",
+              fontSize: isEn
+                ? "clamp(0.78rem, 1.8vw, 0.88rem)"
+                : "clamp(0.78rem, 1.9vw, 0.9rem)",
               lineHeight: 1.8,
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.85, duration: 0.6 }}
           >
-            (පෝරුවේ චාරිත්‍ර&nbsp;&nbsp;පෙ:ව: 09:00 ට)
+            {isEn
+              ? "(Poruwa Ceremony at 09:00 AM)"
+              : "(පෝරුවේ චාරිත්‍ර  පෙ:ව: 09:00 ට)"}
           </motion.p>
 
           <motion.button
@@ -267,26 +368,30 @@ export default function InvitationHeroCard({
             <p
               className="group-hover:text-wedding-primary transition-colors duration-200"
               style={{
-                fontFamily: "var(--font-geist-sans)",
+                fontFamily: isEn
+                  ? "var(--font-geist-sans)"
+                  : "var(--font-sinhala)",
                 fontSize: "clamp(1.8rem, 5vw, 2.8rem)",
                 fontWeight: 500,
                 color: "var(--wedding-heading)",
                 letterSpacing: "0.04em",
               }}
             >
-              Royal Arcade
+              {isEn ? "Royal Arcade" : "රෝයල් ආකේඩ්"}
             </p>
             <p
               className="group-hover:text-wedding-primary transition-colors duration-200"
               style={{
-                fontFamily: "var(--font-geist-sans)",
+                fontFamily: isEn
+                  ? "var(--font-geist-sans)"
+                  : "var(--font-sinhala)",
                 fontSize: "clamp(0.95rem, 2.4vw, 1.15rem)",
                 color: "var(--wedding-muted)",
-                letterSpacing: "0.14em",
+                letterSpacing: isEn ? "0.14em" : "0.06em",
                 marginTop: "0.2rem",
               }}
             >
-              Gampaha
+              {isEn ? "Gampaha" : "ගම්පහ"}
             </p>
           </motion.button>
 
@@ -298,12 +403,14 @@ export default function InvitationHeroCard({
             transition={{ delay: 1.0, duration: 0.6 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.96 }}
-            aria-label="RSVP — ප්‍රතිචාරය"
+            aria-label={isEn ? "RSVP section" : "RSVP - ප්‍රතිචාරය"}
           >
             <span
               className="group-hover:text-wedding-primary-hover transition-colors duration-200 cursor-pointer"
               style={{
-                fontFamily: "var(--font-geist-sans)",
+                fontFamily: isEn
+                  ? "var(--font-geist-sans)"
+                  : "var(--font-sinhala)",
                 fontSize: "0.78rem",
                 letterSpacing: "0.38em",
                 color: "var(--wedding-primary)",
@@ -312,7 +419,7 @@ export default function InvitationHeroCard({
                 paddingBottom: "3px",
               }}
             >
-              RSVP
+              {isEn ? "RSVP" : "RSVP - ප්‍රතිචාර දක්වන්න"}
             </span>
 
             <motion.span

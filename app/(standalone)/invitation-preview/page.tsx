@@ -3,6 +3,8 @@
 import { useState } from "react";
 import InvitationHeroCard from "@/components/invitation/InvitationHeroCard";
 import RSVPSection from "@/components/invitation/RSVPSection";
+import { LanguageProvider } from "@/components/invitation/InvitationLanguageContext";
+import LanguageToggle from "@/components/invitation/LanguageToggle";
 
 export default function InvitationPreviewPage() {
   const weddingDate = new Date("2027-01-28T00:00:00+05:30");
@@ -20,18 +22,23 @@ export default function InvitationPreviewPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#fdf8f2]">
-      <section className="min-h-screen">
-        <InvitationHeroCard />
-      </section>
+    <LanguageProvider>
+      <main className="relative min-h-screen bg-[#fdf8f2]">
+        <LanguageToggle />
 
-      <RSVPSection
-        submitted={submitted}
-        form={form}
-        setForm={setForm}
-        handleSubmit={handleSubmit}
-        weddingDate={weddingDate}
-      />
-    </main>
+        <section className="min-h-screen">
+          <InvitationHeroCard />
+        </section>
+
+        <RSVPSection
+          submitted={submitted}
+          form={form}
+          setForm={setForm}
+          handleSubmit={handleSubmit}
+          weddingDate={weddingDate}
+          maxGuests={2}
+        />
+      </main>
+    </LanguageProvider>
   );
 }

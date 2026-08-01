@@ -209,16 +209,18 @@ function SummaryCard({
   );
 }
 
-function AnswerBadge({ answer }: { answer: "Yes" | "No" | "Pending" }) {
-  const styles = {
+function AnswerBadge({ answer }: { answer: string }) {
+  const styles: Record<string, string> = {
     Yes: "border-[#b9debf] bg-[#eef8ef] text-[#2d7a46]",
     No: "border-[#e7b7b7] bg-[#fdeeee] text-[#b45252]",
     Pending: "border-[#f0d9a6] bg-[#fff7e8] text-[#b7791f]",
   };
 
+  const badgeStyle = styles[answer] || "border-[#e7d9c8] bg-[#fcf8f3] text-[#6f5f51]";
+
   return (
     <span
-      className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${styles[answer]}`}
+      className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${badgeStyle}`}
     >
       {answer}
     </span>

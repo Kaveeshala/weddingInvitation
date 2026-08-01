@@ -65,7 +65,7 @@ export default function GuestsPage() {
 
   const handleUpdateStatus = async (
     guestId: string,
-    status: "invited" | "attending" | "declined"
+    status: "default" | "invited" | "attending" | "declined"
   ) => {
     try {
       const res = await fetch(`/api/guest/${guestId}`, {

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLanguage } from "./InvitationLanguageContext";
 
 interface LiveLocationSectionProps {
   mapUrl: string;
@@ -9,6 +10,9 @@ interface LiveLocationSectionProps {
 export default function LiveLocationSection({
   mapUrl,
 }: LiveLocationSectionProps) {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   return (
     <motion.section
       id="location-section"
@@ -24,48 +28,60 @@ export default function LiveLocationSection({
       <div className="w-full max-w-2xl text-center flex flex-col items-center">
         <p
           style={{
-            fontFamily: "var(--font-geist-sans)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
             fontSize: "0.78rem",
-            letterSpacing: "0.32em",
+            letterSpacing: isEn ? "0.32em" : "0.12em",
             color: "var(--wedding-primary)",
             textTransform: "uppercase",
           }}
         >
-          LIVE LOCATION
+          {isEn ? "LIVE LOCATION" : "සජීවී ස්ථානය"}
         </p>
 
         <h3
           className="mt-3 text-wedding-heading"
           style={{
-            fontFamily: "var(--font-geist-sans)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
             fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
             fontWeight: 500,
             letterSpacing: "0.04em",
           }}
         >
-          Royal Arcade
+          {isEn ? "Royal Arcade" : "රෝයල් ආකේඩ්"}
         </h3>
 
         <p
           className="mt-2 text-wedding-muted"
           style={{
-            fontFamily: "var(--font-geist-sans)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
             fontSize: "clamp(0.95rem, 2.4vw, 1.1rem)",
-            letterSpacing: "0.12em",
+            letterSpacing: isEn ? "0.12em" : "normal",
           }}
         >
-          Udugampola
+          {isEn ? "Udugampola, Gampaha" : "උඩුගම්පොළ, ගම්පහ"}
         </p>
 
         <p
           className="mt-4 max-w-md text-wedding-muted"
           style={{
-            fontFamily: "var(--font-sinhala)",
-            fontSize: "clamp(0.9rem, 2.1vw, 1rem)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
+            fontSize: isEn
+              ? "clamp(0.85rem, 2vw, 0.95rem)"
+              : "clamp(0.9rem, 2.1vw, 1rem)",
             lineHeight: 1.9,
           }}
         >
-          උත්සව ශාලාවේ ස්ථානය පහතින් බලන්න.
+          {isEn
+            ? "View the wedding venue location below."
+            : "උත්සව ශාලාවේ ස්ථානය පහතින් බලන්න."}
         </p>
 
         <motion.a
@@ -75,10 +91,12 @@ export default function LiveLocationSection({
           className="mt-6 relative inline-flex items-center justify-center overflow-hidden rounded-full px-7 py-3 text-white"
           style={{
             background: "var(--wedding-gradient)",
-            fontFamily: "var(--font-geist-sans)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
             fontSize: "0.88rem",
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
+            letterSpacing: isEn ? "0.16em" : "0.06em",
+            textTransform: isEn ? "uppercase" : "none",
             boxShadow: "0 10px 24px rgba(176, 141, 87, 0.22)",
           }}
           whileHover={{ scale: 1.03 }}
@@ -101,7 +119,9 @@ export default function LiveLocationSection({
             }}
           />
 
-          <span className="relative z-10">Open Live Location</span>
+          <span className="relative z-10">
+            {isEn ? "Open Live Location" : "ස්ථානය සිතියමෙන් බලන්න"}
+          </span>
         </motion.a>
       </div>
     </motion.section>

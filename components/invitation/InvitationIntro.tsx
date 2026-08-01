@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "./InvitationLanguageContext";
 
 interface InvitationIntroProps {
   invitePath?: string;
@@ -14,6 +15,8 @@ export default function InvitationIntro({
   invitePath = "/invitation",
 }: InvitationIntroProps) {
   const router = useRouter();
+  const { language } = useLanguage();
+  const isEn = language === "en";
 
   return (
     <section className="relative flex min-h-screen w-full flex-col items-center justify-between bg-wedding-bg px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
@@ -31,13 +34,18 @@ export default function InvitationIntro({
               transition={{ delay: 0.05, duration: 0.7 }}
               className="text-wedding-primary uppercase"
               style={{
-                fontFamily: "var(--font-sinhala)",
-                fontSize: "clamp(1rem, 2.8vw, 1.25rem)",
-                letterSpacing: "0.12em",
+                fontFamily: isEn
+                  ? "var(--font-geist-sans)"
+                  : "var(--font-sinhala)",
+                fontSize: isEn
+                  ? "clamp(0.85rem, 2.5vw, 1.1rem)"
+                  : "clamp(1rem, 2.8vw, 1.25rem)",
+                letterSpacing: isEn ? "0.22em" : "0.12em",
                 lineHeight: 1.6,
+                fontWeight: isEn ? 500 : 400,
               }}
             >
-              ආදරණීය විවාහ මංගල උත්සවය
+              {isEn ? "Wedding Celebration" : "ආදරණීය විවාහ මංගල උත්සවය"}
             </motion.p>
 
             <motion.p
@@ -46,14 +54,16 @@ export default function InvitationIntro({
               transition={{ delay: 0.25, duration: 0.75 }}
               className="mt-10 text-wedding-heading"
               style={{
-                fontFamily: "var(--font-geist-sans)",
+                fontFamily: isEn
+                  ? "var(--font-geist-sans)"
+                  : "var(--font-sinhala)",
                 fontSize: "clamp(3rem, 11vw, 6.2rem)",
                 fontWeight: 500,
                 lineHeight: 0.95,
                 letterSpacing: "0.03em",
               }}
             >
-              Dilma
+              {isEn ? "Dilma" : "දිල්මා"}
             </motion.p>
 
             <motion.p
@@ -67,7 +77,7 @@ export default function InvitationIntro({
                 lineHeight: 1,
               }}
             >
-              &
+              &amp;
             </motion.p>
 
             <motion.p
@@ -76,14 +86,16 @@ export default function InvitationIntro({
               transition={{ delay: 0.45, duration: 0.75 }}
               className="mt-3 text-wedding-heading"
               style={{
-                fontFamily: "var(--font-geist-sans)",
+                fontFamily: isEn
+                  ? "var(--font-geist-sans)"
+                  : "var(--font-sinhala)",
                 fontSize: "clamp(3rem, 11vw, 6.2rem)",
                 fontWeight: 500,
                 lineHeight: 0.95,
                 letterSpacing: "0.03em",
               }}
             >
-              Isuru
+              {isEn ? "Isuru" : "ඉසුරු"}
             </motion.p>
 
             <motion.p
@@ -92,13 +104,19 @@ export default function InvitationIntro({
               transition={{ delay: 0.64, duration: 0.7 }}
               className="mt-8 max-w-2xl text-wedding-muted"
               style={{
-                fontFamily: "var(--font-sinhala)",
-                fontSize: "clamp(1rem, 2.6vw, 1.15rem)",
-                lineHeight: 1.95,
+                fontFamily: isEn
+                  ? "var(--font-geist-sans)"
+                  : "var(--font-sinhala)",
+                fontSize: isEn
+                  ? "clamp(0.95rem, 2.4vw, 1.1rem)"
+                  : "clamp(1rem, 2.6vw, 1.15rem)",
+                lineHeight: isEn ? 1.7 : 1.95,
+                letterSpacing: isEn ? "0.02em" : "normal",
               }}
             >
-              අපගේ විවාහ මංගල උත්සවය සඳහා අප ඔබව මහත් ප්‍රීතියෙන් යුතුව
-              පිළිගන්නෙමු
+              {isEn
+                ? "We joyfully welcome you to celebrate our wedding day"
+                : "අපගේ විවාහ මංගල උත්සවය සඳහා අප ඔබව මහත් ප්‍රීතියෙන් යුතුව පිළිගන්නෙමු"}
             </motion.p>
           </motion.div>
         </div>
@@ -112,24 +130,33 @@ export default function InvitationIntro({
       >
         <motion.p
           className="text-wedding-muted text-xs tracking-widest uppercase"
-          style={{ fontFamily: "var(--font-sinhala)", fontSize: "0.85rem" }}
+          style={{
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
+            fontSize: isEn ? "0.78rem" : "0.85rem",
+            letterSpacing: isEn ? "0.2em" : "0.08em",
+          }}
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ repeat: Infinity, duration: 2.4, ease: "easeInOut" }}
         >
-          ආරාධනාව බලන්න
+          {isEn ? "View Invitation" : "ආරාධනාව බලන්න"}
         </motion.p>
 
         <MotionButton
           id="open-invitation-btn"
           type="button"
           onClick={() => router.push(invitePath)}
-          aria-label="ආරාධනාව විවෘත කරන්න"
+          aria-label={isEn ? "Open Invitation" : "ආරාධනාව විවෘත කරන්න"}
           className="relative overflow-hidden rounded-full px-12 py-7 text-white shadow-none hover:opacity-95"
           style={{
             background: "var(--wedding-gradient)",
-            fontFamily: "var(--font-sinhala)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
             fontSize: "clamp(1rem, 2.5vw, 1.1rem)",
-            letterSpacing: "0.08em",
+            letterSpacing: isEn ? "0.14em" : "0.08em",
+            textTransform: isEn ? "uppercase" : "none",
           }}
           whileHover={{ scale: 1.06 }}
           whileTap={{ scale: 0.96 }}
@@ -159,7 +186,9 @@ export default function InvitationIntro({
             animate={{ backgroundPosition: ["200% 0", "-200% 0"] }}
             transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
           />
-          <span className="relative z-10">ආරාධනාව විවෘත කරන්න</span>
+          <span className="relative z-10">
+            {isEn ? "Open Invitation" : "ආරාධනාව විවෘත කරන්න"}
+          </span>
         </MotionButton>
       </motion.div>
     </section>

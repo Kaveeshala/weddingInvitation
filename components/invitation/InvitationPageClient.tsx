@@ -3,6 +3,8 @@
 import { useState } from "react";
 import InvitationHeroCard from "@/components/invitation/InvitationHeroCard";
 import RSVPSection from "@/components/invitation/RSVPSection";
+import { LanguageProvider } from "@/components/invitation/InvitationLanguageContext";
+import LanguageToggle from "@/components/invitation/LanguageToggle";
 
 interface InvitationPageClientProps {
   guest: {
@@ -40,6 +42,11 @@ export default function InvitationPageClient({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (guest.token === "preview") {
+      setSubmitted(true);
+      return;
+    }
+
     const selectedGuests = Math.min(
       maxGuests,
       Math.max(1, Number(form.guests) || 1)
@@ -69,21 +76,25 @@ export default function InvitationPageClient({
   };
 
   return (
-    <main className="relative w-full overflow-hidden bg-wedding-bg">
-      <section className="min-h-screen w-full flex items-center justify-center">
-        <InvitationHeroCard guestName={guest.name} />
-      </section>
+    <LanguageProvider>
+      <main className="relative w-full overflow-hidden bg-wedding-bg">
+        <LanguageToggle />
 
-      <div className="relative z-10">
-        <RSVPSection
-          submitted={submitted}
-          form={form}
-          setForm={setForm}
-          handleSubmit={handleSubmit}
-          weddingDate={weddingDate}
-          maxGuests={maxGuests}
-        />
-      </div>
-    </main>
+        <section className="min-h-screen w-full flex items-center justify-center">
+          <InvitationHeroCard guestName={guest.name} />
+        </section>
+
+        <div className="relative z-10">
+          <RSVPSection
+            submitted={submitted}
+            form={form}
+            setForm={setForm}
+            handleSubmit={handleSubmit}
+            weddingDate={weddingDate}
+            maxGuests={maxGuests}
+          />
+        </div>
+      </main>
+    </LanguageProvider>
   );
 }

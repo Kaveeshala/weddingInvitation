@@ -14,6 +14,19 @@ export default async function InviteCardPage({
 }: InviteCardPageProps) {
   const { token } = await params;
 
+  if (token === "preview") {
+    return (
+      <InvitationPageClient
+        guest={{
+          name: "",
+          token: "preview",
+          partySize: 2,
+          rsvpStatus: "invited",
+        }}
+      />
+    );
+  }
+
   await dbConnect();
 
   const guest = await Guest.findOne({ token }).lean();

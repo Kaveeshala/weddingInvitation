@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import CountdownTimer from "./CountdownTimer";
 import LiveLocationSection from "./LiveLocationSection";
 import FloralDivider from "../FloralDivider";
+import { useLanguage } from "./InvitationLanguageContext";
 
 interface RSVPFormState {
   name: string;
@@ -29,6 +30,9 @@ export default function RSVPSection({
   weddingDate,
   maxGuests,
 }: RSVPSectionProps) {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   const guestOptions = Array.from(
     { length: Math.max(1, maxGuests) },
     (_, index) => String(index + 1)
@@ -50,11 +54,15 @@ export default function RSVPSection({
         <p
           className="text-wedding-muted text-sm max-w-xs"
           style={{
-            fontFamily: "var(--font-sinhala)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
             lineHeight: 1.8,
           }}
         >
-          අපගේ මෙම සුවිශේෂී දිනයට ඔබගේ පැමිණීම අපට මහත් සතුටක් වේ.
+          {isEn
+            ? "We would be honored by your presence on our special day."
+            : "අපගේ මෙම සුවිශේෂී දිනයට ඔබගේ පැමිණීම අපට මහත් සතුටක් වේ."}
         </p>
 
         <div
@@ -70,23 +78,31 @@ export default function RSVPSection({
               <p
                 className="text-wedding-primary"
                 style={{
-                  fontFamily: "var(--font-sinhala)",
+                  fontFamily: isEn
+                    ? "var(--font-geist-sans)"
+                    : "var(--font-sinhala)",
                   fontSize: "clamp(1.3rem, 4vw, 1.8rem)",
                   fontWeight: 600,
                 }}
               >
-                ස්තූතියි, {form.name}!
+                {isEn ? `Thank you, ${form.name}!` : `ස්තූතියි, ${form.name}!`}
               </p>
 
               <p
                 className="text-wedding-muted text-sm"
                 style={{
-                  fontFamily: "var(--font-sinhala)",
+                  fontFamily: isEn
+                    ? "var(--font-geist-sans)"
+                    : "var(--font-sinhala)",
                   lineHeight: 1.7,
                 }}
               >
                 {form.attending === "yes"
-                  ? "ඔබ සමඟ සැමරීම ගැන අපට ඉතා සතුටුයි! 💛"
+                  ? isEn
+                    ? "We are delighted to celebrate with you! 💛"
+                    : "ඔබ සමඟ සැමරීම ගැන අපට ඉතා සතුටුයි! 💛"
+                  : isEn
+                  ? "We will miss you. Thank you for letting us know."
                   : "ඔබ නොමැතිකම අපට ඉතා දැනෙනු ඇත. දැනුම් දීම ගැන ස්තූතියි."}
               </p>
             </div>
@@ -96,21 +112,25 @@ export default function RSVPSection({
                 <p
                   className="text-wedding-primary text-xs uppercase"
                   style={{
-                    fontFamily: "var(--font-sinhala)",
+                    fontFamily: isEn
+                      ? "var(--font-geist-sans)"
+                      : "var(--font-sinhala)",
                     letterSpacing: "0.1em",
                   }}
                 >
-                  ඔබගේ ප්‍රතිචාරය
+                  {isEn ? "YOUR RESPONSE" : "ඔබගේ ප්‍රතිචාරය"}
                 </p>
                 <h2
                   className="text-wedding-heading mt-2"
                   style={{
-                    fontFamily: "var(--font-sinhala)",
+                    fontFamily: isEn
+                      ? "var(--font-geist-sans)"
+                      : "var(--font-sinhala)",
                     fontSize: "clamp(1.4rem, 4vw, 1.8rem)",
                     fontWeight: 600,
                   }}
                 >
-                  සහභාගිත්ව දැනුම්දීම
+                  {isEn ? "RSVP & Attendance" : "සහභාගිත්ව දැනුම්දීම"}
                 </h2>
               </div>
 
@@ -119,17 +139,19 @@ export default function RSVPSection({
                   htmlFor="rsvp-name"
                   className="text-xs uppercase text-wedding-muted"
                   style={{
-                    fontFamily: "var(--font-sinhala)",
+                    fontFamily: isEn
+                      ? "var(--font-geist-sans)"
+                      : "var(--font-sinhala)",
                     letterSpacing: "0.1em",
                   }}
                 >
-                  ඔබගේ සම්පූර්ණ නම
+                  {isEn ? "YOUR FULL NAME" : "ඔබගේ සම්පූර්ණ නම"}
                 </label>
                 <input
                   id="rsvp-name"
                   type="text"
                   required
-                  placeholder="උදා: නිමල් පෙරේරා"
+                  placeholder={isEn ? "e.g. Nimal Perera" : "උදා: නිමල් පෙරේරා"}
                   value={form.name}
                   onChange={(e) =>
                     setForm((p) => ({ ...p, name: e.target.value }))
@@ -142,17 +164,19 @@ export default function RSVPSection({
                 <legend
                   className="text-xs uppercase text-wedding-muted mb-2"
                   style={{
-                    fontFamily: "var(--font-sinhala)",
+                    fontFamily: isEn
+                      ? "var(--font-geist-sans)"
+                      : "var(--font-sinhala)",
                     letterSpacing: "0.1em",
                   }}
                 >
-                  ඔබ සහභාගි වේද?
+                  {isEn ? "WILL YOU ATTEND?" : "ඔබ සහභාගි වේද?"}
                 </legend>
 
                 <div className="flex gap-3">
                   {[
-                    { v: "yes", l: "ඔව්" },
-                    { v: "no", l: "නැත" },
+                    { v: "yes", l: isEn ? "Yes" : "ඔව්" },
+                    { v: "no", l: isEn ? "No" : "නැත" },
                   ].map(({ v, l }) => (
                     <label
                       key={v}
@@ -162,7 +186,9 @@ export default function RSVPSection({
                           : "bg-white/70 text-wedding-muted hover:bg-white/90"
                       }`}
                       style={{
-                        fontFamily: "var(--font-sinhala)",
+                        fontFamily: isEn
+                          ? "var(--font-geist-sans)"
+                          : "var(--font-sinhala)",
                         letterSpacing: "0.02em",
                       }}
                     >
@@ -188,11 +214,13 @@ export default function RSVPSection({
                     htmlFor="rsvp-guests"
                     className="text-xs uppercase text-wedding-muted"
                     style={{
-                      fontFamily: "var(--font-sinhala)",
+                      fontFamily: isEn
+                        ? "var(--font-geist-sans)"
+                        : "var(--font-sinhala)",
                       letterSpacing: "0.1em",
                     }}
                   >
-                    සහභාගි වන අය ගණන
+                    {isEn ? "NUMBER OF GUESTS" : "සහභාගි වන අය ගණන"}
                   </label>
                   <select
                     id="rsvp-guests"
@@ -216,11 +244,13 @@ export default function RSVPSection({
                 className="w-full py-4 rounded-xl text-sm uppercase text-white font-medium hover:scale-[1.02] active:scale-[0.98] transition-transform"
                 style={{
                   background: "var(--wedding-gradient)",
-                  fontFamily: "var(--font-sinhala)",
+                  fontFamily: isEn
+                    ? "var(--font-geist-sans)"
+                    : "var(--font-sinhala)",
                   letterSpacing: "0.08em",
                 }}
               >
-                ප්‍රතිචාරය යවන්න
+                {isEn ? "Submit RSVP" : "ප්‍රතිචාරය යවන්න"}
               </button>
             </form>
           )}
@@ -257,27 +287,35 @@ export default function RSVPSection({
 
         <p
           style={{
-            fontFamily: "var(--font-geist-sans)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
             fontSize: "clamp(1rem, 2.3vw, 1.15rem)",
             color: "var(--wedding-heading)",
             fontWeight: 400,
             letterSpacing: "0.01em",
           }}
         >
-          We can&apos;t wait to celebrate with you
+          {isEn
+            ? "We can't wait to celebrate with you"
+            : "ඔබ සැම සමඟ මෙම ප්‍රීතිය සැමරීමට අප නොඉවසිල්ලෙන් පසුවෙමු"}
         </p>
 
         <p
           className="mt-3"
           style={{
-            fontFamily: "var(--font-geist-sans)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
             fontSize: "clamp(0.82rem, 2vw, 0.95rem)",
             color: "var(--wedding-muted)",
             letterSpacing: "0.06em",
             lineHeight: 1.8,
           }}
         >
-          Thursday, January 28, 2027 &bull; Royal Arcade, Udugampola
+          {isEn
+            ? "Thursday, January 28, 2027 • Royal Arcade, Udugampola"
+            : "2027 ජනවාරි 28 බ්‍රහස්පතින්දා • රෝයල් ආකේඩ්, උඩුගම්පොළ"}
         </p>
 
         <div className="mt-6 flex justify-center">
@@ -293,14 +331,16 @@ export default function RSVPSection({
         <p
           className="mt-5"
           style={{
-            fontFamily: "var(--font-geist-sans)",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
             fontSize: "clamp(1.35rem, 3.5vw, 1.8rem)",
             color: "var(--wedding-primary)",
             fontWeight: 500,
             letterSpacing: "0.05em",
           }}
         >
-          Isuru &amp; Dilma
+          {isEn ? "Isuru & Dilma" : "ඉසුරු & දිල්මා"}
         </p>
       </motion.footer>
     </>

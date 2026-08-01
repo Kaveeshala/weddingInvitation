@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLanguage } from "./InvitationLanguageContext";
 
 interface CountdownTimerProps {
   targetDate: Date;
@@ -14,6 +15,9 @@ interface TimeLeft {
 }
 
 export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   const calculateTimeLeft = (): TimeLeft => {
     const now = new Date().getTime();
     const distance = targetDate.getTime() - now;
@@ -46,10 +50,26 @@ export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
   }, [targetDate]);
 
   const items = [
-    { label: "DAYS", value: timeLeft.days },
-    { label: "HOURS", value: timeLeft.hours },
-    { label: "MINUTES", value: timeLeft.minutes },
-    { label: "SECONDS", value: timeLeft.seconds },
+    {
+      key: "days",
+      label: isEn ? "DAYS" : "දින",
+      value: timeLeft.days,
+    },
+    {
+      key: "hours",
+      label: isEn ? "HOURS" : "පැය",
+      value: timeLeft.hours,
+    },
+    {
+      key: "minutes",
+      label: isEn ? "MINUTES" : "මිනිත්තු",
+      value: timeLeft.minutes,
+    },
+    {
+      key: "seconds",
+      label: isEn ? "SECONDS" : "තත්පර",
+      value: timeLeft.seconds,
+    },
   ];
 
   return (
@@ -58,19 +78,23 @@ export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
         <p
           className="mb-6 sm:mb-8"
           style={{
-            fontFamily: "var(--font-geist-sans)",
-            fontSize: "clamp(0.8rem, 2vw, 1rem)",
-            letterSpacing: "0.32em",
+            fontFamily: isEn
+              ? "var(--font-geist-sans)"
+              : "var(--font-sinhala)",
+            fontSize: isEn
+              ? "clamp(0.8rem, 2vw, 1rem)"
+              : "clamp(0.85rem, 2.2vw, 1.05rem)",
+            letterSpacing: isEn ? "0.32em" : "0.1em",
             color: "var(--wedding-muted)",
             textTransform: "uppercase",
           }}
         >
-          COUNTING DOWN
+          {isEn ? "COUNTING DOWN" : "දිනය තෙක් ගණන් කිරීම"}
         </p>
 
         <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] items-center gap-x-1 sm:gap-x-3 md:gap-x-5 text-center w-full">
           {items.map((item, index) => (
-            <div key={item.label} className="contents">
+            <div key={item.key} className="contents">
               <div className="flex flex-col items-center min-w-0">
                 <p
                   style={{
@@ -97,9 +121,13 @@ export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
                 <p
                   className="mt-2 sm:mt-3"
                   style={{
-                    fontFamily: "var(--font-geist-sans)",
-                    fontSize: "clamp(0.5rem, 1.25vw, 0.92rem)",
-                    letterSpacing: "0.16em",
+                    fontFamily: isEn
+                      ? "var(--font-geist-sans)"
+                      : "var(--font-sinhala)",
+                    fontSize: isEn
+                      ? "clamp(0.5rem, 1.25vw, 0.92rem)"
+                      : "clamp(0.65rem, 1.4vw, 0.95rem)",
+                    letterSpacing: isEn ? "0.16em" : "0.04em",
                     color: "var(--wedding-muted)",
                   }}
                 >

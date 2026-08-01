@@ -12,6 +12,10 @@ interface InvitePageProps {
 export default async function InvitePage({ params }: InvitePageProps) {
   const { token } = await params;
 
+  if (token === "preview") {
+    return <InviteIntroClient token="preview" />;
+  }
+
   await dbConnect();
 
   const guest = await Guest.findOne({ token }).lean();
