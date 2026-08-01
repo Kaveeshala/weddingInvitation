@@ -42,9 +42,21 @@ export async function POST(req: Request) {
     }
 
     const isAttending = attending === "yes";
+    const requestedGuestCount = Math.max(1, Number(guests) || 1);
+    const allowedGuestCount = Math.max(1, guest.partySize || 1);
+
+    if (isAttending && requestedGuestCount > allowedGuestCount) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `You can only RSVP for up to ${allowedGuestCount} guest(s).`,
+        },
+        { status: 400 }
+      );
+    }
 
     guest.rsvpStatus = isAttending ? "attending" : "declined";
-    guest.respondedGuestCount = isAttending ? Number(guests) || 1 : 0;
+    guest.respondedGuestCount = isAttending ? requestedGuestCount : 0;
     guest.responseMessage = message?.trim() || "";
 
     await guest.save();
