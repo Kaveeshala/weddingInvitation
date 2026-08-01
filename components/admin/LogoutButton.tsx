@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -12,9 +12,15 @@ export default function LogoutButton() {
     try {
       setLoading(true);
 
-      await fetch("/api/auth/logout", {
+      const res = await fetch("/api/auth/logout", {
         method: "POST",
       });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to logout");
+      }
 
       router.replace("/login");
       router.refresh();
@@ -26,7 +32,7 @@ export default function LogoutButton() {
   };
 
   return (
-    <Button type="button" variant="outline" onClick={handleLogout}>
+    <Button type="button" variant="outline" onClick={handleLogout} disabled={loading}>
       {loading ? "Logging out..." : "Logout"}
     </Button>
   );

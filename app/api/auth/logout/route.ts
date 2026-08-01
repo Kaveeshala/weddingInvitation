@@ -1,23 +1,23 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { AUTH_COOKIE_NAME } from "@/lib/auth";
 
 export async function POST() {
   try {
-    const cookieStore = await cookies();
+    const response = NextResponse.json({
+      success: true,
+      message: "Logged out successfully.",
+    });
 
-    cookieStore.set(AUTH_COOKIE_NAME, "", {
+    response.cookies.set(AUTH_COOKIE_NAME, "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
       maxAge: 0,
+      expires: new Date(0),
     });
 
-    return NextResponse.json({
-      success: true,
-      message: "Logged out successfully.",
-    });
+    return response;
   } catch (error) {
     console.error("Logout error:", error);
 

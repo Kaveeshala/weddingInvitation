@@ -8,11 +8,8 @@ export default function ThankYouCardPage() {
           Thank You Card
         </p>
         <h2 className="mt-2 text-3xl font-semibold text-[#2f2a24]">
-          Thank You Card Management
+          Comming Soon
         </h2>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#76685a]">
-          Manage and preview your wedding thank you cards.
-        </p>
       </section>
     </div>
   );

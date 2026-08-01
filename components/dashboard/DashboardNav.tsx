@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LogoutButton from "../../components/admin/LogoutButton";
 
 const navItems = [
   { href: "/dashboard", label: "Overview" },
@@ -13,7 +14,15 @@ const navItems = [
   { href: "/dashboard/thankyoucard", label: "Thankyou Card" },
 ];
 
-export default function DashboardNav() {
+type DashboardNavProps = {
+  admin: {
+    id: string;
+    email: string;
+    role: string;
+  } | null;
+};
+
+export default function DashboardNav({ admin }: DashboardNavProps) {
   const pathname = usePathname();
 
   return (
@@ -50,10 +59,14 @@ export default function DashboardNav() {
           })}
         </nav>
 
-        <div className="min-w-[180px] text-right">
-          <span className="inline-flex rounded-full border border-[#eadfce] bg-[#fcf8f3] px-4 py-2 text-sm font-medium text-[#6f5f51]">
-            Couple Dashboard
-          </span>
+        <div className="hidden min-w-[220px] items-center justify-end gap-3 md:flex">
+          <div className="text-right">
+            <p className="text-sm font-medium text-[#2f2a24]">
+              {admin?.email || "Admin"}
+            </p>
+          </div>
+
+          <LogoutButton />
         </div>
       </div>
 
@@ -77,6 +90,19 @@ export default function DashboardNav() {
             </Link>
           );
         })}
+      </div>
+
+      <div className="mx-auto flex items-center justify-between gap-3 px-6 pb-4 md:hidden">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[#b08d57]">
+            Logged in as
+          </p>
+          <p className="text-sm font-medium text-[#2f2a24]">
+            {admin?.email || "Admin"}
+          </p>
+        </div>
+
+        <LogoutButton />
       </div>
     </header>
   );
