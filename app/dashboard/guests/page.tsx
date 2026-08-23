@@ -92,16 +92,16 @@ export default function GuestsPage() {
   };
 
   const totals = useMemo(() => {
-    const totalGuests = guests.length;
+    const totalGuests = guests.reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
     const attending = guests.filter(
       (guest) => guest.rsvpStatus === "attending"
-    ).length;
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
     const declined = guests.filter(
       (guest) => guest.rsvpStatus === "declined"
-    ).length;
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
     const invited = guests.filter(
       (guest) => !guest.rsvpStatus || guest.rsvpStatus === "invited"
-    ).length;
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
 
     return { totalGuests, attending, declined, invited };
   }, [guests]);

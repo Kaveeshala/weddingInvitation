@@ -117,6 +117,7 @@ export default function GuestListTable({
             type="button"
             variant={sideFilter === "all" ? "default" : "outline"}
             onClick={() => setSideFilter("all")}
+            className="cursor-pointer"
           >
             All
           </Button>
@@ -125,6 +126,7 @@ export default function GuestListTable({
             type="button"
             variant={sideFilter === "bride" ? "default" : "outline"}
             onClick={() => setSideFilter("bride")}
+            className="cursor-pointer"
           >
             Bride Side
           </Button>
@@ -133,6 +135,7 @@ export default function GuestListTable({
             type="button"
             variant={sideFilter === "groom" ? "default" : "outline"}
             onClick={() => setSideFilter("groom")}
+            className="cursor-pointer"
           >
             Groom Side
           </Button>
@@ -147,7 +150,7 @@ export default function GuestListTable({
             className="w-full max-w-sm rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
           />
 
-          <Button type="button" onClick={onAddGuest}>
+          <Button type="button" onClick={onAddGuest} className="cursor-pointer">
             Add Guest
           </Button>
         </div>
@@ -253,6 +256,7 @@ export default function GuestListTable({
                           type="button"
                           variant="outline"
                           onClick={() => copyInviteLink(guest.token, guest._id)}
+                          className="cursor-pointer"
                         >
                           {copiedId === guest._id ? "Copied" : "Copy Link"}
                         </Button>
@@ -262,6 +266,7 @@ export default function GuestListTable({
                           variant="destructive"
                           onClick={() => handleDelete(guest._id)}
                           disabled={deletingId === guest._id}
+                          className="cursor-pointer"
                         >
                           {deletingId === guest._id ? "Deleting..." : "Delete"}
                         </Button>

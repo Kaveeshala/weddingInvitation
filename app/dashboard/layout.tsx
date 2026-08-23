@@ -10,7 +10,7 @@ export default async function DashboardLayout({
   const admin = await requireAdmin();
 
   return (
-    <div className="min-h-screen bg-[#f8f3ec]">
+    <div className="min-h-screen bg-[#F9F6F0]">
       <DashboardNav admin={admin} />
 
       <main className="mx-auto max-w-7xl px-6 py-8">

@@ -37,6 +37,9 @@ export default function BudgetPage() {
   const [itemForms, setItemForms] = useState<
     Record<string, { name: string; price: string }>
   >({});
+  
+  const [editingItem, setEditingItem] = useState<{ categoryId: string; itemId: string } | null>(null);
+  const [editItemForm, setEditItemForm] = useState({ name: "", price: "" });
 
   const fetchBudget = async () => {
     try {
@@ -183,6 +186,74 @@ export default function BudgetPage() {
     }
   };
 
+  const deleteCategory = async (categoryId: string) => {
+    if (!confirm("Are you sure you want to delete this category and all its items?")) return;
+
+    try {
+      const res = await fetch(`/api/budget/category/${categoryId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to delete category");
+      }
+
+      setMessage("Category deleted successfully.");
+      alert("Category deleted successfully!");
+      await fetchBudget();
+    } catch (error) {
+      console.error(error);
+      setMessage("Failed to delete category.");
+      alert("Failed to delete category.");
+    }
+  };
+
+  const deleteItem = async (categoryId: string, itemId: string) => {
+    if (!confirm("Are you sure you want to delete this item?")) return;
+
+    try {
+      const res = await fetch(`/api/budget/category/${categoryId}/item/${itemId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to delete item");
+
+      setMessage("Item deleted successfully.");
+      alert("Item deleted successfully!");
+      await fetchBudget();
+    } catch (error) {
+      console.error(error);
+      setMessage("Failed to delete item.");
+      alert("Failed to delete item.");
+    }
+  };
+
+  const updateItem = async (categoryId: string, itemId: string, e: FormEvent) => {
+    e.preventDefault();
+    if (!editItemForm.name.trim() || !editItemForm.price.trim()) return;
+
+    try {
+      const res = await fetch(`/api/budget/category/${categoryId}/item/${itemId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: editItemForm.name.trim(),
+          price: Number(editItemForm.price) || 0,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to update item");
+
+      setEditingItem(null);
+      setMessage("Item updated successfully.");
+      await fetchBudget();
+    } catch (error) {
+      console.error(error);
+      setMessage("Failed to update item.");
+    }
+  };
+
   return (
     <div className="space-y-8">
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -206,7 +277,7 @@ export default function BudgetPage() {
             <Button
               type="button"
               onClick={() => setEditingTarget(true)}
-              className="px-5 py-3"
+              className="px-5 py-3 cursor-pointer"
             >
               Change Target Budget
             </Button>
@@ -226,7 +297,7 @@ export default function BudgetPage() {
               className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
               placeholder="Enter target budget"
             />
-            <Button type="submit" className="px-5 py-3">
+            <Button type="submit" className="px-5 py-3 cursor-pointer">
               Save
             </Button>
             <Button
@@ -236,7 +307,7 @@ export default function BudgetPage() {
                 setEditingTarget(false);
                 setTargetInput(String(targetBudget));
               }}
-              className="px-5 py-3"
+              className="px-5 py-3 cursor-pointer"
             >
               Cancel
             </Button>
@@ -264,7 +335,7 @@ export default function BudgetPage() {
             placeholder="Add category name"
             className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
           />
-          <Button type="submit" className="px-5 py-3">
+          <Button type="submit" className="px-5 py-3 cursor-pointer">
             Add Category
           </Button>
         </form>
@@ -295,6 +366,15 @@ export default function BudgetPage() {
                       Total: Rs. {getCategoryTotal(category).toLocaleString()}
                     </p>
                   </div>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => deleteCategory(category._id)}
+                    className="text-red-500 hover:bg-red-50 hover:text-red-700 self-start sm:self-auto cursor-pointer"
+                  >
+                    Delete Category
+                  </Button>
                 </div>
 
                 <form
@@ -337,7 +417,7 @@ export default function BudgetPage() {
                     className="rounded-2xl border border-[#e7d9c8] bg-white px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
                   />
 
-                  <Button type="submit" className="px-5 py-3">
+                  <Button type="submit" className="px-5 py-3 cursor-pointer">
                     Add Item
                   </Button>
                 </form>
@@ -352,13 +432,16 @@ export default function BudgetPage() {
                         <th className="px-4 py-3 text-sm font-medium text-[#77685a]">
                           Price
                         </th>
+                        <th className="px-4 py-3 text-sm font-medium text-[#77685a] text-right">
+                          Actions
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {category.items.length === 0 ? (
                         <tr>
                           <td
-                            colSpan={2}
+                            colSpan={3}
                             className="px-4 py-6 text-sm text-[#8a7a6a]"
                           >
                             No items added yet.
@@ -367,12 +450,64 @@ export default function BudgetPage() {
                       ) : (
                         category.items.map((item) => (
                           <tr key={item._id} className="border-t border-[#f1e7da]">
-                            <td className="px-4 py-3 text-sm text-[#2f2a24]">
-                              {item.name}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-[#5f5246]">
-                              Rs. {Number(item.price).toLocaleString()}
-                            </td>
+                            {editingItem?.categoryId === category._id && editingItem?.itemId === item._id ? (
+                              <td colSpan={3} className="px-4 py-3">
+                                <form
+                                  onSubmit={(e) => updateItem(category._id, item._id, e)}
+                                  className="flex flex-wrap items-center gap-2"
+                                >
+                                  <input
+                                    type="text"
+                                    value={editItemForm.name}
+                                    onChange={(e) => setEditItemForm({ ...editItemForm, name: e.target.value })}
+                                    className="flex-1 rounded-xl border border-[#e7d9c8] px-3 py-1.5 text-sm outline-none focus:border-[#b08d57]"
+                                    required
+                                  />
+                                  <input
+                                    type="number"
+                                    step="0.01"
+                                    value={editItemForm.price}
+                                    onChange={(e) => setEditItemForm({ ...editItemForm, price: e.target.value })}
+                                    className="w-24 rounded-xl border border-[#e7d9c8] px-3 py-1.5 text-sm outline-none focus:border-[#b08d57]"
+                                    required
+                                  />
+                                  <div className="flex gap-1">
+                                    <Button type="submit" size="sm" className="h-8 cursor-pointer">Save</Button>
+                                    <Button type="button" variant="outline" size="sm" className="h-8 cursor-pointer" onClick={() => setEditingItem(null)}>Cancel</Button>
+                                  </div>
+                                </form>
+                              </td>
+                            ) : (
+                              <>
+                                <td className="px-4 py-3 text-sm text-[#2f2a24]">
+                                  {item.name}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-[#5f5246]">
+                                  Rs. {Number(item.price).toLocaleString()}
+                                </td>
+                                <td className="px-4 py-3 text-right">
+                                  <div className="flex items-center justify-end gap-4">
+                                    <button 
+                                      type="button" 
+                                      onClick={() => {
+                                        setEditingItem({ categoryId: category._id, itemId: item._id });
+                                        setEditItemForm({ name: item.name, price: String(item.price) });
+                                      }}
+                                      className="cursor-pointer text-[#b08d57] hover:text-[#8a6a42] text-sm font-medium transition"
+                                    >
+                                      Edit
+                                    </button>
+                                    <button 
+                                      type="button" 
+                                      onClick={() => deleteItem(category._id, item._id)}
+                                      className="cursor-pointer text-red-500 hover:text-red-700 text-sm font-medium transition"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </td>
+                              </>
+                            )}
                           </tr>
                         ))
                       )}

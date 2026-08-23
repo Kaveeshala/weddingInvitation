@@ -3,36 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-const stats = [
-  {
-    label: "Total Guests",
-    value: "0",
-    note: "All invited guests",
-    accent: "from-[#f5ede3] to-[#fffdf9]",
-    text: "text-[#2f2a24]",
-  },
-  {
-    label: "Attending",
-    value: "0",
-    note: "Confirmed attendees",
-    accent: "from-[#e8f4ea] to-[#f9fffa]",
-    text: "text-[#2d7a46]",
-  },
-  {
-    label: "Pending",
-    value: "0",
-    note: "Waiting for response",
-    accent: "from-[#f8f0dd] to-[#fffdf7]",
-    text: "text-[#b7791f]",
-  },
-  {
-    label: "Declined",
-    value: "0",
-    note: "Unable to attend",
-    accent: "from-[#f8e8e8] to-[#fffafb]",
-    text: "text-[#b45252]",
-  },
-];
+
 
 const quickLinks = [
   {
@@ -54,6 +25,70 @@ const quickLinks = [
 
 export default function DashboardPage() {
   const weddingDate = useMemo(() => new Date("2027-01-28T00:00:00+05:30"), []);
+
+  const [guests, setGuests] = useState<any[]>([]);
+
+  const fetchGuests = async () => {
+    try {
+      const res = await fetch("/api/guest", { cache: "no-store" });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setGuests(data.guests || []);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGuests();
+  }, []);
+
+  const totals = useMemo(() => {
+    const totalGuests = guests.reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
+    const attending = guests.filter(
+      (guest) => guest.rsvpStatus === "attending"
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
+    const declined = guests.filter(
+      (guest) => guest.rsvpStatus === "declined"
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
+    const invited = guests.filter(
+      (guest) => !guest.rsvpStatus || guest.rsvpStatus === "invited"
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
+
+    return { totalGuests, attending, declined, invited };
+  }, [guests]);
+
+  const dynamicStats = useMemo(() => [
+    {
+      label: "Total Guests",
+      value: String(totals.totalGuests),
+      note: "All invited guests",
+      accent: "from-[#f5ede3] to-[#fffdf9]",
+      text: "text-[#2f2a24]",
+    },
+    {
+      label: "Attending",
+      value: String(totals.attending),
+      note: "Confirmed attendees",
+      accent: "from-[#e8f4ea] to-[#f9fffa]",
+      text: "text-[#2d7a46]",
+    },
+    {
+      label: "Pending",
+      value: String(totals.invited),
+      note: "Waiting for response",
+      accent: "from-[#f8f0dd] to-[#fffdf7]",
+      text: "text-[#b7791f]",
+    },
+    {
+      label: "Declined",
+      value: String(totals.declined),
+      note: "Unable to attend",
+      accent: "from-[#f8e8e8] to-[#fffafb]",
+      text: "text-[#b45252]",
+    },
+  ], [totals]);
 
   const getTimeLeft = () => {
     const now = new Date().getTime();
@@ -123,7 +158,7 @@ export default function DashboardPage() {
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((item) => (
+        {dynamicStats.map((item) => (
           <div
             key={item.label}
             className={`rounded-[1.75rem] border border-[#eadfce] bg-gradient-to-br ${item.accent} p-6 shadow-sm`}
@@ -137,45 +172,39 @@ export default function DashboardPage() {
         ))}
       </section>
 
-      <section className="rounded-[1.75rem] border border-[#eadfce] bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.24em] text-[#b08d57]">
-              Wedding Countdown
-            </p>
-            <h3 className="mt-2 text-2xl font-semibold text-[#2f2a24]">
-              Counting down to 2027/01/28
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-[#76685a]">
-              Time remaining until your wedding day.
-            </p>
-          </div>
-
-          <div className="text-sm font-medium text-[#8a7a6a]">
+      <section className="py-8 my-8">
+        <div className="text-center">
+          <p className="text-[11px] uppercase tracking-[0.3em] text-[#b08d57]">
+            Counting down to the big day
+          </p>
+          <h3 className="mt-2 text-xl font-medium tracking-wide text-[#2f2a24]">
             28 January 2027
-          </div>
+          </h3>
         </div>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <CountdownCard label="Days" value={timeLeft.days} />
-          <CountdownCard label="Hours" value={timeLeft.hours} />
-          <CountdownCard label="Minutes" value={timeLeft.minutes} />
-          <CountdownCard label="Seconds" value={timeLeft.seconds} />
+        <div className="mt-10 flex items-center justify-center gap-4 sm:gap-8 md:gap-12">
+          <CountdownItem label="Days" value={timeLeft.days} />
+          <span className="pb-6 text-3xl font-light text-[#dbc7ae] sm:pb-8 sm:text-5xl">:</span>
+          <CountdownItem label="Hours" value={timeLeft.hours} />
+          <span className="pb-6 text-3xl font-light text-[#dbc7ae] sm:pb-8 sm:text-5xl">:</span>
+          <CountdownItem label="Minutes" value={timeLeft.minutes} />
+          <span className="pb-6 text-3xl font-light text-[#dbc7ae] sm:pb-8 sm:text-5xl">:</span>
+          <CountdownItem label="Seconds" value={timeLeft.seconds} />
         </div>
       </section>
     </div>
   );
 }
 
-function CountdownCard({ label, value }: { label: string; value: number }) {
+function CountdownItem({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-[1.5rem] border border-[#efe3d4] bg-gradient-to-br from-[#fffdf9] to-[#f9f3eb] p-6 text-center shadow-sm">
-      <p className="text-xs uppercase tracking-[0.22em] text-[#b08d57]">
-        {label}
-      </p>
-      <p className="mt-3 text-4xl font-semibold text-[#2f2a24]">
+    <div className="flex min-w-[3rem] flex-col items-center sm:min-w-[4rem] md:min-w-[5rem]">
+      <span className="text-4xl font-light tracking-tight text-[#2f2a24] sm:text-6xl md:text-7xl">
         {String(value).padStart(2, "0")}
-      </p>
+      </span>
+      <span className="mt-2 text-[9px] uppercase tracking-[0.2em] text-[#8a7a6a] sm:mt-4 sm:text-[11px]">
+        {label}
+      </span>
     </div>
   );
 }
