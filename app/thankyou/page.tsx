@@ -123,7 +123,7 @@ export default function ThankYouCardPage() {
                     />
                   </label>
                 )}
-              </>
+              </div>
             ) : (
               <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer hover:bg-[#f5f1eb] transition group">
                 <div className="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
