@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import * as htmlToImage from "html-to-image";
 import { Camera, Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export default function ThankYouCardPage() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -84,15 +85,32 @@ export default function ThankYouCardPage() {
           </div>
 
           {/* Bottom: Guest Upload Slot */}
-          <div className="flex-1 relative bg-[#fcfaf8] flex flex-col items-center justify-center">
+          <div className="flex-1 relative bg-[#fcfaf8] flex flex-col items-center justify-center overflow-hidden">
             {uploadedImage ? (
-              <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={uploadedImage} 
-                  alt="Guest Photo"
-                  className="object-cover w-full h-full"
-                />
+              <div className="w-full h-full cursor-move">
+                <TransformWrapper
+                  initialScale={1}
+                  minScale={0.5}
+                  maxScale={4}
+                  centerOnInit
+                >
+                  <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={uploadedImage} 
+                      alt="Guest Photo"
+                      className="object-cover w-full h-full pointer-events-none"
+                    />
+                  </TransformComponent>
+                </TransformWrapper>
+                {/* Overlay Hint */}
+                {!isGenerating && (
+                  <div className="absolute top-2 left-0 w-full flex justify-center pointer-events-none">
+                    <span className="bg-black/50 text-white text-[10px] px-3 py-1 rounded-full uppercase tracking-widest backdrop-blur-sm">
+                      Pinch & drag to adjust
+                    </span>
+                  </div>
+                )}
                 {/* Re-upload button overlaid */}
                 {!isGenerating && (
                   <label className="absolute bottom-3 right-3 bg-white/80 p-2.5 rounded-full cursor-pointer hover:bg-white shadow-sm transition">
@@ -117,7 +135,6 @@ export default function ThankYouCardPage() {
                 <input 
                   type="file" 
                   accept="image/*"
-                  capture="environment"
                   className="hidden" 
                   onChange={handleImageUpload}
                 />
