@@ -95,7 +95,7 @@ export default function AddGuestModal({
             </h3>
           </div>
 
-          <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">
+          <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer px-5 py-3 h-auto">
             Close
           </Button>
         </div>
@@ -173,11 +173,11 @@ export default function AddGuestModal({
           ) : null}
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">
+            <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer px-5 py-3 h-auto">
               Cancel
             </Button>
 
-            <Button type="submit" disabled={submitting} className="cursor-pointer">
+            <Button type="submit" disabled={submitting} className="cursor-pointer px-5 py-3 h-auto">
               {submitting ? "Adding..." : "Add Guest"}
             </Button>
           </div>
