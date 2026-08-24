@@ -41,17 +41,17 @@ export default function InvitationIntro({
               className="text-wedding-primary uppercase"
               style={{
                 fontFamily: isEn
-                  ? "var(--font-geist-sans)"
+                  ? "'Manrope', sans-serif"
                   : "var(--font-sinhala)",
                 fontSize: isEn
-                  ? "clamp(0.85rem, 2.5vw, 1.1rem)"
+                  ? "clamp(1.2rem, 3.5vw, 1.6rem)"
                   : "clamp(1rem, 2.8vw, 1.25rem)",
                 letterSpacing: isEn ? "0.22em" : "0.12em",
                 lineHeight: 1.6,
                 fontWeight: isEn ? 500 : 400,
               }}
             >
-              {isEn ? "Wedding Celebration" : "ආදරණීය විවාහ මංගල උත්සවය"}
+              {isEn ? "Wedding CELEBRATION" : "ආදරණීය විවාහ මංගල උත්සවය"}
             </motion.p>
 
             <motion.p

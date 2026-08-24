@@ -332,12 +332,12 @@ export default function RSVPSection({
           className="mt-5"
           style={{
             fontFamily: isEn
-              ? "var(--font-geist-sans)"
+              ? "'Courgette', cursive"
               : "var(--font-sinhala)",
             fontSize: "clamp(1.35rem, 3.5vw, 1.8rem)",
             color: "var(--wedding-primary)",
             fontWeight: 500,
-            letterSpacing: "0.05em",
+            letterSpacing: isEn ? "normal" : "0.05em",
           }}
         >
           {isEn ? "Isuru & Dilma" : "ඉසුරු & දිල්මා"}
