@@ -19,9 +19,8 @@ export default function InvitationIntro({
   const isEn = language === "en";
 
   return (
-    <section className="relative flex min-h-screen w-full flex-col items-center justify-between bg-wedding-bg px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-      <div className="flex w-full flex-1 items-center justify-center">
-        <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
+    <section className="relative flex min-h-screen w-full flex-col items-center justify-center bg-wedding-bg px-4 py-10 sm:px-6 sm:py-14 lg:px-8 pb-[10vh]">
+      <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
@@ -120,10 +119,9 @@ export default function InvitationIntro({
             </motion.p>
           </motion.div>
         </div>
-      </div>
 
       <motion.div
-        className="mt-12 mb-4 flex flex-col items-center gap-3"
+        className="mt-12 sm:mt-16 flex flex-col items-center gap-3"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.0, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
