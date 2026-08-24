@@ -50,9 +50,9 @@ export default function InvitationHeroCard({
               <span
                 style={{
                   fontFamily: "'Courgette', cursive",
-                  fontSize: "clamp(1.5rem, 4vw, 2rem)",
+                  fontSize: "clamp(2rem, 6vw, 3rem)",
                   color: "var(--wedding-primary)",
-                  fontWeight: 400,
+                  fontWeight: 700,
                 }}
               >
                 Wedding Invitation
