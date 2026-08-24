@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useLanguage } from "./InvitationLanguageContext";
 
 interface LiveLocationSectionProps {
@@ -67,22 +68,18 @@ export default function LiveLocationSection({
           {isEn ? "Udugampola, Gampaha" : "උඩුගම්පොළ, ගම්පහ"}
         </p>
 
-        <p
-          className="mt-4 max-w-md text-wedding-muted"
-          style={{
-            fontFamily: isEn
-              ? "var(--font-geist-sans)"
-              : "var(--font-sinhala)",
-            fontSize: isEn
-              ? "clamp(0.85rem, 2vw, 0.95rem)"
-              : "clamp(0.9rem, 2.1vw, 1rem)",
-            lineHeight: 1.9,
-          }}
-        >
-          {isEn
-            ? "View the wedding venue location below."
-            : "උත්සව ශාලාවේ ස්ථානය පහතින් බලන්න."}
-        </p>
+        <div className="mt-8 mb-4 w-full max-w-sm overflow-hidden rounded-xl shadow-lg border border-wedding-accent/20 relative h-64">
+          <iframe
+            src="https://maps.google.com/maps?q=Royal%20Arcade,%20Udugampola,%20Gampaha&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen={false}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Wedding Venue Location"
+          ></iframe>
+        </div>
 
         <motion.a
           href={mapUrl}

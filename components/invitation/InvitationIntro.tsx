@@ -7,20 +7,27 @@ import { useLanguage } from "./InvitationLanguageContext";
 
 interface InvitationIntroProps {
   invitePath?: string;
+  onOpen?: () => void;
 }
 
 const MotionButton = motion(Button);
 
 export default function InvitationIntro({
   invitePath = "/invitation",
+  onOpen,
 }: InvitationIntroProps) {
   const router = useRouter();
   const { language } = useLanguage();
   const isEn = language === "en";
 
   return (
-    <section className="relative flex min-h-screen w-full flex-col items-center justify-center bg-wedding-bg px-4 py-10 sm:px-6 sm:py-14 lg:px-8 pb-[10vh]">
-      <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
+    <section 
+      className="relative flex min-h-screen w-full flex-col items-center justify-center bg-wedding-bg px-4 py-10 sm:px-6 sm:py-14 lg:px-8 pb-[10vh] bg-[url('/images/bgimagefirst.jpeg')] bg-cover bg-center bg-no-repeat"
+    >
+      {/* Optional overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/20 z-0"></div>
+      
+      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center text-center">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
@@ -121,7 +128,7 @@ export default function InvitationIntro({
         </div>
 
       <motion.div
-        className="mt-12 sm:mt-16 flex flex-col items-center gap-3"
+        className="relative z-10 mt-12 sm:mt-16 flex flex-col items-center gap-3"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.0, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -144,7 +151,13 @@ export default function InvitationIntro({
         <MotionButton
           id="open-invitation-btn"
           type="button"
-          onClick={() => router.push(invitePath)}
+          onClick={() => {
+            if (onOpen) {
+              onOpen();
+            } else {
+              router.push(invitePath);
+            }
+          }}
           aria-label={isEn ? "Open Invitation" : "ආරාධනාව විවෘත කරන්න"}
           className="relative overflow-hidden rounded-full px-12 py-7 text-white shadow-none hover:opacity-95"
           style={{
