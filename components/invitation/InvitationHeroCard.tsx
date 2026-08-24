@@ -49,23 +49,14 @@ export default function InvitationHeroCard({
             >
               <span
                 style={{
-                  fontFamily: "var(--font-geist-sans)",
-                  fontSize: "clamp(0.75rem, 2vw, 0.9rem)",
-                  letterSpacing: "0.4em",
+                  fontFamily: "'Courgette', cursive",
+                  fontSize: "clamp(1.5rem, 4vw, 2rem)",
                   color: "var(--wedding-primary)",
-                  textTransform: "uppercase",
-                  fontWeight: 500,
+                  fontWeight: 400,
                 }}
               >
                 Wedding Invitation
               </span>
-              <div
-                className="h-[1.5px] w-24 sm:w-32 my-1"
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent, var(--wedding-primary), transparent)",
-                }}
-              />
             </motion.div>
           )}
 
@@ -252,8 +243,7 @@ export default function InvitationHeroCard({
             aria-label={isEn ? "View countdown" : "ගණන් කිරීම බලන්න"}
           >
             <div
-              className="flex flex-col items-center py-1 border-t border-b-2 double border-wedding-border px-2"
-              style={{ borderStyle: "double none double none" }}
+              className="flex flex-col items-center py-1 border-y-2 border-solid border-wedding-primary px-2"
             >
               <span
                 style={{
@@ -296,8 +286,7 @@ export default function InvitationHeroCard({
             </div>
 
             <div
-              className="flex flex-col items-center py-1 border-t border-b-2 double border-wedding-border px-2"
-              style={{ borderStyle: "double none double none" }}
+              className="flex flex-col items-center py-1 border-y-2 border-solid border-wedding-primary px-2"
             >
               <span
                 style={{
