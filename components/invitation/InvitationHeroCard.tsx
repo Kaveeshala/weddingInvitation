@@ -97,7 +97,7 @@ export default function InvitationHeroCard({
                       <>
                         Beloved daughter of
                         <br />
-                        Mr. &amp; Mrs. Mirahawatta
+                        Mr. Chaminda Mirahawatte &amp; Mrs. Jayanthi Kumari
                       </>
                     ) : (
                       <>
@@ -156,7 +156,7 @@ export default function InvitationHeroCard({
                       <>
                         Beloved son of
                         <br />
-                        Mr. &amp; Mrs. Samunaweera
+                        Mr. Ravindra Munaweera &amp; Mrs. Chandrika Bandaranaike
                       </>
                     ) : (
                       <>
