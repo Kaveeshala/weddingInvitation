@@ -86,19 +86,6 @@ export default function InvitationHeroCard({
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
-                      fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
-                      fontWeight: 500,
-                      color: "var(--wedding-heading)",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {isEn ? "Dilma" : "දිල්මා"}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: isEn
-                        ? "var(--font-geist-sans)"
-                        : "var(--font-sinhala)",
                       fontSize: isEn
                         ? "clamp(0.7rem, 1.7vw, 0.85rem)"
                         : "clamp(0.7rem, 1.8vw, 0.88rem)",
@@ -114,13 +101,26 @@ export default function InvitationHeroCard({
                       </>
                     ) : (
                       <>
-                        මිරහවත්ත මහතා සහ
+                        චමින්ද මිරහවත්ත මැතිතුමාගේ සහ
                         <br />
-                        එම මැතිණියගේ
+                        ජයන්ති කුමාරි මැතිනියගේ
                         <br />
                         ආදරණීය දියණිය
                       </>
                     )}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: isEn
+                        ? "var(--font-geist-sans)"
+                        : "var(--font-sinhala)",
+                      fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
+                      fontWeight: 500,
+                      color: "var(--wedding-heading)",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {isEn ? "Dilma" : "දිල්මා"}
                   </p>
                 </div>
 
@@ -145,19 +145,6 @@ export default function InvitationHeroCard({
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
-                      fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
-                      fontWeight: 500,
-                      color: "var(--wedding-heading)",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {isEn ? "Isuru" : "ඉසුරු"}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: isEn
-                        ? "var(--font-geist-sans)"
-                        : "var(--font-sinhala)",
                       fontSize: isEn
                         ? "clamp(0.7rem, 1.7vw, 0.85rem)"
                         : "clamp(0.7rem, 1.8vw, 0.88rem)",
@@ -173,13 +160,26 @@ export default function InvitationHeroCard({
                       </>
                     ) : (
                       <>
-                        සමුනවීර මහතා සහ
+                        රවීන්ද්ර මුණවීර මැතිතුමාගේ සහ
                         <br />
-                        එම මැතිණියගේ
+                        චන්ද්රිකා බණ්ඩාරනායක මැතිනියගේ
                         <br />
-                        ආදරණීය පුතණුවන්
+                        ආදරණීය පුතනුවන්
                       </>
                     )}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: isEn
+                        ? "var(--font-geist-sans)"
+                        : "var(--font-sinhala)",
+                      fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
+                      fontWeight: 500,
+                      color: "var(--wedding-heading)",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {isEn ? "Isuru" : "ඉසුරු"}
                   </p>
                 </div>
               </motion.div>

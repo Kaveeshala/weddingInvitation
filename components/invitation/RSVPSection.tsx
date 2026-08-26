@@ -342,6 +342,19 @@ export default function RSVPSection({
         >
           {isEn ? "Isuru & Dilma" : "ඉසුරු & දිල්මා"}
         </p>
+        
+        <p
+          className="mt-3 text-center"
+          style={{
+            fontFamily: "var(--font-geist-sans)",
+            fontSize: "clamp(0.85rem, 2vw, 0.95rem)",
+            color: "var(--wedding-muted)",
+            letterSpacing: "0.08em",
+          }}
+        >
+          {isEn ? "Contact: " : "අමතන්න: "}
+          0701299542 | 0767896996 | 0752813417
+        </p>
       </motion.footer>
     </>
   );
