@@ -22,9 +22,9 @@ export default function InvitationHeroCard({
   return (
     <section className="relative w-full">
       {/* Full Screen Background Image */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-[#fdfbf7]">
         <div 
-          className="sticky top-0 w-full h-screen bg-[length:100%_100%] sm:bg-cover bg-center bg-no-repeat" 
+          className="sticky top-0 w-full h-screen bg-[length:100%_100%] md:bg-contain bg-center bg-no-repeat" 
           style={{ backgroundImage: "url('/images/card-bg.jpeg')" }} 
         />
       </div>
@@ -205,7 +205,7 @@ export default function InvitationHeroCard({
               </motion.p>
 
               <motion.div
-                className="mt-6 w-full max-w-xl mx-auto text-center"
+                className="mt-2 w-full max-w-xl mx-auto text-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
@@ -224,7 +224,7 @@ export default function InvitationHeroCard({
               </motion.div>
 
               <motion.p
-                className="mt-6 text-wedding-heading"
+                className="mt-2 text-wedding-heading"
                 style={{
                   fontFamily: isEn
                     ? "var(--font-geist-sans)"
@@ -247,7 +247,7 @@ export default function InvitationHeroCard({
               <motion.button
                 id="date-block"
                 onClick={() => scrollTo("countdown-section")}
-                className="mt-8 flex items-center justify-center gap-6 cursor-pointer group focus:outline-none"
+                className="mt-4 flex items-center justify-center gap-6 cursor-pointer group focus:outline-none"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.75, duration: 0.7 }}
