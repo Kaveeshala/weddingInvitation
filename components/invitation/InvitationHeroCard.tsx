@@ -359,7 +359,7 @@ export default function InvitationHeroCard({
               <motion.button
                 type="button"
                 onClick={() => scrollTo("location-section")}
-                className="mt-8 flex flex-col items-center cursor-pointer group focus:outline-none"
+                className="mt-4 flex flex-col items-center cursor-pointer group focus:outline-none"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9, duration: 0.7 }}
