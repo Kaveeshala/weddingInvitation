@@ -47,7 +47,7 @@ export default function InvitationHeroCard({
                   key="sinhala-topic-img"
                   src="/images/texts/topic2.png"
                   alt="විවාහ මංගල ආරාධනාව"
-                  className="w-45 sm:w-65 md:w-[320px] h-auto object-contain"
+                  className="w-45 sm:w-65 md:w-[320px] h-auto object-contain -mt-16 sm:-mt-24 mb-4 sm:mb-8"
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.7 }}
@@ -58,7 +58,7 @@ export default function InvitationHeroCard({
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.7 }}
-                  className="flex flex-col items-center gap-1.5"
+                  className="flex flex-col items-center gap-1.5 -mt-16 sm:-mt-24 mb-4 sm:mb-8"
                 >
                   <span
                     style={{
