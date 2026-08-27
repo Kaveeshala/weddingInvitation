@@ -25,7 +25,7 @@ export default function InvitationHeroCard({
       <div className="absolute inset-0 z-0 bg-[#fdfbf7]">
         <div 
           className="sticky top-0 w-full h-dvh md:h-screen bg-size-[100%_100%] md:bg-contain bg-center bg-no-repeat" 
-          style={{ backgroundImage: "url('/images/inivtation-bg-image.jpeg')" }} 
+          style={{ backgroundImage: "url('/images/invitation-card-bg-image.jpeg')" }} 
         />
       </div>
 

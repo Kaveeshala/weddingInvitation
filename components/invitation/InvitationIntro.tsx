@@ -22,10 +22,10 @@ export default function InvitationIntro({
 
   return (
     <section 
-      className="relative flex min-h-screen w-full flex-col items-center justify-center bg-wedding-bg px-4 py-10 sm:px-6 sm:py-14 lg:px-8 pb-[10vh] bg-[url('/images/bgimagefirst.jpeg')] bg-cover bg-center bg-no-repeat"
+      className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center bg-wedding-bg px-4 py-10 sm:px-6 sm:py-14 lg:px-8 pb-[10vh] bg-[url('/images/first-bg-image.jpeg')] bg-cover bg-center bg-no-repeat overflow-hidden"
     >
-      {/* Optional overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/20 z-0"></div>
+      {/* Blurred overlay extended off-screen to hide blur halo/space at the edges */}
+      <div className="absolute inset-[-30px] backdrop-blur-[6px] bg-black/20 z-0"></div>
       
       <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center text-center">
           <motion.div
@@ -38,7 +38,7 @@ export default function InvitationIntro({
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05, duration: 0.7 }}
-              className="text-wedding-primary uppercase"
+              className="text-white uppercase"
               style={{
                 fontFamily: isEn
                   ? "'Manrope', sans-serif"
@@ -58,7 +58,7 @@ export default function InvitationIntro({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25, duration: 0.75 }}
-              className="mt-10 text-wedding-heading"
+              className="mt-10 text-white"
               style={{
                 fontFamily: isEn
                   ? "var(--font-geist-sans)"
@@ -76,7 +76,7 @@ export default function InvitationIntro({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35, duration: 0.75 }}
-              className="mt-3 text-wedding-primary"
+              className="mt-3 text-white"
               style={{
                 fontFamily: "var(--font-geist-sans)",
                 fontSize: "clamp(2rem, 5vw, 2.8rem)",
@@ -90,7 +90,7 @@ export default function InvitationIntro({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45, duration: 0.75 }}
-              className="mt-3 text-wedding-heading"
+              className="mt-3 text-white"
               style={{
                 fontFamily: isEn
                   ? "var(--font-geist-sans)"
@@ -108,7 +108,7 @@ export default function InvitationIntro({
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.64, duration: 0.7 }}
-              className="mt-8 max-w-2xl text-wedding-muted"
+              className="mt-8 max-w-2xl text-white"
               style={{
                 fontFamily: isEn
                   ? "var(--font-geist-sans)"
@@ -134,7 +134,7 @@ export default function InvitationIntro({
         transition={{ delay: 1.0, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <motion.p
-          className="text-wedding-muted text-xs tracking-widest uppercase"
+          className="text-white text-xs tracking-widest uppercase"
           style={{
             fontFamily: isEn
               ? "var(--font-geist-sans)"
