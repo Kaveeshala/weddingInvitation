@@ -22,9 +22,9 @@ export default function InvitationHeroCard({
   return (
     <section className="relative w-full">
       {/* Full Screen Background Image */}
-      <div className="absolute inset-0 z-0 bg-[#fdfbf7]">
+      <div className="absolute inset-0 z-0 bg-[#fdfbf7] overflow-hidden">
         <div 
-          className="sticky top-0 w-full h-dvh md:h-screen bg-size-[100%_100%] md:bg-contain bg-center bg-no-repeat" 
+          className="sticky top-0 w-full h-dvh md:h-screen bg-size-[100%_100%] md:bg-contain bg-center bg-no-repeat scale-105 sm:scale-[1.08]" 
           style={{ backgroundImage: "url('/images/invitation-card-bg-image.jpeg')" }} 
         />
       </div>
@@ -37,17 +37,17 @@ export default function InvitationHeroCard({
           className="flex flex-col items-center text-center"
         >
           {/* CONTENT CONTAINER */}
-          <div className="relative w-full flex flex-col items-center justify-center min-h-screen">
+          <div className="relative w-full flex flex-col items-center justify-start min-h-screen pt-[6vh] sm:pt-[8vh]">
             
             {/* Content Wrapper */}
-            <div className="relative z-10 px-2 sm:px-8 py-8 flex flex-col items-center text-center w-full">
+            <div className="relative z-10 px-2 sm:px-8 pb-8 flex flex-col items-center text-center w-full">
               {/* Header image switcher */}
               {!isEn ? (
                 <motion.img
                   key="sinhala-topic-img"
                   src="/images/texts/topic2.png"
                   alt="විවාහ මංගල ආරාධනාව"
-                  className="w-45 sm:w-65 md:w-[320px] h-auto object-contain -mt-16 sm:-mt-24 mb-4 sm:mb-8"
+                  className="w-36 sm:w-48 md:w-[260px] h-auto object-contain mb-8 sm:mb-12 z-20"
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.7 }}
@@ -58,12 +58,12 @@ export default function InvitationHeroCard({
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.7 }}
-                  className="flex flex-col items-center gap-1.5 -mt-16 sm:-mt-24 mb-4 sm:mb-8"
+                  className="flex flex-col items-center gap-1.5 w-full mb-8 sm:mb-12 z-20"
                 >
                   <span
                     style={{
                       fontFamily: "'Courgette', cursive",
-                      fontSize: "clamp(1.6rem, 5vw, 3rem)",
+                      fontSize: "clamp(1.3rem, 4vw, 2.4rem)",
                       color: "var(--wedding-primary)",
                       fontWeight: 700,
                       lineHeight: 1.2,
@@ -75,7 +75,7 @@ export default function InvitationHeroCard({
               )}
 
               <motion.div
-                className="mt-6 sm:mt-10 w-full grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-6 md:gap-8"
+                className="mt-0 sm:mt-2 w-full grid grid-cols-[1fr_auto_1fr] items-start gap-2 sm:gap-6 md:gap-8"
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
@@ -88,9 +88,9 @@ export default function InvitationHeroCard({
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
                       fontSize: isEn
-                        ? "clamp(0.55rem, 1.4vw, 0.85rem)"
-                        : "clamp(0.55rem, 1.5vw, 0.88rem)",
-                      lineHeight: isEn ? 1.4 : 1.8,
+                        ? "clamp(0.48rem, 1vw, 0.65rem)"
+                        : "clamp(0.48rem, 1.1vw, 0.68rem)",
+                      lineHeight: isEn ? 1.15 : 1.4,
                       color: "var(--wedding-muted)",
                     }}
                   >
@@ -98,13 +98,31 @@ export default function InvitationHeroCard({
                       <>
                         Beloved daughter of
                         <br />
-                        Mr. Chaminda Mirahawatte &amp; Mrs. Jayanthi Kumari
+                        Mr.
+                        <br />
+                        Chaminda
+                        <br />
+                        Mirahawatte
+                        <br />
+                        &amp;
+                        <br />
+                        Mrs.
+                        <br />
+                        Jayanthi Kumari
                       </>
                     ) : (
                       <>
-                        චමින්ද මිරහවත්ත මැතිතුමාගේ සහ
+                        චමින්ද
                         <br />
-                        ජයන්ති කුමාරි මැතිනියගේ
+                        මිරහවත්ත
+                        <br />
+                        මැතිතුමාගේ
+                        <br />
+                        සහ
+                        <br />
+                        ජයන්ති කුමාරි
+                        <br />
+                        මැතිනියගේ
                         <br />
                         ආදරණීය දියණිය
                       </>
@@ -115,7 +133,7 @@ export default function InvitationHeroCard({
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
-                      fontSize: "clamp(1rem, 3.5vw, 2.2rem)",
+                      fontSize: "clamp(1rem, 3.2vw, 1.5rem)",
                       fontWeight: 500,
                       color: "var(--wedding-heading)",
                       letterSpacing: "0.04em",
@@ -126,7 +144,7 @@ export default function InvitationHeroCard({
                 </div>
 
                 {/* Couple photo */}
-                <div className="flex justify-center z-10 px-1">
+                <div className="flex justify-center z-10 px-1 self-center mt-4 sm:mt-8">
                   <div
                     className="rounded-[30px] sm:rounded-[50px] overflow-hidden border-[3px] sm:border-4 border-wedding-highlight shadow-[0_8px_30px_rgba(124,92,61,0.18)] bg-wedding-surface w-16.25 h-21.25 sm:w-22.5 sm:h-29 md:w-27.5 md:h-35.5 transition-all duration-300"
                   >
@@ -146,9 +164,9 @@ export default function InvitationHeroCard({
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
                       fontSize: isEn
-                        ? "clamp(0.55rem, 1.4vw, 0.85rem)"
-                        : "clamp(0.55rem, 1.5vw, 0.88rem)",
-                      lineHeight: isEn ? 1.4 : 1.8,
+                        ? "clamp(0.48rem, 1vw, 0.65rem)"
+                        : "clamp(0.48rem, 1.1vw, 0.68rem)",
+                      lineHeight: isEn ? 1.15 : 1.4,
                       color: "var(--wedding-muted)",
                     }}
                   >
@@ -156,13 +174,31 @@ export default function InvitationHeroCard({
                       <>
                         Beloved son of
                         <br />
-                        Mr. Ravindra Munaweera &amp; Mrs. Chandrika Bandaranaike
+                        Mr.
+                        <br />
+                        Ravindra
+                        <br />
+                        Munaweera
+                        <br />
+                        &amp;
+                        <br />
+                        Mrs.
+                        <br />
+                        Chandrika Bandaranaike
                       </>
                     ) : (
                       <>
-                        රවීන්ද්ර මුණවීර මැතිතුමාගේ සහ
+                        රවීන්ද්ර
                         <br />
-                        චන්ද්රිකා බණ්ඩාරනායක මැතිනියගේ
+                        මුණවීර
+                        <br />
+                        මැතිතුමාගේ
+                        <br />
+                        සහ
+                        <br />
+                        චන්ද්රිකා බණ්ඩාරනායක
+                        <br />
+                        මැතිනියගේ
                         <br />
                         ආදරණීය පුතනුවන්
                       </>
@@ -173,7 +209,7 @@ export default function InvitationHeroCard({
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
-                      fontSize: "clamp(1rem, 3.5vw, 2.2rem)",
+                      fontSize: "clamp(1rem, 3.2vw, 1.5rem)",
                       fontWeight: 500,
                       color: "var(--wedding-heading)",
                       letterSpacing: "0.04em",
