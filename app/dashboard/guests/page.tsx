@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import AddGuestModal from "@/components/dashboard/AddGuestModal";
+import EditGuestModal from "@/components/dashboard/EditGuestModal";
 import GuestListTable, { Guest } from "@/components/dashboard/GuestListTable";
 import StatsCard from "@/components/dashboard/StatsCard";
 
@@ -16,6 +17,8 @@ export default function GuestsPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [guestToEdit, setGuestToEdit] = useState<Guest | null>(null);
 
   const fetchGuests = async () => {
     try {
@@ -41,6 +44,11 @@ export default function GuestsPage() {
   useEffect(() => {
     fetchGuests();
   }, []);
+
+  const handleEditGuest = (guest: Guest) => {
+    setGuestToEdit(guest);
+    setIsEditModalOpen(true);
+  };
 
   const handleDeleteGuest = async (guestId: string) => {
     try {
@@ -125,6 +133,7 @@ export default function GuestsPage() {
         onAddGuest={() => setIsModalOpen(true)}
         onDeleteGuest={handleDeleteGuest}
         onUpdateStatus={handleUpdateStatus}
+        onEditGuest={handleEditGuest}
         onErrorMessage={setMessage}
       />
 
@@ -132,6 +141,18 @@ export default function GuestsPage() {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onGuestAdded={fetchGuests}
+        onSuccessMessage={setMessage}
+        onErrorMessage={setMessage}
+      />
+
+      <EditGuestModal
+        open={isEditModalOpen}
+        guest={guestToEdit}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setGuestToEdit(null);
+        }}
+        onGuestUpdated={fetchGuests}
         onSuccessMessage={setMessage}
         onErrorMessage={setMessage}
       />

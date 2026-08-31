@@ -1,39 +1,50 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Guest } from "./GuestListTable";
 
-type AddGuestModalProps = {
+type EditGuestModalProps = {
   open: boolean;
+  guest: Guest | null;
   onClose: () => void;
-  onGuestAdded?: () => Promise<void> | void;
+  onGuestUpdated?: () => Promise<void> | void;
   onSuccessMessage?: (message: string) => void;
   onErrorMessage?: (message: string) => void;
 };
 
-type CreateGuestResponse = {
+type UpdateGuestResponse = {
   success: boolean;
   message?: string;
 };
 
-const initialForm = {
-  name: "",
-  partySize: 1,
-  side: "bride" as "bride" | "groom" | "both",
-};
-
-export default function AddGuestModal({
+export default function EditGuestModal({
   open,
+  guest,
   onClose,
-  onGuestAdded,
+  onGuestUpdated,
   onSuccessMessage,
   onErrorMessage,
-}: AddGuestModalProps) {
-  const [form, setForm] = useState(initialForm);
+}: EditGuestModalProps) {
+  const [form, setForm] = useState({
+    name: "",
+    partySize: 1,
+    side: "bride" as "bride" | "groom" | "both",
+  });
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
-  if (!open) return null;
+  useEffect(() => {
+    if (guest) {
+      setForm({
+        name: guest.name,
+        partySize: guest.partySize || 1,
+        side: guest.side || "bride",
+      });
+    }
+  }, [guest]);
+
+  if (!open || !guest) return null;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,27 +67,26 @@ export default function AddGuestModal({
         side: form.side,
       };
 
-      const res = await fetch("/api/guest", {
-        method: "POST",
+      const res = await fetch(`/api/guest/${guest._id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
 
-      const data: CreateGuestResponse = await res.json();
+      const data: UpdateGuestResponse = await res.json();
 
       if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to create guest");
+        throw new Error(data.message || "Failed to update guest");
       }
 
-      setForm(initialForm);
-      onSuccessMessage?.("Guest added successfully.");
-      await onGuestAdded?.();
+      onSuccessMessage?.("Guest updated successfully.");
+      await onGuestUpdated?.();
       onClose();
     } catch (error) {
       console.error(error);
-      onErrorMessage?.("Failed to add guest.");
+      onErrorMessage?.("Failed to update guest.");
     } finally {
       setSubmitting(false);
     }
@@ -88,10 +98,10 @@ export default function AddGuestModal({
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.24em] text-[#b08d57]">
-              Add Guest
+              Edit Guest
             </p>
             <h3 className="mt-2 text-2xl font-semibold text-[#2f2a24]">
-              Create a new guest
+              Update guest details
             </h3>
           </div>
 
@@ -103,13 +113,13 @@ export default function AddGuestModal({
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
             <label
-              htmlFor="name"
+              htmlFor="edit-name"
               className="mb-2 block text-sm font-medium text-[#5f5246]"
             >
               Guest name
             </label>
             <input
-              id="name"
+              id="edit-name"
               type="text"
               value={form.name}
               onChange={(e) =>
@@ -123,13 +133,13 @@ export default function AddGuestModal({
 
           <div>
             <label
-              htmlFor="side"
+              htmlFor="edit-side"
               className="mb-2 block text-sm font-medium text-[#5f5246]"
             >
               Guest side
             </label>
             <select
-              id="side"
+              id="edit-side"
               value={form.side}
               onChange={(e) =>
                 setForm((prev) => ({
@@ -148,13 +158,13 @@ export default function AddGuestModal({
 
           <div>
             <label
-              htmlFor="partySize"
+              htmlFor="edit-partySize"
               className="mb-2 block text-sm font-medium text-[#5f5246]"
             >
               Party size
             </label>
             <input
-              id="partySize"
+              id="edit-partySize"
               type="number"
               min={1}
               value={form.partySize}
@@ -179,7 +189,7 @@ export default function AddGuestModal({
             </Button>
 
             <Button type="submit" disabled={submitting} className="cursor-pointer px-5 py-3 h-auto">
-              {submitting ? "Adding..." : "Add Guest"}
+              {submitting ? "Updating..." : "Update Guest"}
             </Button>
           </div>
         </form>

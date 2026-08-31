@@ -11,21 +11,30 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await req.json();
-    const { rsvpStatus } = body;
+    const { rsvpStatus, name, partySize, side } = body;
 
-    if (!["default", "invited", "attending", "declined"].includes(rsvpStatus)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid RSVP status",
-        },
-        { status: 400 }
-      );
+    const updateData: any = {};
+
+    if (rsvpStatus !== undefined) {
+      if (!["default", "invited", "attending", "declined"].includes(rsvpStatus)) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Invalid RSVP status",
+          },
+          { status: 400 }
+        );
+      }
+      updateData.rsvpStatus = rsvpStatus;
     }
+
+    if (name !== undefined) updateData.name = name;
+    if (partySize !== undefined) updateData.partySize = partySize;
+    if (side !== undefined) updateData.side = side;
 
     const updatedGuest = await Guest.findByIdAndUpdate(
       id,
-      { rsvpStatus },
+      updateData,
       { new: true, runValidators: true }
     );
 

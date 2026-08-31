@@ -53,11 +53,11 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!side || !["bride", "groom"].includes(side)) {
+    if (!side || !["bride", "groom", "both"].includes(side)) {
       return NextResponse.json(
         {
           success: false,
-          message: "Guest side is required",
+          message: "Guest side must be bride, groom, or both",
         },
         { status: 400 }
       );

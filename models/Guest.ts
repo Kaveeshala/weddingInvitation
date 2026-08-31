@@ -21,8 +21,8 @@ const GuestSchema = new Schema(
     side: {
       type: String,
       enum: {
-        values: ["bride", "groom"],
-        message: "Guest side must be bride or groom",
+        values: ["bride", "groom", "both"],
+        message: "Guest side must be bride, groom, or both",
       },
       required: [true, "Guest side is required"],
     },
@@ -50,6 +50,10 @@ const GuestSchema = new Schema(
   }
 );
 
-const Guest = models.Guest || model("Guest", GuestSchema);
+if (models.Guest) {
+  delete models.Guest;
+}
+
+const Guest = model("Guest", GuestSchema);
 
 export default Guest;

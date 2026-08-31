@@ -8,7 +8,7 @@ export type Guest = {
   name: string;
   token: string;
   partySize?: number;
-  side?: "bride" | "groom";
+  side?: "bride" | "groom" | "both";
   rsvpStatus?: "default" | "invited" | "attending" | "declined";
 };
 
@@ -21,6 +21,7 @@ type GuestListTableProps = {
     guestId: string,
     status: "default" | "invited" | "attending" | "declined"
   ) => Promise<void> | void;
+  onEditGuest: (guest: Guest) => void;
   onErrorMessage?: (message: string) => void;
 };
 
@@ -30,10 +31,11 @@ export default function GuestListTable({
   onAddGuest,
   onDeleteGuest,
   onUpdateStatus,
+  onEditGuest,
   onErrorMessage,
 }: GuestListTableProps) {
   const [search, setSearch] = useState("");
-  const [sideFilter, setSideFilter] = useState<"all" | "bride" | "groom">(
+  const [sideFilter, setSideFilter] = useState<"all" | "bride" | "groom" | "both">(
     "all"
   );
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -139,6 +141,15 @@ export default function GuestListTable({
           >
             Groom Side
           </Button>
+
+          <Button
+            type="button"
+            variant={sideFilter === "both" ? "default" : "outline"}
+            onClick={() => setSideFilter("both")}
+            className="cursor-pointer px-5 py-3 h-auto text-sm"
+          >
+            Both Sides
+          </Button>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -156,7 +167,8 @@ export default function GuestListTable({
         </div>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-[#efe3d4]">
+      {/* Desktop Table View */}
+      <div className="mt-6 hidden lg:block overflow-hidden rounded-[1.5rem] border border-[#efe3d4]">
         <div className="overflow-x-auto">
           <table className="min-w-full border-collapse">
             <thead className="bg-[#fcf7f0]">
@@ -263,6 +275,15 @@ export default function GuestListTable({
 
                         <Button
                           type="button"
+                          variant="secondary"
+                          onClick={() => onEditGuest(guest)}
+                          className="cursor-pointer px-4 py-2 h-auto"
+                        >
+                          Edit
+                        </Button>
+
+                        <Button
+                          type="button"
                           variant="destructive"
                           onClick={() => handleDelete(guest._id)}
                           disabled={deletingId === guest._id}
@@ -278,6 +299,96 @@ export default function GuestListTable({
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="mt-6 flex flex-col gap-4 lg:hidden">
+        {loading ? (
+          <div className="rounded-[1.5rem] border border-[#efe3d4] bg-white px-4 py-10 text-center text-sm text-[#8a7a6a]">
+            Loading guests...
+          </div>
+        ) : filteredGuests.length === 0 ? (
+          <div className="rounded-[1.5rem] border border-[#efe3d4] bg-white px-4 py-10 text-center text-sm text-[#8a7a6a]">
+            No guests found.
+          </div>
+        ) : (
+          filteredGuests.map((guest) => (
+            <div
+              key={guest._id}
+              className="rounded-[1.5rem] border border-[#efe3d4] bg-white p-5 shadow-sm flex flex-col gap-4"
+            >
+              <div className="flex justify-between items-start gap-4">
+                <div>
+                  <h4 className="font-medium text-[#2f2a24] text-lg">
+                    {guest.name}
+                  </h4>
+                  <p className="text-sm text-[#5f5246] capitalize mt-0.5">
+                    {guest.side || "-"} Side • {guest.partySize ?? 1} Guests
+                  </p>
+                </div>
+                <select
+                  value={guest.rsvpStatus || "default"}
+                  onChange={(e) =>
+                    handleStatusChange(
+                      guest._id,
+                      e.target.value as
+                        | "default"
+                        | "invited"
+                        | "attending"
+                        | "declined"
+                    )
+                  }
+                  disabled={updatingId === guest._id}
+                  className="rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-3 py-1.5 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+                >
+                  <option value="default">Default</option>
+                  <option value="invited">Invited</option>
+                  <option value="attending">Attending</option>
+                  <option value="declined">Declined</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[#8a7a6a] uppercase tracking-wider">
+                  Invite Link
+                </span>
+                <p className="truncate text-sm text-[#5f5246] bg-[#fcf7f0] p-2 rounded-lg border border-[#f1e7da]">
+                  {getInviteLink(guest.token)}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 pt-2 border-t border-[#f1e7da]">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => copyInviteLink(guest.token, guest._id)}
+                  className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
+                >
+                  {copiedId === guest._id ? "Copied" : "Copy"}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => onEditGuest(guest)}
+                  className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
+                >
+                  Edit
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={() => handleDelete(guest._id)}
+                  disabled={deletingId === guest._id}
+                  className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
+                >
+                  {deletingId === guest._id ? "..." : "Delete"}
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
