@@ -74,17 +74,22 @@ export default function RSVPsPage() {
   }, [guests, sideFilter]);
 
   const totals = useMemo(() => {
-    const yesCount = rsvpRows.filter((guest) => guest.answer === "Yes").length;
-    const noCount = rsvpRows.filter((guest) => guest.answer === "No").length;
-    const pendingCount = rsvpRows.filter(
-      (guest) => guest.answer === "Pending",
-    ).length;
+    const yesCount = rsvpRows
+      .filter((guest) => guest.answer === "Yes")
+      .reduce((acc, guest) => acc + guest.count, 0);
+    const noCount = rsvpRows
+      .filter((guest) => guest.answer === "No")
+      .reduce((acc, guest) => acc + guest.count, 0);
+    const pendingCount = rsvpRows
+      .filter((guest) => guest.answer === "Pending")
+      .reduce((acc, guest) => acc + guest.count, 0);
+    const total = rsvpRows.reduce((acc, guest) => acc + guest.count, 0);
 
     return {
       yesCount,
       noCount,
       pendingCount,
-      total: rsvpRows.length,
+      total,
     };
   }, [rsvpRows]);
 
