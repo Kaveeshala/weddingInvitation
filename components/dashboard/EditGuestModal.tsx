@@ -30,6 +30,10 @@ export default function EditGuestModal({
     name: "",
     partySize: 1,
     side: "bride" as "bride" | "groom" | "both",
+    englishGreeting: "None",
+    sinhalaGreeting: "None",
+    englishName: "",
+    sinhalaName: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
@@ -40,6 +44,10 @@ export default function EditGuestModal({
         name: guest.name,
         partySize: guest.partySize || 1,
         side: guest.side || "bride",
+        englishGreeting: guest.englishGreeting || "None",
+        sinhalaGreeting: guest.sinhalaGreeting || "None",
+        englishName: guest.englishName || "",
+        sinhalaName: guest.sinhalaName || "",
       });
     }
   }, [guest]);
@@ -65,6 +73,10 @@ export default function EditGuestModal({
         name,
         partySize,
         side: form.side,
+        englishGreeting: form.englishGreeting,
+        sinhalaGreeting: form.sinhalaGreeting,
+        englishName: form.englishName,
+        sinhalaName: form.sinhalaName,
       };
 
       const res = await fetch(`/api/guest/${guest._id}`, {
@@ -116,7 +128,7 @@ export default function EditGuestModal({
               htmlFor="edit-name"
               className="mb-2 block text-sm font-medium text-[#5f5246]"
             >
-              Guest name
+              Reference Name (For dashboard)
             </label>
             <input
               id="edit-name"
@@ -128,6 +140,44 @@ export default function EditGuestModal({
               placeholder="Mr & Mrs Fernando"
               className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
               required
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="edit-englishName"
+              className="mb-2 block text-sm font-medium text-[#5f5246]"
+            >
+              English Display Name (Optional)
+            </label>
+            <input
+              id="edit-englishName"
+              type="text"
+              value={form.englishName}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, englishName: e.target.value }))
+              }
+              placeholder="Leave empty to use Reference Name"
+              className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="edit-sinhalaName"
+              className="mb-2 block text-sm font-medium text-[#5f5246]"
+            >
+              Sinhala Display Name (Optional)
+            </label>
+            <input
+              id="edit-sinhalaName"
+              type="text"
+              value={form.sinhalaName}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, sinhalaName: e.target.value }))
+              }
+              placeholder="Leave empty to use Reference Name"
+              className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
             />
           </div>
 
@@ -177,6 +227,59 @@ export default function EditGuestModal({
               className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
               required
             />
+          </div>
+
+          <div>
+            <label
+              htmlFor="edit-englishGreeting"
+              className="mb-2 block text-sm font-medium text-[#5f5246]"
+            >
+              English Greeting
+            </label>
+            <select
+              id="edit-englishGreeting"
+              value={form.englishGreeting}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  englishGreeting: e.target.value,
+                }))
+              }
+              className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+              required
+            >
+              <option value="None">None</option>
+              <option value="Mr.">Mr.</option>
+              <option value="Ms.">Ms.</option>
+              <option value="Mr. & Mrs.">Mr. & Mrs.</option>
+              <option value="Family">Family</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="edit-sinhalaGreeting"
+              className="mb-2 block text-sm font-medium text-[#5f5246]"
+            >
+              Sinhala Greeting
+            </label>
+            <select
+              id="edit-sinhalaGreeting"
+              value={form.sinhalaGreeting}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  sinhalaGreeting: e.target.value,
+                }))
+              }
+              className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+              required
+            >
+              <option value="None">None</option>
+              <option value="ඔබට">ඔබට</option>
+              <option value="ඔබ දෙපලට">ඔබ දෙපලට</option>
+              <option value="පවුලේ සැමට">පවුලේ සැමට</option>
+            </select>
           </div>
 
           {formError ? (

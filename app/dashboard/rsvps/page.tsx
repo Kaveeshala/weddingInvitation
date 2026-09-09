@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type Guest = {
   _id: string;
@@ -8,6 +9,7 @@ type Guest = {
   partySize?: number;
   rsvpStatus?: "pending" | "attending" | "declined";
   respondedGuestCount?: number;
+  side?: "bride" | "groom" | "both";
 };
 
 type GuestsResponse = {
@@ -20,6 +22,7 @@ export default function RSVPsPage() {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [sideFilter, setSideFilter] = useState<"all" | "bride" | "groom" | "both">("all");
 
   const fetchGuests = async () => {
     try {
@@ -50,7 +53,9 @@ export default function RSVPsPage() {
   }, []);
 
   const rsvpRows = useMemo(() => {
-    return guests.map((guest) => {
+    return guests
+      .filter((guest) => sideFilter === "all" || guest.side === sideFilter)
+      .map((guest) => {
       const status = guest.rsvpStatus || "pending";
 
       return {
@@ -66,7 +71,7 @@ export default function RSVPsPage() {
         status,
       };
     });
-  }, [guests]);
+  }, [guests, sideFilter]);
 
   const totals = useMemo(() => {
     const yesCount = rsvpRows.filter((guest) => guest.answer === "Yes").length;
@@ -107,12 +112,49 @@ export default function RSVPsPage() {
       </section>
 
       <section className="rounded-[1.75rem] border border-[#eadfce] bg-white p-6 shadow-sm">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.24em] text-[#b08d57]">
               RSVP Results Table
             </p>
-            
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              variant={sideFilter === "all" ? "default" : "outline"}
+              onClick={() => setSideFilter("all")}
+              className="cursor-pointer px-5 py-3 h-auto text-sm"
+            >
+              All
+            </Button>
+
+            <Button
+              type="button"
+              variant={sideFilter === "bride" ? "default" : "outline"}
+              onClick={() => setSideFilter("bride")}
+              className="cursor-pointer px-5 py-3 h-auto text-sm"
+            >
+              Bride Side
+            </Button>
+
+            <Button
+              type="button"
+              variant={sideFilter === "groom" ? "default" : "outline"}
+              onClick={() => setSideFilter("groom")}
+              className="cursor-pointer px-5 py-3 h-auto text-sm"
+            >
+              Groom Side
+            </Button>
+
+            <Button
+              type="button"
+              variant={sideFilter === "both" ? "default" : "outline"}
+              onClick={() => setSideFilter("both")}
+              className="cursor-pointer px-5 py-3 h-auto text-sm"
+            >
+              Both Sides
+            </Button>
           </div>
         </div>
 

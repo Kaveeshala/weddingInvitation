@@ -44,6 +44,22 @@ const GuestSchema = new Schema(
       default: "",
       trim: true,
     },
+    englishGreeting: {
+      type: String,
+      default: "None",
+    },
+    sinhalaGreeting: {
+      type: String,
+      default: "None",
+    },
+    englishName: {
+      type: String,
+      default: "",
+    },
+    sinhalaName: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

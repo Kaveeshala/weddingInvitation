@@ -19,8 +19,9 @@ export default function LiveLocationSection({
       id="location-section"
       className="px-6 py-14 flex justify-center"
       initial={{ opacity: 0, y: 22 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 1.05, duration: 0.75 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.75, ease: "easeOut" }}
       style={{
         background:
           "linear-gradient(180deg, rgba(248, 238, 227, 0.92) 0%, rgba(246, 234, 221, 0.94) 52%, rgba(244, 232, 208, 0.78) 100%)",

@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     await dbConnect();
 
     const body = await req.json();
-    const { name, partySize, side } = body;
+    const { name, partySize, side, englishGreeting, sinhalaGreeting, englishName, sinhalaName } = body;
 
     if (!name || !String(name).trim()) {
       return NextResponse.json(
@@ -75,6 +75,10 @@ export async function POST(req: Request) {
       partySize: Number(partySize),
       side,
       rsvpStatus: "default",
+      englishGreeting: englishGreeting || "None",
+      sinhalaGreeting: sinhalaGreeting || "None",
+      englishName: englishName || "",
+      sinhalaName: sinhalaName || "",
     });
 
     return NextResponse.json(

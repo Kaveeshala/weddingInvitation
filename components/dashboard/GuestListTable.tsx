@@ -10,6 +10,10 @@ export type Guest = {
   partySize?: number;
   side?: "bride" | "groom" | "both";
   rsvpStatus?: "default" | "invited" | "attending" | "declined";
+  englishGreeting?: string;
+  sinhalaGreeting?: string;
+  englishName?: string;
+  sinhalaName?: string;
 };
 
 type GuestListTableProps = {

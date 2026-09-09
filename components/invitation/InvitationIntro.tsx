@@ -134,7 +134,7 @@ export default function InvitationIntro({
         transition={{ delay: 1.0, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <motion.p
-          className="text-white text-xs tracking-widest uppercase"
+          className="text-white text-xs tracking-widest font-semibold"
           style={{
             fontFamily: isEn
               ? "var(--font-geist-sans)"

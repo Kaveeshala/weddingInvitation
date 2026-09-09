@@ -111,7 +111,17 @@ export default function GuestsPage() {
       (guest) => !guest.rsvpStatus || guest.rsvpStatus === "invited"
     ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
 
-    return { totalGuests, attending, declined, invited };
+    const groomSide = guests.filter(
+      (guest) => guest.side === "groom"
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
+    const brideSide = guests.filter(
+      (guest) => guest.side === "bride"
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
+    const bothSides = guests.filter(
+      (guest) => guest.side === "both"
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
+
+    return { totalGuests, attending, declined, invited, groomSide, brideSide, bothSides };
   }, [guests]);
 
   return (
@@ -121,6 +131,12 @@ export default function GuestsPage() {
         <StatsCard label="Attending" value={totals.attending} tone="green" />
         <StatsCard label="Invited" value={totals.invited} tone="amber" />
         <StatsCard label="Declined" value={totals.declined} tone="rose" />
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-3">
+        <StatsCard label="Bride Side" value={totals.brideSide} tone="neutral" />
+        <StatsCard label="Groom Side" value={totals.groomSide} tone="neutral" />
+        <StatsCard label="Both Sides" value={totals.bothSides} tone="neutral" />
       </section>
 
       {message ? (

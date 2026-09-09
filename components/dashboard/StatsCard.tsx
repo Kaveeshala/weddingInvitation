@@ -12,14 +12,14 @@ export default function StatsCard({
   note,
 }: StatsCardProps) {
   const toneStyles = {
-    neutral: "bg-[#fcf7f0] text-[#2f2a24]",
-    green: "bg-[#eef8ef] text-[#2d7a46]",
-    amber: "bg-[#fff7e8] text-[#b7791f]",
-    rose: "bg-[#fdeeee] text-[#b45252]",
+    neutral: "bg-white border border-black text-black",
+    green: "bg-white border border-black text-[#2d7a46]",
+    amber: "bg-white border border-black text-[#b7791f]",
+    rose: "bg-white border border-black text-[#b45252]",
   };
 
   return (
-    <div className={`rounded-[1.5rem] p-4 ${toneStyles[tone]}`}>
+    <div className={`rounded-[1.5rem] p-4 flex flex-col items-center justify-center text-center ${toneStyles[tone]}`}>
       <p className="text-xs uppercase tracking-[0.18em] opacity-70">
         {label}
       </p>

@@ -22,6 +22,10 @@ export default async function InviteCardPage({
           token: "preview",
           partySize: 2,
           rsvpStatus: "invited",
+          englishGreeting: "None",
+          sinhalaGreeting: "None",
+          englishName: "",
+          sinhalaName: "",
         }}
       />
     );
@@ -42,6 +46,10 @@ export default async function InviteCardPage({
         token: guest.token,
         partySize: guest.partySize,
         rsvpStatus: guest.rsvpStatus,
+        englishGreeting: guest.englishGreeting || "None",
+        sinhalaGreeting: guest.sinhalaGreeting || "None",
+        englishName: guest.englishName || "",
+        sinhalaName: guest.sinhalaName || "",
       }}
     />
   );

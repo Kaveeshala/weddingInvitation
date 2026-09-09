@@ -14,6 +14,10 @@ interface InvitationPageClientProps {
     rsvpStatus: "default" | "invited" | "attending" | "declined";
     responseMessage?: string;
     respondedGuestCount?: number;
+    englishGreeting?: string;
+    sinhalaGreeting?: string;
+    englishName?: string;
+    sinhalaName?: string;
   };
 }
 
@@ -81,7 +85,13 @@ export default function InvitationPageClient({
         <LanguageToggle />
 
         <section className="min-h-screen w-full flex items-center justify-center">
-          <InvitationHeroCard guestName={guest.name} />
+          <InvitationHeroCard
+            guestName={guest.name}
+            englishGreeting={guest.englishGreeting}
+            sinhalaGreeting={guest.sinhalaGreeting}
+            englishName={guest.englishName}
+            sinhalaName={guest.sinhalaName}
+          />
         </section>
 
         <div className="relative z-10">

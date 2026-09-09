@@ -44,8 +44,9 @@ export default function RSVPSection({
         id="rsvp-section"
         className="px-6 py-16 flex flex-col items-center gap-6 text-center"
         initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.7 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
         style={{
           background:
             "linear-gradient(180deg, rgba(253, 248, 242, 1) 0%, rgba(251, 244, 234, 0.96) 58%, rgba(248, 238, 227, 0.92) 100%)",
@@ -263,8 +264,9 @@ export default function RSVPSection({
         id="countdown-section"
         className="px-4 sm:px-6 py-14 sm:py-16 flex justify-center"
         initial={{ opacity: 0, y: 22 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.1, duration: 0.75 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.75, ease: "easeOut" }}
         style={{
           background:
             "linear-gradient(180deg, rgba(244, 232, 208, 0.78) 0%, rgba(247, 237, 226, 0.94) 48%, rgba(253, 248, 242, 1) 100%)",
@@ -277,9 +279,10 @@ export default function RSVPSection({
 
       <motion.footer
         className="py-12 text-center bg-transparent"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
+        initial={{ opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <div className="mb-6 flex justify-center">
           <FloralDivider />
