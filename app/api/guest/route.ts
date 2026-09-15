@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     await dbConnect();
 
     const body = await req.json();
-    const { name, partySize, side, englishGreeting, sinhalaGreeting, englishName, sinhalaName } = body;
+    const { name, partySize, side, englishGreeting, sinhalaGreeting, englishName, sinhalaName, category } = body;
 
     if (!name || !String(name).trim()) {
       return NextResponse.json(
@@ -79,6 +79,7 @@ export async function POST(req: Request) {
       sinhalaGreeting: sinhalaGreeting || "None",
       englishName: englishName || "",
       sinhalaName: sinhalaName || "",
+      category: category || "Uncategorized",
     });
 
     return NextResponse.json(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 export type Guest = {
@@ -14,6 +14,7 @@ export type Guest = {
   sinhalaGreeting?: string;
   englishName?: string;
   sinhalaName?: string;
+  category?: string;
 };
 
 type GuestListTableProps = {
@@ -57,11 +58,24 @@ export default function GuestListTable({
         !q ||
         guest.name?.toLowerCase().includes(q) ||
         guest.token?.toLowerCase().includes(q) ||
-        guest.side?.toLowerCase().includes(q);
+        guest.side?.toLowerCase().includes(q) ||
+        guest.category?.toLowerCase().includes(q);
 
       return matchesSide && matchesSearch;
     });
   }, [guests, search, sideFilter]);
+
+  const groupedGuests = useMemo(() => {
+    const groups: Record<string, Guest[]> = {};
+    filteredGuests.forEach((guest) => {
+      const cat = guest.category || "Uncategorized";
+      if (!groups[cat]) {
+        groups[cat] = [];
+      }
+      groups[cat].push(guest);
+    });
+    return groups;
+  }, [filteredGuests]);
 
   const getInviteLink = (token: string) => {
     if (typeof window !== "undefined") {
@@ -178,6 +192,9 @@ export default function GuestListTable({
             <thead className="bg-[#fcf7f0]">
               <tr className="text-left">
                 <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                  Category
+                </th>
+                <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
                   Name
                 </th>
                 <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
@@ -202,7 +219,7 @@ export default function GuestListTable({
               {loading ? (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={7}
                     className="px-4 py-10 text-center text-sm text-[#8a7a6a]"
                   >
                     Loading guests...
@@ -211,19 +228,29 @@ export default function GuestListTable({
               ) : filteredGuests.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={7}
                     className="px-4 py-10 text-center text-sm text-[#8a7a6a]"
                   >
                     No guests found.
                   </td>
                 </tr>
               ) : (
-                filteredGuests.map((guest) => (
-                  <tr
-                    key={guest._id}
-                    className="border-t border-[#f1e7da] align-top"
-                  >
-                    <td className="px-4 py-4 text-sm font-medium text-[#2f2a24]">
+                Object.entries(groupedGuests).map(([category, guestsInGroup]) => (
+                  <React.Fragment key={category}>
+                    {guestsInGroup.map((guest, index) => (
+                      <tr
+                        key={guest._id}
+                        className="border-t border-[#f1e7da] align-top"
+                      >
+                        {index === 0 && (
+                          <td
+                            rowSpan={guestsInGroup.length}
+                            className="px-4 py-4 text-sm font-semibold text-[#5f5246] border-r border-[#f1e7da] bg-[#fcf7f0]/50 align-top"
+                          >
+                            {category}
+                          </td>
+                        )}
+                        <td className="px-4 py-4 text-sm font-medium text-[#2f2a24]">
                       {guest.name}
                     </td>
 
@@ -298,6 +325,8 @@ export default function GuestListTable({
                       </div>
                     </td>
                   </tr>
+                    ))}
+                  </React.Fragment>
                 ))
               )}
             </tbody>
@@ -316,80 +345,87 @@ export default function GuestListTable({
             No guests found.
           </div>
         ) : (
-          filteredGuests.map((guest) => (
-            <div
-              key={guest._id}
-              className="rounded-[1.5rem] border border-[#efe3d4] bg-white p-5 shadow-sm flex flex-col gap-4"
-            >
-              <div className="flex justify-between items-start gap-4">
-                <div>
-                  <h4 className="font-medium text-[#2f2a24] text-lg">
-                    {guest.name}
-                  </h4>
-                  <p className="text-sm text-[#5f5246] capitalize mt-0.5">
-                    {guest.side || "-"} Side • {guest.partySize ?? 1} Guests
-                  </p>
+          Object.entries(groupedGuests).map(([category, guestsInGroup]) => (
+            <div key={category} className="flex flex-col gap-4">
+              <h3 className="mt-2 text-lg font-semibold text-[#5f5246]">
+                {category}
+              </h3>
+              {guestsInGroup.map((guest) => (
+                <div
+                  key={guest._id}
+                  className="rounded-[1.5rem] border border-[#efe3d4] bg-white p-5 shadow-sm flex flex-col gap-4"
+                >
+                  <div className="flex justify-between items-start gap-4">
+                    <div>
+                      <h4 className="font-medium text-[#2f2a24] text-lg">
+                        {guest.name}
+                      </h4>
+                      <p className="text-sm text-[#5f5246] capitalize mt-0.5">
+                        {guest.side || "-"} Side • {guest.partySize ?? 1} Guests
+                      </p>
+                    </div>
+                    <select
+                      value={guest.rsvpStatus || "default"}
+                      onChange={(e) =>
+                        handleStatusChange(
+                          guest._id,
+                          e.target.value as
+                            | "default"
+                            | "invited"
+                            | "attending"
+                            | "declined"
+                        )
+                      }
+                      disabled={updatingId === guest._id}
+                      className="rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-3 py-1.5 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+                    >
+                      <option value="default">Default</option>
+                      <option value="invited">Invited</option>
+                      <option value="attending">Attending</option>
+                      <option value="declined">Declined</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[#8a7a6a] uppercase tracking-wider">
+                      Invite Link
+                    </span>
+                    <p className="truncate text-sm text-[#5f5246] bg-[#fcf7f0] p-2 rounded-lg border border-[#f1e7da]">
+                      {getInviteLink(guest.token)}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 pt-2 border-t border-[#f1e7da]">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => copyInviteLink(guest.token, guest._id)}
+                      className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
+                    >
+                      {copiedId === guest._id ? "Copied" : "Copy"}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => onEditGuest(guest)}
+                      className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
+                    >
+                      Edit
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => handleDelete(guest._id)}
+                      disabled={deletingId === guest._id}
+                      className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
+                    >
+                      {deletingId === guest._id ? "..." : "Delete"}
+                    </Button>
+                  </div>
                 </div>
-                <select
-                  value={guest.rsvpStatus || "default"}
-                  onChange={(e) =>
-                    handleStatusChange(
-                      guest._id,
-                      e.target.value as
-                        | "default"
-                        | "invited"
-                        | "attending"
-                        | "declined"
-                    )
-                  }
-                  disabled={updatingId === guest._id}
-                  className="rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-3 py-1.5 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
-                >
-                  <option value="default">Default</option>
-                  <option value="invited">Invited</option>
-                  <option value="attending">Attending</option>
-                  <option value="declined">Declined</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-[#8a7a6a] uppercase tracking-wider">
-                  Invite Link
-                </span>
-                <p className="truncate text-sm text-[#5f5246] bg-[#fcf7f0] p-2 rounded-lg border border-[#f1e7da]">
-                  {getInviteLink(guest.token)}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2 pt-2 border-t border-[#f1e7da]">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => copyInviteLink(guest.token, guest._id)}
-                  className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
-                >
-                  {copiedId === guest._id ? "Copied" : "Copy"}
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => onEditGuest(guest)}
-                  className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
-                >
-                  Edit
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => handleDelete(guest._id)}
-                  disabled={deletingId === guest._id}
-                  className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
-                >
-                  {deletingId === guest._id ? "..." : "Delete"}
-                </Button>
-              </div>
+              ))}
             </div>
           ))
         )}

@@ -34,6 +34,7 @@ export default function EditGuestModal({
     sinhalaGreeting: "None",
     englishName: "",
     sinhalaName: "",
+    category: "Uncategorized",
   });
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
@@ -48,6 +49,7 @@ export default function EditGuestModal({
         sinhalaGreeting: guest.sinhalaGreeting || "None",
         englishName: guest.englishName || "",
         sinhalaName: guest.sinhalaName || "",
+        category: guest.category || "Uncategorized",
       });
     }
   }, [guest]);
@@ -77,6 +79,7 @@ export default function EditGuestModal({
         sinhalaGreeting: form.sinhalaGreeting,
         englishName: form.englishName,
         sinhalaName: form.sinhalaName,
+        category: form.category,
       };
 
       const res = await fetch(`/api/guest/${guest._id}`, {
@@ -106,7 +109,7 @@ export default function EditGuestModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/35 px-4">
-      <div className="w-full max-w-xl rounded-[2rem] border border-[#eadfce] bg-white p-6 shadow-2xl">
+      <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-[2rem] border border-[#eadfce] bg-white p-6 shadow-2xl">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.24em] text-[#b08d57]">
@@ -177,6 +180,25 @@ export default function EditGuestModal({
                 setForm((prev) => ({ ...prev, sinhalaName: e.target.value }))
               }
               placeholder="Leave empty to use Reference Name"
+              className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="edit-category"
+              className="mb-2 block text-sm font-medium text-[#5f5246]"
+            >
+              Category (e.g., Family, Friends)
+            </label>
+            <input
+              id="edit-category"
+              type="text"
+              value={form.category}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, category: e.target.value }))
+              }
+              placeholder="Uncategorized"
               className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
             />
           </div>

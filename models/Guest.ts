@@ -60,6 +60,10 @@ const GuestSchema = new Schema(
       type: String,
       default: "",
     },
+    category: {
+      type: String,
+      default: "Uncategorized",
+    },
   },
   {
     timestamps: true,
