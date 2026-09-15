@@ -356,8 +356,11 @@ export default function RSVPSection({
           }}
         >
           {isEn ? "Contact: " : "අමතන්න: "}
-          0701299542 | 0767896996 | 0752813417
+          <a href="tel:0710979253" className="hover:underline transition-colors">0710979253</a>
+          {" | "}
+          <a href="tel:0763540962" className="hover:underline transition-colors">0763540962</a>
         </p>
+
       </motion.footer>
     </>
   );

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Lock, Unlock } from "lucide-react";
 
 type Guest = {
   _id: string;
@@ -23,6 +24,30 @@ export default function RSVPsPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [sideFilter, setSideFilter] = useState<"all" | "bride" | "groom" | "both">("all");
+  const [rsvpFilter, setRsvpFilter] = useState<"all" | "attending" | "declined" | "pending">("all");
+  const [unlockedId, setUnlockedId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const handleStatusChange = async (guestId: string, newStatus: string) => {
+    try {
+      setUpdatingId(guestId);
+      const res = await fetch(`/api/guest/${guestId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rsvpStatus: newStatus }),
+      });
+      
+      if (!res.ok) throw new Error("Failed to update status");
+      
+      setGuests(prev => prev.map(g => g._id === guestId ? { ...g, rsvpStatus: newStatus as any } : g));
+      setUnlockedId(null);
+    } catch(error) {
+      console.error(error);
+      setMessage("Failed to update RSVP status.");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   const fetchGuests = async () => {
     try {
@@ -70,8 +95,15 @@ export default function RSVPsPage() {
               : "Pending",
         status,
       };
+    })
+    .filter((row) => {
+      if (rsvpFilter === "all") return true;
+      if (rsvpFilter === "attending") return row.answer === "Yes";
+      if (rsvpFilter === "declined") return row.answer === "No";
+      if (rsvpFilter === "pending") return row.answer === "Pending";
+      return true;
     });
-  }, [guests, sideFilter]);
+  }, [guests, sideFilter, rsvpFilter]);
 
   const totals = useMemo(() => {
     const yesCount = rsvpRows
@@ -160,6 +192,19 @@ export default function RSVPsPage() {
             >
               Both Sides
             </Button>
+
+            <div className="hidden sm:block h-8 w-px bg-[#e7d9c8] mx-1"></div>
+
+            <select
+              value={rsvpFilter}
+              onChange={(e) => setRsvpFilter(e.target.value as any)}
+              className="cursor-pointer rounded-[0.5rem] border border-[#e7d9c8] bg-white px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+            >
+              <option value="all">All RSVPs</option>
+              <option value="attending">Yes (Attending)</option>
+              <option value="declined">No (Declined)</option>
+              <option value="pending">Pending</option>
+            </select>
           </div>
         </div>
 
@@ -218,7 +263,34 @@ export default function RSVPsPage() {
                       </td>
 
                       <td className="px-4 py-4">
-                        <AnswerBadge answer={guest.answer} />
+                        <div className="flex items-center gap-2">
+                          {unlockedId === guest._id ? (
+                            <select
+                              value={guest.status === "attending" ? "attending" : guest.status === "declined" ? "declined" : "default"}
+                              onChange={(e) => handleStatusChange(guest._id, e.target.value)}
+                              disabled={updatingId === guest._id}
+                              className="cursor-pointer rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-3 py-1 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+                            >
+                              <option value="default">Pending</option>
+                              <option value="attending">Yes</option>
+                              <option value="declined">No</option>
+                            </select>
+                          ) : (
+                            <AnswerBadge answer={guest.answer} />
+                          )}
+                          
+                          {guest.answer !== "Pending" && (
+                            <button
+                              type="button"
+                              onClick={() => setUnlockedId(unlockedId === guest._id ? null : guest._id)}
+                              className="p-1.5 text-[#a89b8d] hover:text-[#2f2a24] transition-colors rounded-full hover:bg-[#fcf7f0]"
+                              title={unlockedId === guest._id ? "Lock" : "Unlock to edit"}
+                            >
+                              {unlockedId === guest._id ? <Unlock size={16} /> : <Lock size={16} />}
+                            </button>
+                          )}
+                          {updatingId === guest._id && <span className="text-xs text-[#a89b8d]">Saving...</span>}
+                        </div>
                       </td>
                     </tr>
                   ))
