@@ -258,8 +258,8 @@ export default function InvitationHeroCard({
                     }}
                   >
                     {isEn 
-                      ? `${englishGreeting && englishGreeting !== "None" ? englishGreeting + " " : ""}${englishName || guestName || "Dear Guest"}`
-                      : `${sinhalaName || guestName || "හිතවත් අමුත්තා වෙත"}`
+                      ? `${englishGreeting && englishGreeting !== "None" ? englishGreeting + " " : ""}${englishName || "Dear Guest"}`
+                      : `${sinhalaName || "හිතවත් අමුත්තා වෙත"}`
                     }
                   </p>
 

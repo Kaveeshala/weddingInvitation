@@ -37,7 +37,7 @@ export default function InvitationPageClient({
 
   const [submitted, setSubmitted] = useState(alreadySubmitted);
   const [form, setForm] = useState({
-    name: guest.name,
+    name: guest.englishName || guest.sinhalaName || "",
     attending: guest.rsvpStatus === "declined" ? "no" : "yes",
     guests: String(initialGuests),
     message: guest.responseMessage || "",

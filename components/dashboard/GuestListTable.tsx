@@ -306,6 +306,15 @@ export default function GuestListTable({
 
                         <Button
                           type="button"
+                          variant="outline"
+                          onClick={() => window.open(`/invite/${guest.token}/card`, "_blank")}
+                          className="cursor-pointer px-4 py-2 h-auto"
+                        >
+                          Preview
+                        </Button>
+
+                        <Button
+                          type="button"
                           variant="secondary"
                           onClick={() => onEditGuest(guest)}
                           className="cursor-pointer px-4 py-2 h-auto"
@@ -403,6 +412,15 @@ export default function GuestListTable({
                       className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
                     >
                       {copiedId === guest._id ? "Copied" : "Copy"}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => window.open(`/invite/${guest.token}/card`, "_blank")}
+                      className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
+                    >
+                      Preview
                     </Button>
 
                     <Button
