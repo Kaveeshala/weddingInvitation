@@ -42,9 +42,9 @@ export async function generateMetadata({ params }: InvitePageProps): Promise<Met
       description,
       images: [
         {
-          url: "/images/couple_poruwa.jpeg",
+          url: `/api/og?token=${token}`,
           width: 1200,
-          height: 1200,
+          height: 630,
           alt: "Wedding Invitation",
         },
       ],
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: InvitePageProps): Promise<Met
       card: "summary_large_image",
       title,
       description,
-      images: ["/images/couple_poruwa.jpeg"],
+      images: [`/api/og?token=${token}`],
     },
   };
 }
