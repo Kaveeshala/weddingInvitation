@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: InvitePageProps): Promise<Met
 
   // Use the Sinhala name if available, otherwise fallback to English name
   const displayName = guest.sinhalaName || guest.name;
-  
+
   const title = `ආදරණීය ${displayName} ❤️`;
   const description = "අපගේ ජීවිතයේ සොඳුරුම දවසක් වන විවාහ මංගල්‍යය වෙනුවෙන් ඔබට ආදරයෙන් ආරාධනා කර සිටිමු. 💍✨\n\nවිවාහ ආරාධනා පත්‍රය 💌👇\nඔබගේ පැමිණීම අපගේ විශේෂ දිනය තවත් සුන්දර කරනු ඇත.\n\nආදරයෙන්,\n❤️ Dewmi & Daham";
 
