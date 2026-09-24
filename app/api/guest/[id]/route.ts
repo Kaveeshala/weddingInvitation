@@ -11,7 +11,7 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await req.json();
-    const { rsvpStatus, name, partySize, side, englishGreeting, sinhalaGreeting, englishName, sinhalaName, category } = body;
+    const { rsvpStatus, name, partySize, side, englishGreeting, sinhalaGreeting, englishName, sinhalaName, category, liquorCount, beerCount } = body;
 
     const updateData: any = {};
 
@@ -36,6 +36,8 @@ export async function PATCH(
     if (englishName !== undefined) updateData.englishName = englishName;
     if (sinhalaName !== undefined) updateData.sinhalaName = sinhalaName;
     if (category !== undefined) updateData.category = category;
+    if (liquorCount !== undefined) updateData.liquorCount = liquorCount;
+    if (beerCount !== undefined) updateData.beerCount = beerCount;
 
     const updatedGuest = await Guest.findByIdAndUpdate(
       id,

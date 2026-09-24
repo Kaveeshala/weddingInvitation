@@ -37,7 +37,7 @@ export default function InvitationHeroCard({
         />
       </div>
 
-      <div className="relative z-10 px-4 sm:px-6 lg:px-10 py-4 sm:py-8 mx-auto w-full max-w-2xl h-dvh flex flex-col">
+      <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-4 sm:py-8 mx-auto w-full max-w-[70vh] h-dvh flex flex-col">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
@@ -45,7 +45,7 @@ export default function InvitationHeroCard({
           className="flex flex-col items-center text-center h-full w-full"
         >
           {/* CONTENT CONTAINER */}
-          <div className="relative w-full flex flex-col items-center justify-between h-full pt-[12vh] pb-[6vh]">
+          <div className="relative w-full flex flex-col items-center justify-between h-full pt-[6vh] sm:pt-[8vh] pb-[4vh] sm:pb-[6vh]">
             
             {/* Content Wrapper */}
             <div className="relative z-10 px-2 sm:px-8 pb-2 flex flex-col items-center justify-evenly text-center w-full h-full">
@@ -71,7 +71,7 @@ export default function InvitationHeroCard({
                   <span
                     style={{
                       fontFamily: "'Courgette', cursive",
-                      fontSize: "clamp(1.5rem, 5.5vw, 3.6rem)",
+                      fontSize: "clamp(1.5rem, 5.5vw, 2.0rem)",
                       color: "#737020",
                       fontWeight: 700,
                       lineHeight: 1.2,
@@ -83,21 +83,21 @@ export default function InvitationHeroCard({
               )}
 
               <motion.div
-                className="mt-0 sm:mt-2 w-full grid grid-cols-[1fr_auto_1fr] items-start gap-2 sm:gap-6 md:gap-8"
+                className="mt-2 sm:mt-4 w-full px-6 sm:px-10 md:px-14 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-1 sm:gap-4 md:gap-6"
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
               >
                 {/* Bride */}
-                <div className="flex flex-col items-center text-center gap-1">
+                <div className="flex flex-col items-center text-center gap-1 min-w-0 break-words w-full">
                   <p
                     style={{
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
                       fontSize: isEn
-                        ? "clamp(0.55rem, 1.6vw, 1.0rem)"
-                        : "clamp(0.55rem, 1.8vw, 1.0rem)",
+                        ? "clamp(0.55rem, 1.6vw, 0.65rem)"
+                        : "clamp(0.55rem, 1.8vw, 0.65rem)",
                       lineHeight: isEn ? 1.15 : 1.4,
                       color: "#ab7b41",
                     }}
@@ -137,7 +137,7 @@ export default function InvitationHeroCard({
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
-                      fontSize: "clamp(1.1rem, 4.5vw, 2.2rem)",
+                      fontSize: "clamp(1.1rem, 4.5vw, 1.2rem)",
                       fontWeight: "bold",
                       color: "#ab7b41",
                       letterSpacing: "0.04em",
@@ -150,26 +150,26 @@ export default function InvitationHeroCard({
                 {/* Couple photo */}
                 <div className="flex justify-center z-10 px-1 self-center mt-2 sm:mt-3">
                   <div
-                    className="rounded-[30px] sm:rounded-[50px] overflow-hidden border-[3px] sm:border-4 border-wedding-highlight shadow-[0_8px_30px_rgba(124,92,61,0.18)] bg-wedding-surface w-16.25 h-21.25 sm:w-22.5 sm:h-29 md:w-32 md:h-40 transition-all duration-300"
+                    className="w-28 h-28 sm:w-36 sm:h-36 md:w-48 md:h-48 transition-all duration-300 mix-blend-multiply flex items-center justify-center"
                   >
                     <img
-                      src="/images/wedding_image3.jpeg"
+                      src="/images/weddingcardbg.jpeg"
                       alt="Dilma and Isuru"
-                      className="w-full h-full object-cover object-center"
+                      className="w-full h-full object-contain object-center scale-125 sm:scale-110"
                     />
                   </div>
                 </div>
 
                 {/* Groom */}
-                <div className="flex flex-col items-center text-center gap-1">
+                <div className="flex flex-col items-center text-center gap-1 min-w-0 break-words w-full">
                   <p
                     style={{
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
                       fontSize: isEn
-                        ? "clamp(0.55rem, 1.6vw, 1.0rem)"
-                        : "clamp(0.55rem, 1.8vw, 1.0rem)",
+                        ? "clamp(0.55rem, 1.6vw, 0.65rem)"
+                        : "clamp(0.55rem, 1.8vw, 0.65rem)",
                       lineHeight: isEn ? 1.15 : 1.4,
                       color: "#ab7b41",
                     }}
@@ -186,17 +186,17 @@ export default function InvitationHeroCard({
                         <br />
                         Mrs.
                         <br />
-                        Chandrika Bandaranaike
+                        Chandrika Malani
                       </>
                     ) : (
                       <>
-                        රවීන්ද්ර මුණවීර
+                        රවීන්ද්‍ර මුණවීර
                         <br />
                         මැතිතුමාගේ
                         <br />
                         සහ
                         <br />
-                        චන්ද්රිකා බණ්ඩාරනායක
+                        චන්ද්‍රිකා මාලනී
                         <br />
                         මැතිනියගේ
                         <br />
@@ -209,7 +209,7 @@ export default function InvitationHeroCard({
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
-                      fontSize: "clamp(1.1rem, 4.5vw, 2.2rem)",
+                      fontSize: "clamp(1.1rem, 4.5vw, 1.2rem)",
                       fontWeight: "bold",
                       color: "#ab7b41",
                       letterSpacing: "0.04em",
@@ -220,7 +220,7 @@ export default function InvitationHeroCard({
                 </div>
               </motion.div>
 
-              <div className="flex flex-col items-center w-full mt-4 sm:mt-6">
+              <div className="flex flex-col items-center w-full mt-2 sm:mt-4 gap-2 sm:gap-4">
                 <motion.p
                   className="max-w-md px-2"
                   style={{
@@ -228,8 +228,8 @@ export default function InvitationHeroCard({
                       ? "var(--font-geist-sans)"
                       : "var(--font-sinhala)",
                     fontSize: isEn
-                      ? "clamp(0.8rem, 2.5vw, 1.4rem)"
-                      : "clamp(0.8rem, 2.8vw, 1.5rem)",
+                      ? "clamp(0.8rem, 2.5vw, 0.85rem)"
+                      : "clamp(0.8rem, 2.8vw, 0.95rem)",
                     lineHeight: isEn ? 1.2 : 1.3,
                     color: "#c99b64",
                   }}
@@ -243,7 +243,7 @@ export default function InvitationHeroCard({
                 </motion.p>
 
                 <motion.div
-                  className="mt-0 w-full max-w-xl mx-auto text-center"
+                  className="w-full max-w-xl mx-auto text-center"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6, duration: 0.6 }}
@@ -251,10 +251,11 @@ export default function InvitationHeroCard({
                   <p
                     style={{
                       fontFamily: "var(--font-geist-sans)",
-                      fontSize: "clamp(1rem, 3.5vw, 2.2rem)",
+                      fontSize: "clamp(1rem, 3.5vw, 1.2rem)",
                       color: "#98675f",
                       letterSpacing: "0.05em",
-                      lineHeight: 1.1,
+                      lineHeight: 1.2,
+                      wordBreak: "break-word",
                     }}
                   >
                     {isEn 
@@ -268,7 +269,7 @@ export default function InvitationHeroCard({
                       className="mt-1"
                       style={{
                         fontFamily: "var(--font-sinhala)",
-                        fontSize: "clamp(0.8rem, 2.8vw, 1.5rem)",
+                        fontSize: "clamp(0.8rem, 2.8vw, 0.95rem)",
                         color: "#c99b64",
                         lineHeight: 1.2,
                       }}
@@ -279,14 +280,13 @@ export default function InvitationHeroCard({
                 </motion.div>
 
                 <motion.p
-                  className="mt-0"
                   style={{
                     fontFamily: isEn
                       ? "var(--font-geist-sans)"
                       : "var(--font-sinhala)",
                     fontSize: isEn
-                      ? "clamp(0.8rem, 2.5vw, 1.4rem)"
-                      : "clamp(0.8rem, 2.8vw, 1.5rem)",
+                      ? "clamp(0.8rem, 2.5vw, 0.85rem)"
+                      : "clamp(0.8rem, 2.8vw, 0.95rem)",
                     lineHeight: 1.2,
                     letterSpacing: isEn ? "0.04em" : "normal",
                     color: "#c99b64",
@@ -321,7 +321,7 @@ export default function InvitationHeroCard({
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
-                      fontSize: "clamp(0.9rem, 3.5vw, 1.7rem)",
+                      fontSize: "clamp(0.9rem, 3.5vw, 1.0rem)",
                       color: "#c99b64",
                       fontWeight: "bold",
                       letterSpacing: isEn ? "0.1em" : "normal",
@@ -335,7 +335,7 @@ export default function InvitationHeroCard({
                   <span
                     style={{
                       fontFamily: "var(--font-geist-sans)",
-                      fontSize: "clamp(3rem, 11vw, 9rem)",
+                      fontSize: "clamp(3rem, 11vw, 4.2rem)",
                       fontWeight: 600,
                       lineHeight: 0.9,
                       color: "#c99b64",
@@ -347,7 +347,7 @@ export default function InvitationHeroCard({
                   <span
                     style={{
                       fontFamily: "var(--font-geist-sans)",
-                      fontSize: "clamp(1.1rem, 3.5vw, 2.1rem)",
+                      fontSize: "clamp(1.1rem, 3.5vw, 1.2rem)",
                       fontWeight: "bold",
                       color: "#c99b64",
                       letterSpacing: "0.15em",
@@ -367,7 +367,7 @@ export default function InvitationHeroCard({
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
-                      fontSize: "clamp(0.9rem, 3.5vw, 1.7rem)",
+                      fontSize: "clamp(0.9rem, 3.5vw, 1.0rem)",
                       color: "#c99b64",
                       fontWeight: "bold",
                       letterSpacing: isEn ? "0.08em" : "normal",
@@ -378,46 +378,62 @@ export default function InvitationHeroCard({
                 </div>
               </motion.button>
 
-              <motion.p
-                className="mt-2 sm:mt-3"
-                style={{
-                  fontFamily: isEn
-                    ? "var(--font-geist-sans)"
-                    : "var(--font-sinhala)",
-                  fontSize: isEn
-                    ? "clamp(0.75rem, 2.6vw, 1.4rem)"
-                    : "clamp(0.8rem, 2.8vw, 1.5rem)",
-                  lineHeight: 1.8,
-                  color: "#c99b64",
-                }}
+              <motion.div
+                className="mt-2 sm:mt-3 flex items-center justify-center gap-4 sm:gap-6 w-full px-2 sm:px-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
-                {isEn
-                  ? "From 09:00 AM to 04:00 PM"
-                  : "පෙරවරු 09:00 සිට පස්වරු 04:00 දක්වා"}
-              </motion.p>
+                {/* Left Image */}
+                <img
+                  src="/images/glasses.jpeg"
+                  alt="Glasses"
+                  className="w-16 h-16 sm:w-20 sm:h-20 object-contain mix-blend-multiply"
+                />
 
-              <motion.p
-                style={{
-                  fontFamily: isEn
-                    ? "var(--font-geist-sans)"
-                    : "var(--font-sinhala)",
-                  fontSize: isEn
-                    ? "clamp(0.7rem, 2.2vw, 1.3rem)"
-                    : "clamp(0.75rem, 2.5vw, 1.4rem)",
-                  lineHeight: 1.6,
-                  color: "#c99b64",
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.85, duration: 0.6 }}
-              >
-                {isEn
-                  ? "(Poruwa Ceremony at 10:00 AM)"
-                  : "(පෝරුවේ චාරිත්‍ර  පෙ:ව: 10:00 ට)"}
-              </motion.p>
+                <div className="flex flex-col items-center">
+                  <p
+                    style={{
+                      fontFamily: isEn
+                        ? "var(--font-geist-sans)"
+                        : "var(--font-sinhala)",
+                      fontSize: isEn
+                        ? "clamp(0.75rem, 2.6vw, 0.85rem)"
+                        : "clamp(0.8rem, 2.8vw, 0.95rem)",
+                      lineHeight: 1.8,
+                      color: "#c99b64",
+                    }}
+                  >
+                    {isEn
+                      ? "From 09:00 AM to 04:00 PM"
+                      : "පෙරවරු 09:00 සිට පස්වරු 04:00 දක්වා"}
+                  </p>
+
+                  <p
+                    style={{
+                      fontFamily: isEn
+                        ? "var(--font-geist-sans)"
+                        : "var(--font-sinhala)",
+                      fontSize: isEn
+                        ? "clamp(0.7rem, 2.2vw, 0.75rem)"
+                        : "clamp(0.75rem, 2.5vw, 1.4rem)",
+                      lineHeight: 1.6,
+                      color: "#c99b64",
+                    }}
+                  >
+                    {isEn
+                      ? "(Poruwa Ceremony at 10:00 AM)"
+                      : "(පෝරුවේ චාරිත්‍ර  පෙ:ව: 10:00 ට)"}
+                  </p>
+                </div>
+
+                {/* Right Image */}
+                <img
+                  src="/images/ring.jpeg"
+                  alt="Ring"
+                  className="w-16 h-16 sm:w-20 sm:h-20 object-contain mix-blend-multiply"
+                />
+              </motion.div>
 
               <motion.button
                 type="button"
@@ -436,7 +452,7 @@ export default function InvitationHeroCard({
                     fontFamily: isEn
                       ? "var(--font-geist-sans)"
                       : "var(--font-sinhala)",
-                    fontSize: "clamp(1.7rem, 6vw, 4.2rem)",
+                    fontSize: "clamp(1.7rem, 6vw, 2.0rem)",
                     fontWeight: 500,
                     color: "#98675f",
                     letterSpacing: "0.04em",
@@ -450,7 +466,7 @@ export default function InvitationHeroCard({
                     fontFamily: isEn
                       ? "var(--font-geist-sans)"
                       : "var(--font-sinhala)",
-                    fontSize: "clamp(0.9rem, 3vw, 1.7rem)",
+                    fontSize: "clamp(0.9rem, 3vw, 1.0rem)",
                     color: "#ab7b41",
                     letterSpacing: isEn ? "0.14em" : "0.06em",
                     marginTop: "0.1rem",
@@ -478,7 +494,7 @@ export default function InvitationHeroCard({
                       fontFamily: isEn
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
-                      fontSize: "clamp(0.7rem, 2.2vw, 1.2rem)",
+                      fontSize: "clamp(0.7rem, 2.2vw, 0.75rem)",
                       letterSpacing: "0.38em",
                       color: "var(--wedding-primary)",
                       textTransform: "uppercase" as const,

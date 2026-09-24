@@ -83,10 +83,15 @@ export default function RSVPsPage() {
       .map((guest) => {
       const status = guest.rsvpStatus || "pending";
 
+      let finalCount = guest.partySize ?? 1;
+      if (status === "attending" && guest.respondedGuestCount !== undefined && guest.respondedGuestCount > 0) {
+        finalCount = guest.respondedGuestCount;
+      }
+
       return {
         _id: guest._id,
         name: guest.name,
-        count: guest.respondedGuestCount ?? guest.partySize ?? 1,
+        count: finalCount,
         answer:
           status === "attending"
             ? "Yes"
@@ -217,13 +222,13 @@ export default function RSVPsPage() {
             <table className="min-w-full border-collapse">
               <thead className="bg-[#fcf7f0]">
                 <tr className="text-left">
-                  <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                  <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                     Name
                   </th>
-                  <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                  <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                     Count
                   </th>
-                  <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                  <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                     Yes / No
                   </th>
                 </tr>
@@ -279,16 +284,14 @@ export default function RSVPsPage() {
                             <AnswerBadge answer={guest.answer} />
                           )}
                           
-                          {guest.answer !== "Pending" && (
-                            <button
-                              type="button"
-                              onClick={() => setUnlockedId(unlockedId === guest._id ? null : guest._id)}
-                              className="p-1.5 text-[#a89b8d] hover:text-[#2f2a24] transition-colors rounded-full hover:bg-[#fcf7f0]"
-                              title={unlockedId === guest._id ? "Lock" : "Unlock to edit"}
-                            >
-                              {unlockedId === guest._id ? <Unlock size={16} /> : <Lock size={16} />}
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => setUnlockedId(unlockedId === guest._id ? null : guest._id)}
+                            className="cursor-pointer p-1.5 text-[#a89b8d] hover:text-[#2f2a24] transition-colors rounded-full hover:bg-[#fcf7f0]"
+                            title={unlockedId === guest._id ? "Lock" : "Unlock to edit"}
+                          >
+                            {unlockedId === guest._id ? <Unlock size={16} /> : <Lock size={16} />}
+                          </button>
                           {updatingId === guest._id && <span className="text-xs text-[#a89b8d]">Saving...</span>}
                         </div>
                       </td>

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 type Guest = {
   id: string;
   name: string;
   partySize: number;
+  category?: string;
 };
 
 type TableItem = {
@@ -26,21 +27,41 @@ type SeatingResponse = {
   message?: string;
 };
 
-const INITIAL_VISIBLE_COUNT = 10;
+const FIXED_TABLE_COUNT = 20;
+const FIXED_TABLE_CAPACITY = 10;
+
+const getCategoryColor = (category: string) => {
+  const colors = [
+    "bg-blue-100 text-blue-700 border-blue-200",
+    "bg-green-100 text-green-700 border-green-200",
+    "bg-purple-100 text-purple-700 border-purple-200",
+    "bg-pink-100 text-pink-700 border-pink-200",
+    "bg-yellow-100 text-yellow-800 border-yellow-300",
+    "bg-indigo-100 text-indigo-700 border-indigo-200",
+    "bg-red-100 text-red-700 border-red-200",
+    "bg-teal-100 text-teal-700 border-teal-200",
+    "bg-orange-100 text-orange-700 border-orange-200",
+    "bg-cyan-100 text-cyan-700 border-cyan-200",
+  ];
+  let hash = 0;
+  for (let i = 0; i < category.length; i++) {
+    hash = category.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
+};
 
 export default function SeatingPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
-  const [tableCount, setTableCount] = useState(0);
   const [tables, setTables] = useState<TableItem[]>([]);
   const [guests, setGuests] = useState<Guest[]>([]);
   const [assignments, setAssignments] = useState<Record<string, string>>({});
 
-  const [showAllTables, setShowAllTables] = useState(false);
-  const [showAllGuests, setShowAllGuests] = useState(false);
-  const [showAllTableViews, setShowAllTableViews] = useState(false);
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
+  const [activeTableId, setActiveTableId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchSeatingData = async () => {
     try {
@@ -59,11 +80,21 @@ export default function SeatingPage() {
       }
 
       const normalizedGuests =
-        data.guests?.map((guest: any) => ({
-          id: String(guest._id),
-          name: guest.name,
-          partySize: Number(guest.partySize) || 1,
-        })) || [];
+        data.guests
+          ?.filter((guest: any) => guest.rsvpStatus === "attending")
+          ?.map((guest: any) => {
+            let finalPartySize = Number(guest.partySize) || 1;
+            if (guest.respondedGuestCount !== undefined && guest.respondedGuestCount > 0) {
+              finalPartySize = Number(guest.respondedGuestCount);
+            }
+            
+            return {
+              id: String(guest._id),
+              name: guest.name,
+              partySize: finalPartySize,
+              category: guest.category || "Uncategorized",
+            };
+          }) || [];
 
       const normalizedAssignments =
         data.seatingPlan?.assignments?.reduce(
@@ -75,9 +106,21 @@ export default function SeatingPage() {
         ) || {};
 
       setGuests(normalizedGuests);
-      setTableCount(data.seatingPlan?.tableCount || 0);
-      setTables(data.seatingPlan?.tables || []);
-      setAssignments(normalizedAssignments);
+      
+      const initialTables = Array.from({ length: FIXED_TABLE_COUNT }, (_, i) => ({
+        id: `table-${i + 1}`,
+        label: `Table ${i + 1}`,
+        capacity: FIXED_TABLE_CAPACITY,
+      }));
+      
+      setTables(initialTables);
+      
+      const validTableIds = new Set(initialTables.map(t => t.id));
+      const filteredAssignments = Object.fromEntries(
+        Object.entries(normalizedAssignments).filter(([, tableId]) => validTableIds.has(tableId as string))
+      );
+      
+      setAssignments(filteredAssignments);
     } catch (error) {
       console.error(error);
       setMessage("Failed to load seating data.");
@@ -89,92 +132,6 @@ export default function SeatingPage() {
   useEffect(() => {
     fetchSeatingData();
   }, []);
-
-  const visibleTables = useMemo(() => {
-    return showAllTables ? tables : tables.slice(0, INITIAL_VISIBLE_COUNT);
-  }, [tables, showAllTables]);
-
-  const visibleGuests = useMemo(() => {
-    return showAllGuests ? guests : guests.slice(0, INITIAL_VISIBLE_COUNT);
-  }, [guests, showAllGuests]);
-
-  const visibleTableViews = useMemo(() => {
-    return showAllTableViews ? tables : tables.slice(0, INITIAL_VISIBLE_COUNT);
-  }, [tables, showAllTableViews]);
-
-  const buildTablesFromCount = (count: number) => {
-    return Array.from({ length: count }, (_, index) => {
-      const existing = tables[index];
-      return {
-        id: existing?.id || `table-${index + 1}`,
-        label: `Table ${String(index + 1).padStart(2, "0")}`,
-        capacity: existing?.capacity || 0,
-      };
-    });
-  };
-
-  const handleCreateOrUpdateTables = async () => {
-    try {
-      setSaving(true);
-      setMessage("");
-
-      const count = Math.max(0, Number(tableCount) || 0);
-      const generatedTables = buildTablesFromCount(count);
-
-      const validTableIds = new Set(generatedTables.map((table) => table.id));
-
-      const filteredAssignments = Object.fromEntries(
-        Object.entries(assignments).filter(([, tableId]) =>
-          validTableIds.has(tableId)
-        )
-      );
-
-      const payloadAssignments = Object.entries(filteredAssignments).map(
-        ([guestId, tableId]) => ({
-          guestId,
-          tableId,
-        })
-      );
-
-      const res = await fetch("/api/seating", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          tableCount: count,
-          tables: generatedTables,
-          assignments: payloadAssignments,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to save tables");
-      }
-
-      setTables(generatedTables);
-      setAssignments(filteredAssignments);
-      setMessage("Tables saved successfully.");
-      await fetchSeatingData();
-    } catch (error) {
-      console.error(error);
-      setMessage("Failed to save tables.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const updateCapacity = (tableId: string, value: number) => {
-    setTables((prev) =>
-      prev.map((table) =>
-        table.id === tableId
-          ? { ...table, capacity: Math.max(0, Number(value) || 0) }
-          : table
-      )
-    );
-  };
 
   const getAssignedGuestsForTable = (tableId: string) => {
     return guests.filter((guest) => assignments[guest.id] === tableId);
@@ -207,7 +164,7 @@ export default function SeatingPage() {
     if (!guest || !tableId) return;
 
     if (!canAssignGuestToTable(guest, tableId)) {
-      alert("This table does not have enough seats for this guest/group.");
+      alert("This table does not have enough seats for this guest's party size.");
       return;
     }
 
@@ -243,7 +200,7 @@ export default function SeatingPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          tableCount,
+          tableCount: FIXED_TABLE_COUNT,
           tables,
           assignments: payloadAssignments,
         }),
@@ -265,273 +222,299 @@ export default function SeatingPage() {
     }
   };
 
+  const handleSeatClick = (tableId: string, seatGuest: Guest & { isLeader: boolean } | null) => {
+    if (seatGuest) {
+      if (window.confirm(`Remove ${seatGuest.name} from this table?`)) {
+        removeAssignment(seatGuest.id);
+      }
+    } else {
+      setActiveTableId(tableId);
+      setAssignModalOpen(true);
+    }
+  };
+
+  const downloadCSV = () => {
+    let csvContent = "Table,Guest Name,Seats Taken\n";
+    
+    tables.forEach(table => {
+      const assignedGuests = getAssignedGuestsForTable(table.id);
+      if (assignedGuests.length > 0) {
+        assignedGuests.forEach(guest => {
+          const escapedName = guest.name.replace(/"/g, '""');
+          csvContent += `"${table.label}","${escapedName}",${guest.partySize}\n`;
+        });
+      } else {
+        csvContent += `"${table.label}","(Empty)",0\n`;
+      }
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "wedding_seating_plan.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-8">
-      <section className="rounded-[2rem] border border-[#eadfce] bg-white p-8 shadow-sm">
-        <p className="text-xs uppercase tracking-[0.28em] text-[#b08d57]">
-          Seat Management
-        </p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#2f2a24] sm:text-4xl">
-          Create tables and assign guests
-        </h2>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#76685a]">
-          Save the number of tables, update seat counts, assign guests, and view
-          the guest list for each table.
-        </p>
+      <section className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between rounded-[2rem] border border-[#eadfce] bg-white p-8 shadow-sm">
+        <div>
+          <p className="text-xs uppercase tracking-[0.28em] text-[#b08d57]">
+            Seat Management
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#2f2a24]">
+            Visual Seating Chart
+          </h2>
+          <p className="mt-2 text-sm text-[#76685a]">
+            Click an empty seat (+) to assign a guest. Click an occupied seat to remove them.
+          </p>
+        </div>
+        <div className="flex flex-col items-end">
+          <Button
+            type="button"
+            onClick={saveSeatingPlan}
+            disabled={saving}
+            className="px-8 py-3 text-base h-auto cursor-pointer"
+          >
+            {saving ? "Saving..." : "Save Seating Plan"}
+          </Button>
+          {message && <p className="mt-2 text-sm text-[#7a6755]">{message}</p>}
+        </div>
       </section>
 
-      <section className="rounded-[1.75rem] border border-[#eadfce] bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end">
-            <div className="w-full max-w-xs">
-              <label className="mb-2 block text-sm font-medium text-[#5f5246]">
-                Number of tables
-              </label>
-              <input
-                type="number"
-                min={1}
-                value={tableCount || ""}
-                onChange={(e) => setTableCount(Number(e.target.value))}
-                placeholder="Enter number of tables"
-                className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
-              />
-            </div>
+      {loading ? (
+        <div className="rounded-[1.75rem] border border-[#eadfce] bg-white p-12 shadow-sm text-center">
+          <p className="text-sm text-[#8a7a6a]">Loading visual seating chart...</p>
+        </div>
+      ) : (
+        <div className="rounded-[1.75rem] border border-[#eadfce] bg-white p-8 shadow-sm">
+          <div className="grid gap-x-8 gap-y-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-6">
+            {tables.map((table) => {
+              const assignedGuests = getAssignedGuestsForTable(table.id);
+              const seats = new Array(FIXED_TABLE_CAPACITY).fill(null);
+              let seatIndex = 0;
+              
+              assignedGuests.forEach(guest => {
+                for (let i = 0; i < guest.partySize; i++) {
+                  if (seatIndex < FIXED_TABLE_CAPACITY) {
+                    seats[seatIndex] = { ...guest, isLeader: i === 0 };
+                    seatIndex++;
+                  }
+                }
+              });
 
-            <Button
-              type="button"
-              onClick={handleCreateOrUpdateTables}
-              disabled={saving}
-              className="px-5 py-3"
-            >
-              {saving ? "Saving..." : "Create / Update Tables"}
-            </Button>
+              return (
+                <div key={table.id} className="relative w-72 h-72 mx-auto flex items-center justify-center">
+                  {/* Table Center */}
+                  <div className="w-28 h-28 rounded-full bg-[#fcf7f0] border-2 border-[#eadfce] flex flex-col items-center justify-center shadow-inner z-10">
+                    <span className="font-semibold text-[#2f2a24] text-lg">{table.label}</span>
+                    <span className="text-xs text-[#8a7a6a] mt-1">{getUsedSeats(table.id)}/{table.capacity}</span>
+                  </div>
+                  
+                  {/* Seats */}
+                  {seats.map((seatGuest, i) => {
+                    const angle = (i * (360 / FIXED_TABLE_CAPACITY) - 90) * (Math.PI / 180);
+                    const radius = 42; // 42% from center
+                    const left = 50 + radius * Math.cos(angle);
+                    const top = 50 + radius * Math.sin(angle);
 
-            <Button
-              type="button"
-              variant="outline"
-              onClick={saveSeatingPlan}
-              disabled={saving}
-              className="px-5 py-3"
-            >
-              {saving ? "Saving..." : "Save All Changes"}
-            </Button>
+                    return (
+                      <div
+                        key={i}
+                        onClick={() => handleSeatClick(table.id, seatGuest)}
+                        className={`absolute flex flex-col items-center justify-center w-14 h-14 rounded-full border border-[#e7d9c8] -translate-x-1/2 -translate-y-1/2 text-center leading-tight transition-all shadow-sm cursor-pointer hover:scale-110 z-20 ${
+                          seatGuest 
+                            ? "bg-[#eef8ef] border-[#b9debf] text-[#2d7a46] hover:bg-[#dceddd]" 
+                            : "bg-white text-[#b08d57] hover:bg-[#fcf7f0]"
+                        }`}
+                        style={{ top: `${top}%`, left: `${left}%` }}
+                        title={seatGuest ? seatGuest.name : "Assign Guest"}
+                      >
+                        {seatGuest ? (
+                          <span className="text-[9px] font-semibold px-1 truncate w-full text-center block" title={seatGuest.name}>
+                            {seatGuest.name.slice(0, 8)}{seatGuest.name.length > 8 ? ".." : ""}
+                          </span>
+                        ) : (
+                          <span className="text-xl font-light">+</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </div>
         </div>
+      )}
 
-        {message ? (
-          <p className="mt-4 text-sm text-[#7a6755]">{message}</p>
-        ) : null}
-
-        {tables.length > 0 && (
-          <>
-            <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {visibleTables.map((table) => (
-                <div
-                  key={table.id}
-                  className="rounded-[1.5rem] border border-[#efe3d4] bg-[#fcf8f3] p-5"
-                >
-                  <p className="text-sm font-semibold text-[#2f2a24]">
-                    {table.label}
-                  </p>
-
-                  <label className="mt-4 mb-2 block text-sm text-[#6f5f51]">
-                    Number of seats
-                  </label>
-
-                  <input
-                    type="number"
-                    min={0}
-                    value={table.capacity}
-                    onChange={(e) =>
-                      updateCapacity(table.id, Number(e.target.value))
-                    }
-                    className="w-full rounded-xl border border-[#e7d9c8] bg-white px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
-                  />
-
-                  <p className="mt-3 text-xs text-[#8a7a6a]">
-                    Used seats: {getUsedSeats(table.id)} / {table.capacity}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {tables.length > INITIAL_VISIBLE_COUNT ? (
-              <div className="mt-6">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowAllTables((prev) => !prev)}
-                >
-                  {showAllTables ? "Show Less Tables" : "Show More Tables"}
-                </Button>
-              </div>
-            ) : null}
-          </>
-        )}
-      </section>
-
-      <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-[1.75rem] border border-[#eadfce] bg-white p-6 shadow-sm">
-          <p className="text-xs uppercase tracking-[0.24em] text-[#b08d57]">
-            Assign Guests
-          </p>
-          <h3 className="mt-2 text-2xl font-semibold text-[#2f2a24]">
-            Assign each guest to a table
-          </h3>
-
-          {loading ? (
-            <p className="mt-6 text-sm text-[#8a7a6a]">Loading guests...</p>
-          ) : (
-            <>
-              <div className="mt-6 space-y-4">
-                {visibleGuests.map((guest) => {
-                  const assignedTableId = assignments[guest.id] || "";
-                  const assignedTable = tables.find(
-                    (t) => t.id === assignedTableId
-                  );
-
-                  return (
-                    <div
-                      key={guest.id}
-                      className="rounded-[1.25rem] border border-[#efe3d4] bg-[#fcf8f3] p-4"
-                    >
-                      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                        <div>
-                          <p className="font-medium text-[#2f2a24]">
-                            {guest.name}
-                          </p>
-                          <p className="text-sm text-[#8a7a6a]">
-                            Party size: {guest.partySize}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-col gap-2 md:min-w-[220px]">
-                          <select
-                            value={assignedTableId}
-                            onChange={(e) =>
-                              handleAssignGuest(guest.id, e.target.value)
-                            }
-                            className="rounded-xl border border-[#e7d9c8] bg-white px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
-                          >
-                            <option value="">Select table</option>
-                            {tables.map((table) => {
-                              const disabled =
-                                !canAssignGuestToTable(guest, table.id) &&
-                                assignedTableId !== table.id;
-
-                              return (
-                                <option
-                                  key={table.id}
-                                  value={table.id}
-                                  disabled={disabled}
-                                >
-                                  {table.label} ({getUsedSeats(table.id)}/
-                                  {table.capacity})
-                                </option>
-                              );
-                            })}
-                          </select>
-
-                          {assignedTable ? (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => removeAssignment(guest.id)}
-                            >
-                              Remove from {assignedTable.label}
-                            </Button>
-                          ) : null}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {guests.length > INITIAL_VISIBLE_COUNT ? (
-                <div className="mt-6">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setShowAllGuests((prev) => !prev)}
-                  >
-                    {showAllGuests ? "Show Less Guests" : "Show More Guests"}
-                  </Button>
-                </div>
-              ) : null}
-            </>
-          )}
+      {/* List View and Download */}
+      <section className="rounded-[1.75rem] border border-[#eadfce] bg-white p-8 shadow-sm">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="text-2xl font-semibold text-[#2f2a24]">
+              Table Assignments List
+            </h3>
+            <p className="mt-1 text-sm text-[#76685a]">
+              A complete list of guests assigned to each table.
+            </p>
+          </div>
+          <Button type="button" onClick={downloadCSV} className="cursor-pointer">
+            Download CSV
+          </Button>
         </div>
 
-        <div className="rounded-[1.75rem] border border-[#eadfce] bg-white p-6 shadow-sm">
-          <p className="text-xs uppercase tracking-[0.24em] text-[#b08d57]">
-            Table View
-          </p>
-          <h3 className="mt-2 text-2xl font-semibold text-[#2f2a24]">
-            View guests by table
-          </h3>
+        <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-[#efe3d4]">
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse bg-white">
+              <thead className="bg-white">
+                <tr className="text-left border-b border-[#f1e7da]">
+                  <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
+                    Table
+                  </th>
+                  <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
+                    Guest Name
+                  </th>
+                  <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
+                    Seats Taken
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {tables.map(table => {
+                  const assignedGuests = getAssignedGuestsForTable(table.id);
+                  if (assignedGuests.length === 0) {
+                    return (
+                      <tr key={table.id} className="border-t border-[#f1e7da]">
+                        <td className="px-4 py-4 text-sm font-semibold text-[#5f5246] border-r border-[#f1e7da] bg-white align-top">
+                          {table.label}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-[#8a7a6a] italic">
+                          No guests assigned
+                        </td>
+                        <td className="px-4 py-4 text-sm text-[#8a7a6a]">-</td>
+                      </tr>
+                    );
+                  }
 
-          <div className="mt-6 space-y-4">
-            {tables.length === 0 ? (
-              <p className="text-sm text-[#8a7a6a]">
-                Create tables first to see the table view.
-              </p>
-            ) : (
-              visibleTableViews.map((table) => {
-                const assignedGuests = getAssignedGuestsForTable(table.id);
+                  return assignedGuests.map((guest, index) => (
+                    <tr key={`${table.id}-${guest.id}`} className="border-t border-[#f1e7da]">
+                      {index === 0 && (
+                        <td
+                          rowSpan={assignedGuests.length}
+                          className="px-4 py-4 text-sm font-semibold text-[#5f5246] border-r border-[#f1e7da] bg-white align-top min-w-[140px]"
+                        >
+                          {table.label}
+                          <div className="text-xs font-normal text-[#8a7a6a] mt-1">
+                            {getUsedSeats(table.id)}/{table.capacity} filled
+                          </div>
+                        </td>
+                      )}
+                      <td className="px-4 py-4 text-sm font-medium text-[#2f2a24]">
+                        {guest.name}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-[#5f5246]">
+                        {guest.partySize}
+                      </td>
+                    </tr>
+                  ));
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
+      {/* Assign Modal */}
+      {assignModalOpen && activeTableId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-lg rounded-[2rem] border border-[#eadfce] bg-white p-6 shadow-2xl">
+            <h3 className="text-xl font-semibold text-[#2f2a24]">
+              Assign Guest to {tables.find(t => t.id === activeTableId)?.label}
+            </h3>
+            
+            <div className="mt-4">
+              <input
+                type="text"
+                placeholder="Search guests by name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+              />
+            </div>
+            
+            <div className="mt-4 max-h-[50vh] overflow-y-auto space-y-2 pr-2">
+              {guests.length === 0 && <p className="text-sm text-[#8a7a6a]">No guests found.</p>}
+              {guests
+                .filter(g => g.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                .sort((a, b) => {
+                  const aAssigned = assignments[a.id] ? 1 : 0;
+                  const bAssigned = assignments[b.id] ? 1 : 0;
+                  if (aAssigned !== bAssigned) return aAssigned - bAssigned;
+                  return a.name.localeCompare(b.name);
+                })
+                .map((guest) => {
+                const currentTableId = assignments[guest.id];
+                const currentTable = tables.find(t => t.id === currentTableId);
+                const disabled = !canAssignGuestToTable(guest, activeTableId) && currentTableId !== activeTableId;
+                
                 return (
-                  <div
-                    key={table.id}
-                    className="rounded-[1.25rem] border border-[#efe3d4] bg-[#fcf8f3] p-5"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="font-semibold text-[#2f2a24]">
-                        {table.label}
+                  <div key={guest.id} className="flex items-center justify-between p-3 rounded-xl border border-[#efe3d4] bg-[#fcf8f3]">
+                    <div>
+                      <p className="font-medium text-[#2f2a24]">
+                        {guest.name}
+                        {guest.category && guest.category !== "Uncategorized" && (
+                          <span className={`ml-2 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase ${getCategoryColor(guest.category)}`}>
+                            {guest.category}
+                          </span>
+                        )}
                       </p>
-                      <span className="rounded-full bg-white px-3 py-1 text-xs text-[#6f5f51]">
-                        {getUsedSeats(table.id)} / {table.capacity} seats
-                      </span>
+                      <p className="text-xs text-[#8a7a6a] mt-1">
+                        Party size: {guest.partySize} 
+                        {currentTable ? ` • Currently on ${currentTable.label}` : " • Unassigned"}
+                      </p>
                     </div>
-
-                    {assignedGuests.length === 0 ? (
-                      <p className="mt-3 text-sm text-[#8a7a6a]">
-                        No guests assigned yet.
-                      </p>
+                    {currentTableId === activeTableId ? (
+                      <span className="text-xs font-medium text-[#b08d57] px-2">Already here</span>
                     ) : (
-                      <ul className="mt-4 space-y-2">
-                        {assignedGuests.map((guest) => (
-                          <li
-                            key={guest.id}
-                            className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm"
-                          >
-                            <span className="text-[#2f2a24]">{guest.name}</span>
-                            <span className="text-[#8a7a6a]">
-                              {guest.partySize} seat(s)
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
+                      <Button
+                        type="button"
+                        variant={disabled ? "outline" : "default"}
+                        disabled={disabled}
+                        onClick={() => {
+                          handleAssignGuest(guest.id, activeTableId);
+                          setAssignModalOpen(false);
+                          setActiveTableId(null);
+                        }}
+                        className="h-auto py-2 px-4 text-xs cursor-pointer"
+                      >
+                        {disabled ? "Not enough seats" : "Assign"}
+                      </Button>
                     )}
                   </div>
                 );
-              })
-            )}
-          </div>
-
-          {tables.length > INITIAL_VISIBLE_COUNT ? (
-            <div className="mt-6">
+              })}
+            </div>
+            
+            <div className="mt-6 flex justify-end">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setShowAllTableViews((prev) => !prev)}
+                onClick={() => {
+                  setAssignModalOpen(false);
+                  setActiveTableId(null);
+                  setSearchQuery("");
+                }}
+                className="cursor-pointer px-6 h-auto py-2"
               >
-                {showAllTableViews ? "Show Less Tables" : "Show More Tables"}
+                Close
               </Button>
             </div>
-          ) : null}
+          </div>
         </div>
-      </section>
+      )}
     </div>
   );
 }

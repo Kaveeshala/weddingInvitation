@@ -15,6 +15,8 @@ export type Guest = {
   englishName?: string;
   sinhalaName?: string;
   category?: string;
+  liquorCount?: number;
+  beerCount?: number;
 };
 
 type GuestListTableProps = {
@@ -27,6 +29,7 @@ type GuestListTableProps = {
     status: "default" | "invited" | "attending" | "declined"
   ) => Promise<void> | void;
   onEditGuest: (guest: Guest) => void;
+  onEditDrinks: (guest: Guest) => void;
   onErrorMessage?: (message: string) => void;
 };
 
@@ -37,15 +40,27 @@ export default function GuestListTable({
   onDeleteGuest,
   onUpdateStatus,
   onEditGuest,
+  onEditDrinks,
   onErrorMessage,
 }: GuestListTableProps) {
   const [search, setSearch] = useState("");
   const [sideFilter, setSideFilter] = useState<"all" | "bride" | "groom" | "both">(
     "all"
   );
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const uniqueCategories = useMemo(() => {
+    const categories = new Set<string>();
+    guests.forEach((guest) => {
+      if (guest.category && guest.category !== "Uncategorized") {
+        categories.add(guest.category);
+      }
+    });
+    return Array.from(categories).sort();
+  }, [guests]);
 
   const filteredGuests = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -54,6 +69,13 @@ export default function GuestListTable({
       const matchesSide =
         sideFilter === "all" ? true : guest.side === sideFilter;
 
+      const matchesCategory =
+        categoryFilter === "all"
+          ? true
+          : categoryFilter === "Uncategorized"
+          ? !guest.category || guest.category === "Uncategorized"
+          : guest.category === categoryFilter;
+
       const matchesSearch =
         !q ||
         guest.name?.toLowerCase().includes(q) ||
@@ -61,9 +83,9 @@ export default function GuestListTable({
         guest.side?.toLowerCase().includes(q) ||
         guest.category?.toLowerCase().includes(q);
 
-      return matchesSide && matchesSearch;
+      return matchesSide && matchesCategory && matchesSearch;
     });
-  }, [guests, search, sideFilter]);
+  }, [guests, search, sideFilter, categoryFilter]);
 
   const groupedGuests = useMemo(() => {
     const groups: Record<string, Guest[]> = {};
@@ -168,6 +190,20 @@ export default function GuestListTable({
           >
             Both Sides
           </Button>
+
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="cursor-pointer rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-5 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+          >
+            <option value="all">All Categories</option>
+            {uniqueCategories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+            <option value="Uncategorized">Uncategorized</option>
+          </select>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -188,28 +224,31 @@ export default function GuestListTable({
       {/* Desktop Table View */}
       <div className="mt-6 hidden lg:block overflow-hidden rounded-[1.5rem] border border-[#efe3d4]">
         <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse">
-            <thead className="bg-[#fcf7f0]">
-              <tr className="text-left">
-                <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+          <table className="min-w-full border-collapse bg-white">
+            <thead className="bg-white">
+              <tr className="text-left border-b border-[#f1e7da]">
+                <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                   Category
                 </th>
-                <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                   Name
                 </th>
-                <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                   Side
                 </th>
-                <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                   Count
                 </th>
-                <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
+                  Drinks
+                </th>
+                <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                   RSVP
                 </th>
-                <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                   Invitation Link
                 </th>
-                <th className="px-4 py-4 text-sm font-medium text-[#77685a]">
+                <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                   Actions
                 </th>
               </tr>
@@ -219,7 +258,7 @@ export default function GuestListTable({
               {loading ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={8}
                     className="px-4 py-10 text-center text-sm text-[#8a7a6a]"
                   >
                     Loading guests...
@@ -228,7 +267,7 @@ export default function GuestListTable({
               ) : filteredGuests.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={8}
                     className="px-4 py-10 text-center text-sm text-[#8a7a6a]"
                   >
                     No guests found.
@@ -245,7 +284,7 @@ export default function GuestListTable({
                         {index === 0 && (
                           <td
                             rowSpan={guestsInGroup.length}
-                            className="px-4 py-4 text-sm font-semibold text-[#5f5246] border-r border-[#f1e7da] bg-[#fcf7f0]/50 align-top"
+                            className="px-4 py-4 text-sm font-semibold text-[#5f5246] border-r border-[#f1e7da] bg-white align-top"
                           >
                             {category}
                           </td>
@@ -262,6 +301,14 @@ export default function GuestListTable({
                       {guest.partySize ?? 1}
                     </td>
 
+                    <td className="px-4 py-4 text-sm text-[#5f5246]">
+                      <div className="flex flex-col gap-0.5">
+                        {guest.liquorCount ? <span>Liquor: {guest.liquorCount}</span> : null}
+                        {guest.beerCount ? <span>Beer: {guest.beerCount}</span> : null}
+                        {!guest.liquorCount && !guest.beerCount ? <span>-</span> : null}
+                      </div>
+                    </td>
+
                     <td className="px-4 py-4">
                       <select
                         value={guest.rsvpStatus || "default"}
@@ -276,7 +323,15 @@ export default function GuestListTable({
                           )
                         }
                         disabled={updatingId === guest._id}
-                        className="rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-4 py-2 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+                        className={`cursor-pointer rounded-xl border bg-[#fffdfa] px-4 py-2 text-sm outline-none transition focus:border-[#b08d57] ${
+                          guest.rsvpStatus === "attending"
+                            ? "text-green-600 border-green-600 font-medium"
+                            : guest.rsvpStatus === "declined"
+                            ? "text-red-600 border-red-600 font-medium"
+                            : guest.rsvpStatus === "invited"
+                            ? "text-blue-600 border-blue-600 font-medium"
+                            : "text-[#2f2a24] border-[#e7d9c8]"
+                        }`}
                       >
                         <option value="default">Default</option>
                         <option value="invited">Invited</option>
@@ -311,6 +366,15 @@ export default function GuestListTable({
                           className="cursor-pointer px-4 py-2 h-auto"
                         >
                           Preview
+                        </Button>
+
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={() => onEditDrinks(guest)}
+                          className="cursor-pointer px-4 py-2 h-auto"
+                        >
+                          Drinks
                         </Button>
 
                         <Button
@@ -372,6 +436,13 @@ export default function GuestListTable({
                       <p className="text-sm text-[#5f5246] capitalize mt-0.5">
                         {guest.side || "-"} Side • {guest.partySize ?? 1} Guests
                       </p>
+                      {(guest.liquorCount || guest.beerCount) ? (
+                        <p className="text-sm text-[#5f5246] mt-0.5">
+                          {guest.liquorCount ? `Liquor: ${guest.liquorCount}` : ""} 
+                          {guest.liquorCount && guest.beerCount ? " • " : ""}
+                          {guest.beerCount ? `Beer: ${guest.beerCount}` : ""}
+                        </p>
+                      ) : null}
                     </div>
                     <select
                       value={guest.rsvpStatus || "default"}
@@ -386,7 +457,15 @@ export default function GuestListTable({
                         )
                       }
                       disabled={updatingId === guest._id}
-                      className="rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-3 py-1.5 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+                      className={`cursor-pointer rounded-xl border bg-[#fffdfa] px-3 py-1.5 text-sm outline-none transition focus:border-[#b08d57] ${
+                        guest.rsvpStatus === "attending"
+                          ? "text-green-600 border-green-600 font-medium"
+                          : guest.rsvpStatus === "declined"
+                          ? "text-red-600 border-red-600 font-medium"
+                          : guest.rsvpStatus === "invited"
+                          ? "text-blue-600 border-blue-600 font-medium"
+                          : "text-[#2f2a24] border-[#e7d9c8]"
+                      }`}
                     >
                       <option value="default">Default</option>
                       <option value="invited">Invited</option>
@@ -421,6 +500,15 @@ export default function GuestListTable({
                       className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
                     >
                       Preview
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => onEditDrinks(guest)}
+                      className="cursor-pointer px-4 py-2 h-auto flex-1 text-sm"
+                    >
+                      Drinks
                     </Button>
 
                     <Button

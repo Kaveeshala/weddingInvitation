@@ -103,8 +103,8 @@ export default function RSVPSection({
                     ? "We are delighted to celebrate with you! 💛"
                     : "ඔබ සමඟ සැමරීම ගැන අපට ඉතා සතුටුයි! 💛"
                   : isEn
-                  ? "We will miss you. Thank you for letting us know."
-                  : "ඔබ නොමැතිකම අපට ඉතා දැනෙනු ඇත. දැනුම් දීම ගැන ස්තූතියි."}
+                    ? "We will miss you. Thank you for letting us know."
+                    : "ඔබ නොමැතිකම අපට ඉතා දැනෙනු ඇත. දැනුම් දීම ගැන ස්තූතියි."}
               </p>
             </div>
           ) : (
@@ -181,11 +181,10 @@ export default function RSVPSection({
                   ].map(({ v, l }) => (
                     <label
                       key={v}
-                      className={`flex-1 rounded-xl py-3 px-4 text-center cursor-pointer text-xs transition-all ${
-                        form.attending === v
+                      className={`flex-1 rounded-xl py-3 px-4 text-center cursor-pointer text-xs transition-all ${form.attending === v
                           ? "bg-white text-wedding-primary shadow-[0_8px_20px_rgba(176,141,87,0.12)]"
                           : "bg-white/70 text-wedding-muted hover:bg-white/90"
-                      }`}
+                        }`}
                       style={{
                         fontFamily: isEn
                           ? "var(--font-geist-sans)"
@@ -345,7 +344,7 @@ export default function RSVPSection({
         >
           {isEn ? "Isuru & Dilma" : "ඉසුරු & දිල්මා"}
         </p>
-        
+
         <p
           className="mt-3 text-center"
           style={{

@@ -64,6 +64,16 @@ const GuestSchema = new Schema(
       type: String,
       default: "Uncategorized",
     },
+    liquorCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    beerCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   {
     timestamps: true,
