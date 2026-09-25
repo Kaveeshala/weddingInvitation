@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-  ),
+  metadataBase: new URL('https://wedding-invitation-omega-opal.vercel.app'),
   title: "Dilma & Isuru | Wedding Invitation",
   description: "A modern wedding invitation website for Dilma and Isuru.",
 };
