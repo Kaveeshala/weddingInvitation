@@ -116,7 +116,10 @@ export default function DashboardPage() {
 
   const [timeLeft, setTimeLeft] = useState(getTimeLeft());
 
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
+    setIsMounted(true);
     const timer = setInterval(() => {
       setTimeLeft(getTimeLeft());
     }, 1000);
@@ -182,14 +185,18 @@ export default function DashboardPage() {
           </h3>
         </div>
 
-        <div className="mt-10 flex items-center justify-center gap-4 sm:gap-8 md:gap-12">
-          <CountdownItem label="Days" value={timeLeft.days} />
-          <span className="pb-6 text-3xl font-light text-[#dbc7ae] sm:pb-8 sm:text-5xl">:</span>
-          <CountdownItem label="Hours" value={timeLeft.hours} />
-          <span className="pb-6 text-3xl font-light text-[#dbc7ae] sm:pb-8 sm:text-5xl">:</span>
-          <CountdownItem label="Minutes" value={timeLeft.minutes} />
-          <span className="pb-6 text-3xl font-light text-[#dbc7ae] sm:pb-8 sm:text-5xl">:</span>
-          <CountdownItem label="Seconds" value={timeLeft.seconds} />
+        <div className="mt-10 flex items-center justify-center gap-4 sm:gap-8 md:gap-12 min-h-[100px]">
+          {isMounted ? (
+            <>
+              <CountdownItem label="Days" value={timeLeft.days} />
+              <span className="pb-6 text-3xl font-light text-[#dbc7ae] sm:pb-8 sm:text-5xl">:</span>
+              <CountdownItem label="Hours" value={timeLeft.hours} />
+              <span className="pb-6 text-3xl font-light text-[#dbc7ae] sm:pb-8 sm:text-5xl">:</span>
+              <CountdownItem label="Minutes" value={timeLeft.minutes} />
+              <span className="pb-6 text-3xl font-light text-[#dbc7ae] sm:pb-8 sm:text-5xl">:</span>
+              <CountdownItem label="Seconds" value={timeLeft.seconds} />
+            </>
+          ) : null}
         </div>
       </section>
     </div>
