@@ -108,7 +108,7 @@ export default function InvitationHeroCard({
                         <br />
                         Mr.
                         <br />
-                        Chaminda Mirahawatte
+                        Chaminda Mirahawatththa
                         <br />
                         &amp;
                         <br />
