@@ -293,7 +293,10 @@ export default function GuestListTable({
                           </td>
                         )}
                         <td className="px-4 py-4 text-sm font-medium text-[#2f2a24]">
-                      {guest.name}
+                      <div>{guest.name}</div>
+                      {guest.sinhalaName && (
+                        <div className="text-xs text-[#5f5246] font-normal mt-0.5">{guest.sinhalaName}</div>
+                      )}
                     </td>
 
                     <td className="px-4 py-4 text-sm text-[#5f5246] capitalize">
@@ -439,6 +442,9 @@ export default function GuestListTable({
                       <h4 className="font-medium text-[#2f2a24] text-lg">
                         {guest.name}
                       </h4>
+                      {guest.sinhalaName && (
+                        <p className="text-sm text-[#5f5246] mt-0.5 font-normal">{guest.sinhalaName}</p>
+                      )}
                       <p className="text-sm text-[#5f5246] capitalize mt-0.5">
                         {guest.side || "-"} Side • {guest.partySize ?? 1} Guests
                       </p>
