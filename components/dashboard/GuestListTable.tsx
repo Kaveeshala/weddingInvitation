@@ -25,6 +25,7 @@ type GuestListTableProps = {
   onAddGuest: () => void;
   onDeleteGuest: (guestId: string) => Promise<void> | void;
   onDeleteMultipleGuests?: (guestIds: string[]) => Promise<void> | void;
+  onRenameCategory?: (oldCategory: string, newCategory: string) => Promise<void> | void;
   onUpdateStatus: (
     guestId: string,
     status: "default" | "invited" | "attending" | "declined"
@@ -40,6 +41,7 @@ export default function GuestListTable({
   onAddGuest,
   onDeleteGuest,
   onDeleteMultipleGuests,
+  onRenameCategory,
   onUpdateStatus,
   onEditGuest,
   onEditDrinks,
@@ -360,9 +362,38 @@ export default function GuestListTable({
                         {index === 0 && (
                           <td
                             rowSpan={guestsInGroup.length}
-                            className="px-4 py-4 text-sm font-semibold text-[#5f5246] border-r border-[#f1e7da] bg-white align-top"
+                            className="px-4 py-4 text-sm font-semibold text-[#5f5246] border-r border-[#f1e7da] bg-white align-top group"
                           >
-                            <div>{category}</div>
+                            <div className="flex items-center gap-2">
+                              <span>{category}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newName = window.prompt("Enter new category name:", category);
+                                  if (newName && newName.trim() !== "" && newName.trim() !== category) {
+                                    onRenameCategory?.(category, newName.trim());
+                                  }
+                                }}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity text-[#b08d57] hover:text-[#9a7847] cursor-pointer"
+                                title="Rename category"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (window.confirm(`Are you sure you want to delete the category "${category}" and ALL its ${guestsInGroup.length} guest(s)?`)) {
+                                     if (onDeleteMultipleGuests) {
+                                        onDeleteMultipleGuests(guestsInGroup.map(g => g._id));
+                                     }
+                                  }
+                                }}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-600 ml-1 cursor-pointer"
+                                title="Delete category and all guests inside it"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                              </button>
+                            </div>
                             <div className="mt-1 text-xs font-normal text-[#8a7a6a]">
                               {guestsInGroup.reduce((acc, g) => acc + (g.partySize ?? 1), 0)} guests
                             </div>
@@ -511,7 +542,36 @@ export default function GuestListTable({
           Object.entries(groupedGuests).map(([category, guestsInGroup]) => (
             <div key={category} className="flex flex-col gap-4">
               <h3 className="mt-2 flex items-center justify-between text-lg font-semibold text-[#5f5246]">
-                <span>{category}</span>
+                <div className="flex items-center gap-2">
+                  <span>{category}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newName = window.prompt("Enter new category name:", category);
+                      if (newName && newName.trim() !== "" && newName.trim() !== category) {
+                        onRenameCategory?.(category, newName.trim());
+                      }
+                    }}
+                    className="text-[#b08d57] hover:text-[#9a7847] cursor-pointer"
+                    title="Rename category"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm(`Are you sure you want to delete the category "${category}" and ALL its ${guestsInGroup.length} guest(s)?`)) {
+                         if (onDeleteMultipleGuests) {
+                            onDeleteMultipleGuests(guestsInGroup.map(g => g._id));
+                         }
+                      }
+                    }}
+                    className="text-red-400 hover:text-red-600 ml-1 cursor-pointer"
+                    title="Delete category and all guests inside it"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  </button>
+                </div>
                 <span className="text-sm font-normal text-[#8a7a6a]">
                   {guestsInGroup.reduce((acc, g) => acc + (g.partySize ?? 1), 0)} guests
                 </span>

@@ -172,12 +172,10 @@ export default function RSVPSection({
                   id="rsvp-name"
                   type="text"
                   required
+                  readOnly
                   placeholder={isEn ? "e.g. Nimal Perera" : "උදා: නිමල් පෙරේරා"}
                   value={form.name}
-                  onChange={(e) =>
-                    setForm((p) => ({ ...p, name: e.target.value }))
-                  }
-                  className="w-full rounded-xl bg-white/90 px-4 py-3 text-sm text-wedding-heading placeholder:text-wedding-muted/50 focus:outline-none focus:ring-2 focus:ring-wedding-primary/20 transition-all"
+                  className="w-full rounded-xl bg-white/60 px-4 py-3 text-sm text-wedding-heading placeholder:text-wedding-muted/50 focus:outline-none transition-all cursor-not-allowed opacity-80"
                 />
               </div>
 

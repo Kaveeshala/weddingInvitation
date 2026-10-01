@@ -98,6 +98,34 @@ export default function GuestsPage() {
     }
   };
 
+  const handleRenameCategory = async (oldCategory: string, newCategory: string) => {
+    try {
+      const guestsToUpdate = guests.filter(
+        g => (g.category || "Uncategorized") === oldCategory
+      );
+      
+      const promises = guestsToUpdate.map(g => 
+        fetch(`/api/guest/${g._id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ category: newCategory })
+        })
+      );
+      
+      const results = await Promise.all(promises);
+      const failedCount = results.filter(r => !r.ok).length;
+      if (failedCount > 0) {
+         throw new Error(`Failed to update ${failedCount} guests`);
+      }
+      
+      setMessage(`Category renamed to ${newCategory}.`);
+      await fetchGuests();
+    } catch (error) {
+      console.error(error);
+      setMessage("Failed to rename category.");
+    }
+  };
+
   const handleUpdateStatus = async (
     guestId: string,
     status: "default" | "invited" | "attending" | "declined"
@@ -204,6 +232,7 @@ export default function GuestsPage() {
         onAddGuest={() => setIsModalOpen(true)}
         onDeleteGuest={handleDeleteGuest}
         onDeleteMultipleGuests={handleDeleteMultipleGuests}
+        onRenameCategory={handleRenameCategory}
         onUpdateStatus={handleUpdateStatus}
         onEditGuest={handleEditGuest}
         onEditDrinks={handleEditDrinks}

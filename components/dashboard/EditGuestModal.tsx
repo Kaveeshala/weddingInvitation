@@ -171,19 +171,21 @@ export default function EditGuestModal({
           if (form.englishTitle2 === "Family") {
             constructedEnglishName += " & Family";
           } else if (form.englishName2) {
-            constructedEnglishName += ` & ${form.englishTitle2} ${form.englishName2.trim()}`;
+            const part2 = `${form.englishTitle2} ${form.englishName2.trim()}`.trim();
+            constructedEnglishName += ` & ${part2}`;
           }
         }
       }
 
       let constructedSinhalaName = "";
       if (form.sinhalaName1) {
-        constructedSinhalaName = `${form.sinhalaName1.trim()} ${form.sinhalaTitle1}`;
+        constructedSinhalaName = `${form.sinhalaName1.trim()} ${form.sinhalaTitle1}`.trim();
         if (form.showSecondSinhalaName) {
           if (form.sinhalaTitle2 === "යුවළ") {
             constructedSinhalaName += " සහ යුවළ";
           } else if (form.sinhalaName2) {
-            constructedSinhalaName += ` සහ ${form.sinhalaName2.trim()} ${form.sinhalaTitle2}`;
+            const part2 = `${form.sinhalaName2.trim()} ${form.sinhalaTitle2}`.trim();
+            constructedSinhalaName += ` සහ ${part2}`;
           }
         }
       }
@@ -279,6 +281,7 @@ export default function EditGuestModal({
                   }
                   className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
                 >
+                  <option value="">None</option>
                   <option value="Mr.">Mr.</option>
                   <option value="Mrs.">Mrs.</option>
                   <option value="Mr & Mrs">Mr & Mrs</option>
@@ -315,6 +318,7 @@ export default function EditGuestModal({
                     }
                     className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
                   >
+                    <option value="">None</option>
                     <option value="Mr.">Mr.</option>
                     <option value="Mrs.">Mrs.</option>
                     <option value="Miss">Miss</option>
@@ -373,6 +377,7 @@ export default function EditGuestModal({
                   }
                   className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
                 >
+                  <option value="">None</option>
                   <option value="මහතා">මහතා</option>
                   <option value="මයා">මයා</option>
                   <option value="මහත්මිය">මහත්මිය</option>
@@ -412,6 +417,7 @@ export default function EditGuestModal({
                     }
                     className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
                   >
+                    <option value="">None</option>
                     <option value="මහතා">මහතා</option>
                     <option value="මයා">මයා</option>
                     <option value="මහත්මිය">මහත්මිය</option>
