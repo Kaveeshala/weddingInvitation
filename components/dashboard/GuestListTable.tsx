@@ -24,6 +24,7 @@ type GuestListTableProps = {
   loading?: boolean;
   onAddGuest: () => void;
   onDeleteGuest: (guestId: string) => Promise<void> | void;
+  onDeleteMultipleGuests?: (guestIds: string[]) => Promise<void> | void;
   onUpdateStatus: (
     guestId: string,
     status: "default" | "invited" | "attending" | "declined"
@@ -51,6 +52,8 @@ export default function GuestListTable({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [selectedGuests, setSelectedGuests] = useState<Set<string>>(new Set());
+  const [isDeletingMultiple, setIsDeletingMultiple] = useState(false);
 
   const uniqueCategories = useMemo(() => {
     const categories = new Set<string>();
@@ -128,11 +131,63 @@ export default function GuestListTable({
     try {
       setDeletingId(guestId);
       await onDeleteGuest(guestId);
+      
+      if (selectedGuests.has(guestId)) {
+        const newSet = new Set(selectedGuests);
+        newSet.delete(guestId);
+        setSelectedGuests(newSet);
+      }
     } catch (error) {
       console.error(error);
       onErrorMessage?.("Failed to delete guest.");
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const allIds = filteredGuests.map((g) => g._id);
+      setSelectedGuests(new Set(allIds));
+    } else {
+      setSelectedGuests(new Set());
+    }
+  };
+
+  const handleSelectGuest = (guestId: string, checked: boolean) => {
+    const newSet = new Set(selectedGuests);
+    if (checked) {
+      newSet.add(guestId);
+    } else {
+      newSet.delete(guestId);
+    }
+    setSelectedGuests(newSet);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedGuests.size === 0) return;
+    
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${selectedGuests.size} selected guest(s)?`
+    );
+    if (!confirmed) return;
+
+    try {
+      setIsDeletingMultiple(true);
+      if (onDeleteMultipleGuests) {
+         await onDeleteMultipleGuests(Array.from(selectedGuests));
+      } else {
+         // Fallback if not provided, delete one by one
+         for (const id of Array.from(selectedGuests)) {
+            await onDeleteGuest(id);
+         }
+      }
+      setSelectedGuests(new Set());
+    } catch (error) {
+      console.error(error);
+      onErrorMessage?.("Failed to delete selected guests.");
+    } finally {
+      setIsDeletingMultiple(false);
     }
   };
 
@@ -215,6 +270,18 @@ export default function GuestListTable({
             className="w-full max-w-sm rounded-full border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
           />
 
+          {selectedGuests.size > 0 && (
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteSelected}
+              disabled={isDeletingMultiple}
+              className="cursor-pointer px-6 py-3 h-auto text-base"
+            >
+              {isDeletingMultiple ? "Deleting..." : `Delete Selected (${selectedGuests.size})`}
+            </Button>
+          )}
+
           <Button type="button" onClick={onAddGuest} className="cursor-pointer px-6 py-3 h-auto text-base">
             Add Guest
           </Button>
@@ -227,6 +294,14 @@ export default function GuestListTable({
           <table className="min-w-full border-collapse bg-white">
             <thead className="bg-white">
               <tr className="text-left border-b border-[#f1e7da]">
+                <th className="px-4 py-4 w-10 text-center">
+                  <input
+                    type="checkbox"
+                    checked={filteredGuests.length > 0 && selectedGuests.size === filteredGuests.length}
+                    onChange={handleSelectAll}
+                    className="cursor-pointer w-4 h-4 rounded border-[#e7d9c8] text-[#b08d57] focus:ring-[#b08d57]"
+                  />
+                </th>
                 <th className="px-4 py-4 text-sm font-bold text-[#77685a]">
                   Category
                 </th>
@@ -292,6 +367,14 @@ export default function GuestListTable({
                             </div>
                           </td>
                         )}
+                        <td className="px-4 py-4 w-10 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedGuests.has(guest._id)}
+                            onChange={(e) => handleSelectGuest(guest._id, e.target.checked)}
+                            className="cursor-pointer w-4 h-4 rounded border-[#e7d9c8] text-[#b08d57] focus:ring-[#b08d57]"
+                          />
+                        </td>
                         <td className="px-4 py-4 text-sm font-medium text-[#2f2a24]">
                       <div>{guest.name}</div>
                       {guest.sinhalaName && (
@@ -438,10 +521,19 @@ export default function GuestListTable({
                   className="rounded-[1.5rem] border border-[#efe3d4] bg-white p-5 shadow-sm flex flex-col gap-4"
                 >
                   <div className="flex justify-between items-start gap-4">
-                    <div>
-                      <h4 className="font-medium text-[#2f2a24] text-lg">
-                        {guest.name}
-                      </h4>
+                    <div className="flex gap-3">
+                      <div className="pt-1">
+                        <input
+                          type="checkbox"
+                          checked={selectedGuests.has(guest._id)}
+                          onChange={(e) => handleSelectGuest(guest._id, e.target.checked)}
+                          className="cursor-pointer w-5 h-5 rounded border-[#e7d9c8] text-[#b08d57] focus:ring-[#b08d57]"
+                        />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-[#2f2a24] text-lg">
+                          {guest.name}
+                        </h4>
                       {guest.sinhalaName && (
                         <p className="text-sm text-[#5f5246] mt-0.5 font-normal">{guest.sinhalaName}</p>
                       )}
@@ -455,6 +547,7 @@ export default function GuestListTable({
                           {guest.beerCount ? `Beer: ${guest.beerCount}` : ""}
                         </p>
                       ) : null}
+                    </div>
                     </div>
                     <select
                       value={guest.rsvpStatus || "default"}

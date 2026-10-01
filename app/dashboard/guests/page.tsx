@@ -79,6 +79,25 @@ export default function GuestsPage() {
     }
   };
 
+  const handleDeleteMultipleGuests = async (guestIds: string[]) => {
+    try {
+      const promises = guestIds.map(id => fetch(`/api/guest/${id}`, { method: "DELETE" }));
+      const results = await Promise.all(promises);
+      
+      const failedCount = results.filter(r => !r.ok).length;
+      if (failedCount > 0) {
+        throw new Error(`Failed to delete ${failedCount} guests`);
+      }
+
+      setMessage(`${guestIds.length} guests deleted successfully.`);
+      await fetchGuests();
+    } catch (error) {
+      console.error(error);
+      setMessage("Failed to delete some guests.");
+      throw error;
+    }
+  };
+
   const handleUpdateStatus = async (
     guestId: string,
     status: "default" | "invited" | "attending" | "declined"
@@ -184,6 +203,7 @@ export default function GuestsPage() {
         loading={loading}
         onAddGuest={() => setIsModalOpen(true)}
         onDeleteGuest={handleDeleteGuest}
+        onDeleteMultipleGuests={handleDeleteMultipleGuests}
         onUpdateStatus={handleUpdateStatus}
         onEditGuest={handleEditGuest}
         onEditDrinks={handleEditDrinks}
