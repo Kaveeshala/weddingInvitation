@@ -39,6 +39,7 @@ export default function GuestListTable({
   loading = false,
   onAddGuest,
   onDeleteGuest,
+  onDeleteMultipleGuests,
   onUpdateStatus,
   onEditGuest,
   onEditDrinks,
