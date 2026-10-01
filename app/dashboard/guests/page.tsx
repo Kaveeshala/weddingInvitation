@@ -136,9 +136,22 @@ export default function GuestsPage() {
   }, [guests]);
 
   const categories = useMemo(() => {
-    const unique = Array.from(
-      new Set((guests.map((g) => g.category).filter(Boolean) as string[]))
-    );
+    const rawCategories = guests.map((g) => g.category).filter(Boolean) as string[];
+    const uniqueMap = new Map<string, string>();
+    
+    rawCategories.forEach(cat => {
+      const lower = cat.trim().toLowerCase();
+      if (!uniqueMap.has(lower)) {
+        uniqueMap.set(lower, cat);
+      } else {
+        const existing = uniqueMap.get(lower)!;
+        if (cat.charAt(0) >= 'A' && cat.charAt(0) <= 'Z' && existing.charAt(0) >= 'a' && existing.charAt(0) <= 'z') {
+           uniqueMap.set(lower, cat);
+        }
+      }
+    });
+
+    const unique = Array.from(uniqueMap.values());
     if (!unique.includes("Uncategorized")) {
       unique.unshift("Uncategorized");
     }

@@ -48,7 +48,6 @@ export default function EditGuestModal({
   });
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
-  const [isNewCategory, setIsNewCategory] = useState(false);
 
   useEffect(() => {
     if (guest) {
@@ -59,12 +58,14 @@ export default function EditGuestModal({
       let name2 = "";
 
       if (guest.englishName) {
-        const parts = guest.englishName.split("&").map((s) => s.trim());
+        let englishNameStr = guest.englishName.replace(/Mr\s*&\s*Mrs/gi, 'Mr_AND_Mrs');
+        const parts = englishNameStr.split("&").map((s) => s.trim().replace(/Mr_AND_Mrs/g, 'Mr & Mrs'));
         if (parts.length > 0 && parts[0]) {
           const p1 = parts[0];
-          const match1 = p1.match(/^(Mr\.|Mrs\.|Miss|Ms\.)\s+(.*)/i);
+          const match1 = p1.match(/^(Mr & Mrs|Mr\.|Mrs\.|Miss|Ms\.)\s+(.*)/i);
           if (match1) {
-            title1 = match1[1].charAt(0).toUpperCase() + match1[1].slice(1).toLowerCase();
+            const rawTitle = match1[1];
+            title1 = rawTitle.toLowerCase() === 'mr & mrs' ? 'Mr & Mrs' : rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1).toLowerCase();
             name1 = match1[2].trim();
           } else {
             name1 = p1;
@@ -77,9 +78,10 @@ export default function EditGuestModal({
           if (p2.toLowerCase() === "family") {
             title2 = "Family";
           } else {
-            const match2 = p2.match(/^(Mr\.|Mrs\.|Miss|Ms\.)\s+(.*)/i);
+            const match2 = p2.match(/^(Mr & Mrs|Mr\.|Mrs\.|Miss|Ms\.)\s+(.*)/i);
             if (match2) {
-              title2 = match2[1].charAt(0).toUpperCase() + match2[1].slice(1).toLowerCase();
+              const rawTitle = match2[1];
+              title2 = rawTitle.toLowerCase() === 'mr & mrs' ? 'Mr & Mrs' : rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1).toLowerCase();
               name2 = match2[2].trim();
             } else {
               name2 = p2;
@@ -140,7 +142,7 @@ export default function EditGuestModal({
         showSecondSinhalaName: sShowSecond,
         sinhalaName2: sName2,
         sinhalaTitle2: sTitle2,
-        category: guest.category || "Uncategorized",
+        category: guest.category === "Uncategorized" ? "" : (guest.category || ""),
       });
     }
   }, [guest]);
@@ -186,6 +188,9 @@ export default function EditGuestModal({
         }
       }
 
+      const rawCategory = form.category.trim() || "Uncategorized";
+      const finalCategory = rawCategory.charAt(0).toUpperCase() + rawCategory.slice(1);
+
       const payload = {
         name,
         partySize,
@@ -194,7 +199,7 @@ export default function EditGuestModal({
         sinhalaGreeting: form.sinhalaGreeting,
         englishName: constructedEnglishName.replace(/([^\s])&/g, '$1 &').replace(/&([^\s])/g, '& $1'),
         sinhalaName: constructedSinhalaName.replace(/([^\s])සහ/g, '$1 සහ').replace(/සහ([^\s])/g, 'සහ $1'),
-        category: form.category,
+        category: finalCategory,
       };
 
       const res = await fetch(`/api/guest/${guest._id}`, {
@@ -272,10 +277,11 @@ export default function EditGuestModal({
                   onChange={(e) =>
                     setForm((prev) => ({ ...prev, englishTitle1: e.target.value }))
                   }
-                  className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-24"
+                  className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
                 >
                   <option value="Mr.">Mr.</option>
                   <option value="Mrs.">Mrs.</option>
+                  <option value="Mr & Mrs">Mr & Mrs</option>
                   <option value="Miss">Miss</option>
                   <option value="Ms.">Ms.</option>
                 </select>
@@ -438,56 +444,23 @@ export default function EditGuestModal({
             >
               Category (e.g., Family, Friends)
             </label>
-            {!isNewCategory ? (
-              <select
-                id="edit-category"
-                value={existingCategories.includes(form.category) ? form.category : "new_custom_category"}
-                onChange={(e) => {
-                  if (e.target.value === "new_custom_category") {
-                    setIsNewCategory(true);
-                    setForm((prev) => ({ ...prev, category: "" }));
-                  } else {
-                    setForm((prev) => ({ ...prev, category: e.target.value }));
-                  }
-                }}
-                className="cursor-pointer w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
-              >
-                {existingCategories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-                <option value="new_custom_category" className="font-semibold text-[#b08d57]">
-                  + Add New Category
-                </option>
-              </select>
-            ) : (
-              <div className="flex gap-2 items-center">
-                <input
-                  type="text"
-                  value={form.category}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, category: e.target.value }))
-                  }
-                  placeholder="Enter new category"
-                  className="flex-1 rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
-                  autoFocus
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsNewCategory(false);
-                    setForm((prev) => ({
-                      ...prev,
-                      category: existingCategories[0] || "Uncategorized",
-                    }));
-                  }}
-                  className="cursor-pointer text-sm text-red-500 hover:underline px-2"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
+            <input
+              id="edit-category"
+              list="edit-category-options"
+              type="text"
+              autoComplete="off"
+              value={form.category}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, category: e.target.value }))
+              }
+              placeholder={existingCategories.find(c => c !== "Uncategorized") || "e.g. Family, Friends"}
+              className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+            />
+            <datalist id="edit-category-options">
+              {existingCategories.map((cat) => (
+                <option key={cat} value={cat} />
+              ))}
+            </datalist>
           </div>
 
           <div>
@@ -561,6 +534,8 @@ export default function EditGuestModal({
             >
               <option value="None">None</option>
               <option value="ඔබට">ඔබට</option>
+              <option value="ඔබතුමා">ඔබතුමා</option>
+              <option value="ඔබතුමිය">ඔබතුමිය</option>
               <option value="ඔබ දෙපලට">ඔබ දෙපලට</option>
               <option value="ඇතුළු පවුලේ සැමට">ඇතුළු පවුලේ සැමට</option>
             </select>

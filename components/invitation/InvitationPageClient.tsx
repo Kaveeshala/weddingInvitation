@@ -102,6 +102,8 @@ export default function InvitationPageClient({
             handleSubmit={handleSubmit}
             weddingDate={weddingDate}
             maxGuests={maxGuests}
+            englishName={guest.englishName}
+            sinhalaName={guest.sinhalaName}
           />
         </div>
       </main>

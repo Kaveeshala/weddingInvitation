@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import CountdownTimer from "./CountdownTimer";
 import LiveLocationSection from "./LiveLocationSection";
@@ -20,6 +21,8 @@ interface RSVPSectionProps {
   handleSubmit: (e: React.FormEvent) => void;
   weddingDate: Date;
   maxGuests: number;
+  englishName?: string;
+  sinhalaName?: string;
 }
 
 export default function RSVPSection({
@@ -29,9 +32,26 @@ export default function RSVPSection({
   handleSubmit,
   weddingDate,
   maxGuests,
+  englishName,
+  sinhalaName,
 }: RSVPSectionProps) {
   const { language } = useLanguage();
   const isEn = language === "en";
+
+  useEffect(() => {
+    setForm((prev) => {
+      if (isEn && sinhalaName && prev.name === sinhalaName) {
+        return { ...prev, name: englishName || "" };
+      }
+      if (!isEn && englishName && prev.name === englishName) {
+        return { ...prev, name: sinhalaName || "" };
+      }
+      if (!prev.name) {
+        return { ...prev, name: isEn ? (englishName || "") : (sinhalaName || "") };
+      }
+      return prev;
+    });
+  }, [isEn, englishName, sinhalaName, setForm]);
 
   const guestOptions = Array.from(
     { length: Math.max(1, maxGuests) },

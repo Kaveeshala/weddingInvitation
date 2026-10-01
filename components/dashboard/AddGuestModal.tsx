@@ -33,7 +33,7 @@ const initialForm = {
   showSecondSinhalaName: false,
   sinhalaName2: "",
   sinhalaTitle2: "මිය",
-  category: "Uncategorized",
+  category: "",
 };
 
 export default function AddGuestModal({
@@ -47,7 +47,6 @@ export default function AddGuestModal({
   const [form, setForm] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
-  const [isNewCategory, setIsNewCategory] = useState(false);
 
   if (!open) return null;
 
@@ -90,6 +89,9 @@ export default function AddGuestModal({
         }
       }
 
+      const rawCategory = form.category.trim() || "Uncategorized";
+      const finalCategory = rawCategory.charAt(0).toUpperCase() + rawCategory.slice(1);
+
       const payload = {
         name,
         partySize,
@@ -98,7 +100,7 @@ export default function AddGuestModal({
         sinhalaGreeting: form.sinhalaGreeting,
         englishName: constructedEnglishName.replace(/([^\s])&/g, '$1 &').replace(/&([^\s])/g, '& $1'),
         sinhalaName: constructedSinhalaName.replace(/([^\s])සහ/g, '$1 සහ').replace(/සහ([^\s])/g, 'සහ $1'),
-        category: form.category,
+        category: finalCategory,
       };
 
       const res = await fetch("/api/guest", {
@@ -177,10 +179,11 @@ export default function AddGuestModal({
                   onChange={(e) =>
                     setForm((prev) => ({ ...prev, englishTitle1: e.target.value }))
                   }
-                  className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-24"
+                  className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
                 >
                   <option value="Mr.">Mr.</option>
                   <option value="Mrs.">Mrs.</option>
+                  <option value="Mr & Mrs">Mr & Mrs</option>
                   <option value="Miss">Miss</option>
                   <option value="Ms.">Ms.</option>
                 </select>
@@ -343,56 +346,23 @@ export default function AddGuestModal({
             >
               Category (e.g., Family, Friends)
             </label>
-            {!isNewCategory ? (
-              <select
-                id="category"
-                value={existingCategories.includes(form.category) ? form.category : "new_custom_category"}
-                onChange={(e) => {
-                  if (e.target.value === "new_custom_category") {
-                    setIsNewCategory(true);
-                    setForm((prev) => ({ ...prev, category: "" }));
-                  } else {
-                    setForm((prev) => ({ ...prev, category: e.target.value }));
-                  }
-                }}
-                className="cursor-pointer w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
-              >
-                {existingCategories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-                <option value="new_custom_category" className="font-semibold text-[#b08d57]">
-                  + Add New Category
-                </option>
-              </select>
-            ) : (
-              <div className="flex gap-2 items-center">
-                <input
-                  type="text"
-                  value={form.category}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, category: e.target.value }))
-                  }
-                  placeholder="Enter new category"
-                  className="flex-1 rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
-                  autoFocus
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsNewCategory(false);
-                    setForm((prev) => ({
-                      ...prev,
-                      category: existingCategories[0] || "Uncategorized",
-                    }));
-                  }}
-                  className="cursor-pointer text-sm text-red-500 hover:underline px-2"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
+            <input
+              id="category"
+              list="category-options"
+              type="text"
+              autoComplete="off"
+              value={form.category}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, category: e.target.value }))
+              }
+              placeholder={existingCategories.find(c => c !== "Uncategorized") || "e.g. Family, Friends"}
+              className="w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
+            />
+            <datalist id="category-options">
+              {existingCategories.map((cat) => (
+                <option key={cat} value={cat} />
+              ))}
+            </datalist>
           </div>
 
           <div>
@@ -465,6 +435,8 @@ export default function AddGuestModal({
             >
               <option value="None">None</option>
               <option value="ඔබට">ඔබට</option>
+              <option value="ඔබතුමා">ඔබතුමා</option>
+              <option value="ඔබතුමිය">ඔබතුමිය</option>
               <option value="ඔබ දෙපලට">ඔබ දෙපලට</option>
               <option value="ඇතුළු පවුලේ සැමට">ඇතුළු පවුලේ සැමට</option>
             </select>
