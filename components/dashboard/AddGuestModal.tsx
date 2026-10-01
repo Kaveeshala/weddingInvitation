@@ -435,8 +435,8 @@ export default function AddGuestModal({
             >
               <option value="None">None</option>
               <option value="ඔබට">ඔබට</option>
-              <option value="ඔබතුමා">ඔබතුමා</option>
-              <option value="ඔබතුමිය">ඔබතුමිය</option>
+              <option value="ඔබතුමාට">ඔබතුමාට</option>
+              <option value="ඔබතුමියට">ඔබතුමියට</option>
               <option value="ඔබ දෙපලට">ඔබ දෙපලට</option>
               <option value="ඇතුළු පවුලේ සැමට">ඇතුළු පවුලේ සැමට</option>
             </select>

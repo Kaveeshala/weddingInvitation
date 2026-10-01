@@ -286,7 +286,10 @@ export default function GuestListTable({
                             rowSpan={guestsInGroup.length}
                             className="px-4 py-4 text-sm font-semibold text-[#5f5246] border-r border-[#f1e7da] bg-white align-top"
                           >
-                            {category}
+                            <div>{category}</div>
+                            <div className="mt-1 text-xs font-normal text-[#8a7a6a]">
+                              {guestsInGroup.reduce((acc, g) => acc + (g.partySize ?? 1), 0)} guests
+                            </div>
                           </td>
                         )}
                         <td className="px-4 py-4 text-sm font-medium text-[#2f2a24]">
@@ -420,8 +423,11 @@ export default function GuestListTable({
         ) : (
           Object.entries(groupedGuests).map(([category, guestsInGroup]) => (
             <div key={category} className="flex flex-col gap-4">
-              <h3 className="mt-2 text-lg font-semibold text-[#5f5246]">
-                {category}
+              <h3 className="mt-2 flex items-center justify-between text-lg font-semibold text-[#5f5246]">
+                <span>{category}</span>
+                <span className="text-sm font-normal text-[#8a7a6a]">
+                  {guestsInGroup.reduce((acc, g) => acc + (g.partySize ?? 1), 0)} guests
+                </span>
               </h3>
               {guestsInGroup.map((guest) => (
                 <div
