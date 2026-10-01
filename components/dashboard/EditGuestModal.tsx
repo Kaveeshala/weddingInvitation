@@ -43,7 +43,7 @@ export default function EditGuestModal({
     sinhalaTitle1: "මහතා",
     showSecondSinhalaName: false,
     sinhalaName2: "",
-    sinhalaTitle2: "මිය",
+    sinhalaTitle2: "මහත්මිය",
     category: "Uncategorized",
   });
   const [submitting, setSubmitting] = useState(false);
@@ -93,14 +93,14 @@ export default function EditGuestModal({
       let sTitle1 = "මහතා";
       let sName1 = "";
       let sShowSecond = false;
-      let sTitle2 = "මිය";
+      let sTitle2 = "මහත්මිය";
       let sName2 = "";
 
       if (guest.sinhalaName) {
         const parts = guest.sinhalaName.split("සහ").map((s) => s.trim());
         if (parts.length > 0 && parts[0]) {
           const p1 = parts[0];
-          const titleMatch = p1.match(/(මයා|මිය|මෙනවිය|මහතා|යුවළ)$/);
+          const titleMatch = p1.match(/(මයා|මිය|මහත්මිය|මෙනවිය|මහතා|යුවළ)$/);
           if (titleMatch) {
             sTitle1 = titleMatch[1];
             sName1 = p1.replace(titleMatch[1], "").trim();
@@ -115,7 +115,7 @@ export default function EditGuestModal({
           if (p2 === "යුවළ") {
             sTitle2 = "යුවළ";
           } else {
-            const titleMatch = p2.match(/(මයා|මිය|මෙනවිය|මහතා|යුවළ)$/);
+            const titleMatch = p2.match(/(මයා|මිය|මහත්මිය|මෙනවිය|මහතා|යුවළ)$/);
             if (titleMatch) {
               sTitle2 = titleMatch[1];
               sName2 = p2.replace(titleMatch[1], "").trim();
@@ -375,7 +375,7 @@ export default function EditGuestModal({
                 >
                   <option value="මහතා">මහතා</option>
                   <option value="මයා">මයා</option>
-                  <option value="මිය">මිය</option>
+                  <option value="මහත්මිය">මහත්මිය</option>
                   <option value="මෙනවිය">මෙනවිය</option>
                   <option value="යුවළ">යුවළ</option>
                 </select>
@@ -414,7 +414,7 @@ export default function EditGuestModal({
                   >
                     <option value="මහතා">මහතා</option>
                     <option value="මයා">මයා</option>
-                    <option value="මිය">මිය</option>
+                    <option value="මහත්මිය">මහත්මිය</option>
                     <option value="මෙනවිය">මෙනවිය</option>
                     <option value="යුවළ">යුවළ</option>
                   </select>
@@ -425,7 +425,7 @@ export default function EditGuestModal({
                         ...prev,
                         showSecondSinhalaName: false,
                         sinhalaName2: "",
-                        sinhalaTitle2: "මිය",
+                        sinhalaTitle2: "මහත්මිය",
                       }))
                     }
                     className="cursor-pointer text-sm text-red-500 hover:underline px-2"

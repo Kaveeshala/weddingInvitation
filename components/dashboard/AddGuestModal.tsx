@@ -32,7 +32,7 @@ const initialForm = {
   sinhalaTitle1: "මහතා",
   showSecondSinhalaName: false,
   sinhalaName2: "",
-  sinhalaTitle2: "මිය",
+  sinhalaTitle2: "මහත්මිය",
   category: "",
 };
 
@@ -277,7 +277,7 @@ export default function AddGuestModal({
                 >
                   <option value="මහතා">මහතා</option>
                   <option value="මයා">මයා</option>
-                  <option value="මිය">මිය</option>
+                  <option value="මහත්මිය">මහත්මිය</option>
                   <option value="මෙනවිය">මෙනවිය</option>
                   <option value="යුවළ">යුවළ</option>
                 </select>
@@ -316,7 +316,7 @@ export default function AddGuestModal({
                   >
                     <option value="මහතා">මහතා</option>
                     <option value="මයා">මයා</option>
-                    <option value="මිය">මිය</option>
+                    <option value="මහත්මිය">මහත්මිය</option>
                     <option value="මෙනවිය">මෙනවිය</option>
                     <option value="යුවළ">යුවළ</option>
                   </select>
@@ -327,7 +327,7 @@ export default function AddGuestModal({
                         ...prev,
                         showSecondSinhalaName: false,
                         sinhalaName2: "",
-                        sinhalaTitle2: "මිය",
+                        sinhalaTitle2: "මහත්මිය",
                       }))
                     }
                     className="cursor-pointer text-sm text-red-500 hover:underline px-2"
