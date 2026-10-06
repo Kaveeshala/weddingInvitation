@@ -133,10 +133,10 @@
     --wedding-gradient: linear-gradient(135deg, #f1c94f, #d4af37);
 
     /* Specific card colors dark mode */
-    --card-title: #e6e08c;
-    --card-names: #e4b67d;
-    --card-text: #f3d4ae;
-    --card-accent: #dfb2ab;
+    --card-title: #ffffff;
+    --card-names: #fdfbf7;
+    --card-text: #f5f5f5;
+    --card-accent: #eaeaea;
   }
 }
 
