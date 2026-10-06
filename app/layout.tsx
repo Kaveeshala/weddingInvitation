@@ -1,10 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wedding-invitation-omega-opal.vercel.app'),
   title: "Dilma & Isuru | Wedding Invitation",
   description: "A modern wedding invitation website for Dilma and Isuru.",
+};
+
+export const viewport: Viewport = {
+  colorScheme: 'light',
+  themeColor: '#F9F6F0',
 };
 
 export default function RootLayout({
