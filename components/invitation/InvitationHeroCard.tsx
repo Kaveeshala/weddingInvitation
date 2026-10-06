@@ -30,9 +30,9 @@ export default function InvitationHeroCard({
   return (
     <section className="relative w-full">
       {/* Full Screen Background Image */}
-      <div className="absolute inset-0 z-0 bg-[#fdfbf7] overflow-hidden">
+      <div className="absolute inset-0 z-0 bg-[#fdfbf7] dark:bg-wedding-bg overflow-hidden transition-colors duration-500">
         <div 
-          className="sticky top-0 w-full h-dvh md:h-screen bg-size-[100%_100%] md:bg-contain bg-center bg-no-repeat scale-105 sm:scale-[1.08]" 
+          className="sticky top-0 w-full h-dvh md:h-screen bg-size-[100%_100%] md:bg-contain bg-center bg-no-repeat scale-105 sm:scale-[1.08] dark:brightness-50 dark:saturate-50 transition-all duration-500" 
           style={{ backgroundImage: "url('/images/invitation-card-bg-image.jpeg')" }} 
         />
       </div>
@@ -72,7 +72,7 @@ export default function InvitationHeroCard({
                     style={{
                       fontFamily: "'Courgette', cursive",
                       fontSize: "clamp(1.5rem, 5.5vmin, 2.0rem)",
-                      color: "#737020",
+                      color: "var(--card-title)",
                       fontWeight: 700,
                       lineHeight: 1.2,
                     }}
@@ -99,7 +99,7 @@ export default function InvitationHeroCard({
                         ? "clamp(0.55rem, 1.6vmin, 0.65rem)"
                         : "clamp(0.55rem, 1.8vmin, 0.65rem)",
                       lineHeight: isEn ? 1.15 : 1.4,
-                      color: "#ab7b41",
+                      color: "var(--card-names)",
                     }}
                   >
                     {isEn ? (
@@ -139,7 +139,7 @@ export default function InvitationHeroCard({
                         : "var(--font-sinhala)",
                       fontSize: "clamp(1.1rem, 4.5vmin, 1.2rem)",
                       fontWeight: "bold",
-                      color: "#ab7b41",
+                      color: "var(--card-names)",
                       letterSpacing: "0.04em",
                     }}
                   >
@@ -150,12 +150,13 @@ export default function InvitationHeroCard({
                 {/* Couple photo */}
                 <div className="flex justify-center z-10 px-1 self-center mt-2 sm:mt-3">
                   <div
-                    className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 transition-all duration-300 mix-blend-multiply flex items-center justify-center"
+                    className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 transition-all duration-300 mix-blend-multiply flex items-center justify-center relative"
                   >
+                    <div className="absolute inset-0 hidden dark:block bg-[#fdfbf7] rounded-full blur-xl opacity-70 scale-125 z-0" />
                     <img
                       src="/images/weddingcardbg.jpeg"
                       alt="Dilma and Isuru"
-                      className="w-full h-full object-contain object-center scale-125 sm:scale-110"
+                      className="w-full h-full object-contain object-center scale-125 sm:scale-110 relative z-10"
                     />
                   </div>
                 </div>
@@ -171,7 +172,7 @@ export default function InvitationHeroCard({
                         ? "clamp(0.55rem, 1.6vmin, 0.65rem)"
                         : "clamp(0.55rem, 1.8vmin, 0.65rem)",
                       lineHeight: isEn ? 1.15 : 1.4,
-                      color: "#ab7b41",
+                      color: "var(--card-names)",
                     }}
                   >
                     {isEn ? (
@@ -211,7 +212,7 @@ export default function InvitationHeroCard({
                         : "var(--font-sinhala)",
                       fontSize: "clamp(1.1rem, 4.5vmin, 1.2rem)",
                       fontWeight: "bold",
-                      color: "#ab7b41",
+                      color: "var(--card-names)",
                       letterSpacing: "0.04em",
                     }}
                   >
@@ -231,7 +232,7 @@ export default function InvitationHeroCard({
                       ? "clamp(0.8rem, 2.5vmin, 0.85rem)"
                       : "clamp(0.8rem, 2.8vmin, 0.95rem)",
                     lineHeight: isEn ? 1.2 : 1.3,
-                    color: "#c99b64",
+                    color: "var(--card-text)",
                   }}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -252,7 +253,7 @@ export default function InvitationHeroCard({
                     style={{
                       fontFamily: "var(--font-geist-sans)",
                       fontSize: "clamp(1rem, 3.5vmin, 1.2rem)",
-                      color: "#98675f",
+                      color: "var(--card-accent)",
                       letterSpacing: "0.05em",
                       lineHeight: 1.2,
                       wordBreak: "break-word",
@@ -270,7 +271,7 @@ export default function InvitationHeroCard({
                       style={{
                         fontFamily: "var(--font-sinhala)",
                         fontSize: "clamp(0.8rem, 2.8vmin, 0.95rem)",
-                        color: "#c99b64",
+                        color: "var(--card-text)",
                         lineHeight: 1.2,
                       }}
                     >
@@ -289,7 +290,7 @@ export default function InvitationHeroCard({
                       : "clamp(0.8rem, 2.8vmin, 0.95rem)",
                     lineHeight: 1.2,
                     letterSpacing: isEn ? "0.04em" : "normal",
-                    color: "#c99b64",
+                    color: "var(--card-text)",
                   }}
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -314,7 +315,7 @@ export default function InvitationHeroCard({
               >
                 <div
                   className="flex flex-col items-center py-1 border-y-2 border-solid px-1 sm:px-2 w-24 sm:w-32 md:w-36"
-                  style={{ borderColor: "#c99b64" }}
+                  style={{ borderColor: "var(--card-text)" }}
                 >
                   <span
                     style={{
@@ -322,7 +323,7 @@ export default function InvitationHeroCard({
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
                       fontSize: "clamp(0.9rem, 3.5vmin, 1.0rem)",
-                      color: "#c99b64",
+                      color: "var(--card-text)",
                       fontWeight: "bold",
                       letterSpacing: isEn ? "0.1em" : "normal",
                     }}
@@ -338,7 +339,7 @@ export default function InvitationHeroCard({
                       fontSize: "clamp(3rem, 11vmin, 4.2rem)",
                       fontWeight: 600,
                       lineHeight: 0.9,
-                      color: "#c99b64",
+                      color: "var(--card-text)",
                       letterSpacing: "-0.02em",
                     }}
                   >
@@ -349,7 +350,7 @@ export default function InvitationHeroCard({
                       fontFamily: "var(--font-geist-sans)",
                       fontSize: "clamp(1.1rem, 3.5vmin, 1.2rem)",
                       fontWeight: "bold",
-                      color: "#c99b64",
+                      color: "var(--card-text)",
                       letterSpacing: "0.15em",
                       marginTop: "2px",
                     }}
@@ -360,7 +361,7 @@ export default function InvitationHeroCard({
 
                 <div
                   className="flex flex-col items-center py-1 border-y-2 border-solid px-1 sm:px-2 w-24 sm:w-32 md:w-36"
-                  style={{ borderColor: "#c99b64" }}
+                  style={{ borderColor: "var(--card-text)" }}
                 >
                   <span
                     style={{
@@ -368,7 +369,7 @@ export default function InvitationHeroCard({
                         ? "var(--font-geist-sans)"
                         : "var(--font-sinhala)",
                       fontSize: "clamp(0.9rem, 3.5vmin, 1.0rem)",
-                      color: "#c99b64",
+                      color: "var(--card-text)",
                       fontWeight: "bold",
                       letterSpacing: isEn ? "0.08em" : "normal",
                     }}
@@ -385,11 +386,14 @@ export default function InvitationHeroCard({
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
                 {/* Left Image */}
-                <img
-                  src="/images/glasses.jpeg"
-                  alt="Glasses"
-                  className="w-16 h-16 sm:w-20 sm:h-20 object-contain mix-blend-multiply"
-                />
+                <div className="relative">
+                  <div className="absolute inset-0 hidden dark:block bg-[#fdfbf7] rounded-full blur-md opacity-60 scale-150 z-0" />
+                  <img
+                    src="/images/glasses.jpeg"
+                    alt="Glasses"
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain mix-blend-multiply relative z-10"
+                  />
+                </div>
 
                 <div className="flex flex-col items-center">
                   <p
@@ -401,7 +405,7 @@ export default function InvitationHeroCard({
                         ? "clamp(0.75rem, 2.6vmin, 0.85rem)"
                         : "clamp(0.8rem, 2.8vmin, 0.95rem)",
                       lineHeight: 1.8,
-                      color: "#c99b64",
+                      color: "var(--card-text)",
                     }}
                   >
                     {isEn
@@ -418,7 +422,7 @@ export default function InvitationHeroCard({
                         ? "clamp(0.7rem, 2.2vmin, 0.75rem)"
                         : "clamp(0.75rem, 2.5vmin, 1.4rem)",
                       lineHeight: 1.6,
-                      color: "#c99b64",
+                      color: "var(--card-text)",
                     }}
                   >
                     {isEn
@@ -428,11 +432,14 @@ export default function InvitationHeroCard({
                 </div>
 
                 {/* Right Image */}
-                <img
-                  src="/images/ring.jpeg"
-                  alt="Ring"
-                  className="w-16 h-16 sm:w-20 sm:h-20 object-contain mix-blend-multiply"
-                />
+                <div className="relative">
+                  <div className="absolute inset-0 hidden dark:block bg-[#fdfbf7] rounded-full blur-md opacity-60 scale-150 z-0" />
+                  <img
+                    src="/images/ring.jpeg"
+                    alt="Ring"
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain mix-blend-multiply relative z-10"
+                  />
+                </div>
               </motion.div>
 
               <motion.button
@@ -454,7 +461,7 @@ export default function InvitationHeroCard({
                       : "var(--font-sinhala)",
                     fontSize: "clamp(1.1rem, 3.5vmin, 1.3rem)",
                     fontWeight: 500,
-                    color: "#98675f",
+                    color: "var(--card-accent)",
                     letterSpacing: "0.04em",
                   }}
                 >
@@ -467,7 +474,7 @@ export default function InvitationHeroCard({
                       ? "var(--font-geist-sans)"
                       : "var(--font-sinhala)",
                     fontSize: "clamp(0.9rem, 3vmin, 1.0rem)",
-                    color: "#ab7b41",
+                    color: "var(--card-names)",
                     letterSpacing: isEn ? "0.14em" : "0.06em",
                     marginTop: "0.1rem",
                   }}

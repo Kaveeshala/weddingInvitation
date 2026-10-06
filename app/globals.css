@@ -3,7 +3,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (@media (prefers-color-scheme: dark));
 
 @theme inline {
   --color-background: var(--background);
@@ -60,7 +60,6 @@
 }
 
 :root {
-  color-scheme: only light;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -109,6 +108,36 @@
   --wedding-border: #e8d5c4;
   --wedding-highlight: #f4e8d0;
   --wedding-gradient: linear-gradient(135deg, #b08d57, #8a6b3d);
+  
+  /* Specific card colors */
+  --card-title: #737020;
+  --card-names: #ab7b41;
+  --card-text: #c99b64;
+  --card-accent: #98675f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    /* Dark mode wedding palette */
+    --wedding-bg: #1a1614;
+    --wedding-surface: #241f1c;
+    --wedding-primary: #d4af37;
+    --wedding-primary-hover: #f1c94f;
+    --wedding-heading: #fdf8f2;
+    --wedding-muted: #a89f91;
+    --wedding-border: #3d342b;
+    --wedding-highlight: #4a3f35;
+    --wedding-gradient: linear-gradient(135deg, #f1c94f, #d4af37);
+
+    /* Specific card colors dark mode */
+    --card-title: #e6e08c;
+    --card-names: #e4b67d;
+    --card-text: #f3d4ae;
+    --card-accent: #dfb2ab;
+  }
 }
 
 
@@ -118,9 +147,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-color: #fdfbf7 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
   }
   html {
     @apply font-sans;
