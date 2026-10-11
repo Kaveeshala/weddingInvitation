@@ -66,26 +66,30 @@ export default function AddGuestModal({
 
     try {
       let constructedEnglishName = "";
-      if (form.englishName1) {
-        constructedEnglishName = `${form.englishTitle1} ${form.englishName1}`.trim();
+      if (form.englishName1.trim()) {
+        const title1 = form.englishTitle1 ? `${form.englishTitle1} ` : "";
+        constructedEnglishName = `${title1}${form.englishName1.trim()}`.trim();
         if (form.showSecondName) {
           if (form.englishTitle2 === "Family") {
             constructedEnglishName += " & Family";
-          } else if (form.englishName2) {
-            const part2 = `${form.englishTitle2} ${form.englishName2.trim()}`.trim();
+          } else if (form.englishName2.trim()) {
+            const title2 = form.englishTitle2 ? `${form.englishTitle2} ` : "";
+            const part2 = `${title2}${form.englishName2.trim()}`.trim();
             constructedEnglishName += ` & ${part2}`;
           }
         }
       }
 
       let constructedSinhalaName = "";
-      if (form.sinhalaName1) {
-        constructedSinhalaName = `${form.sinhalaName1.trim()} ${form.sinhalaTitle1}`.trim();
+      if (form.sinhalaName1.trim()) {
+        const title1 = form.sinhalaTitle1 ? ` ${form.sinhalaTitle1}` : "";
+        constructedSinhalaName = `${form.sinhalaName1.trim()}${title1}`.trim();
         if (form.showSecondSinhalaName) {
           if (form.sinhalaTitle2 === "යුවළ") {
             constructedSinhalaName += " සහ යුවළ";
-          } else if (form.sinhalaName2) {
-            const part2 = `${form.sinhalaName2.trim()} ${form.sinhalaTitle2}`.trim();
+          } else if (form.sinhalaName2.trim()) {
+            const title2 = form.sinhalaTitle2 ? ` ${form.sinhalaTitle2}` : "";
+            const part2 = `${form.sinhalaName2.trim()}${title2}`.trim();
             constructedSinhalaName += ` සහ ${part2}`;
           }
         }

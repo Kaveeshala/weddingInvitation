@@ -34,27 +34,27 @@ export default function EditGuestModal({
     side: "bride" as "bride" | "groom" | "both",
     englishGreeting: "None",
     sinhalaGreeting: "None",
-    englishTitle1: "Mr.",
+    englishTitle1: "",
     englishName1: "",
     showSecondName: false,
-    englishTitle2: "Mrs.",
+    englishTitle2: "",
     englishName2: "",
     sinhalaName1: "",
-    sinhalaTitle1: "මහතා",
+    sinhalaTitle1: "",
     showSecondSinhalaName: false,
     sinhalaName2: "",
-    sinhalaTitle2: "මහත්මිය",
+    sinhalaTitle2: "",
     category: "Uncategorized",
   });
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
   useEffect(() => {
-    if (guest) {
-      let title1 = "Mr.";
+    if (open && guest) {
+      let title1 = "";
       let name1 = "";
       let showSecond = false;
-      let title2 = "Mrs.";
+      let title2 = "";
       let name2 = "";
 
       if (guest.englishName) {
@@ -62,13 +62,26 @@ export default function EditGuestModal({
         const parts = englishNameStr.split("&").map((s) => s.trim().replace(/Mr_AND_Mrs/g, 'Mr & Mrs'));
         if (parts.length > 0 && parts[0]) {
           const p1 = parts[0];
-          const match1 = p1.match(/^(Mr & Mrs|Mr\.|Mrs\.|Miss|Ms\.)\s+(.*)/i);
+          const match1 = p1.match(/^(Mr & Mrs|Mr\.?|Mrs\.?|Miss|Ms\.?)\s+(.*)/i);
           if (match1) {
             const rawTitle = match1[1];
-            title1 = rawTitle.toLowerCase() === 'mr & mrs' ? 'Mr & Mrs' : rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1).toLowerCase();
+            if (/^mr & mrs$/i.test(rawTitle)) {
+              title1 = "Mr & Mrs";
+            } else if (/^mr\.?$/i.test(rawTitle)) {
+              title1 = "Mr.";
+            } else if (/^mrs\.?$/i.test(rawTitle)) {
+              title1 = "Mrs.";
+            } else if (/^miss$/i.test(rawTitle)) {
+              title1 = "Miss";
+            } else if (/^ms\.?$/i.test(rawTitle)) {
+              title1 = "Ms.";
+            } else {
+              title1 = "";
+            }
             name1 = match1[2].trim();
           } else {
-            name1 = p1;
+            title1 = "";
+            name1 = p1.trim();
           }
         }
 
@@ -78,22 +91,35 @@ export default function EditGuestModal({
           if (p2.toLowerCase() === "family") {
             title2 = "Family";
           } else {
-            const match2 = p2.match(/^(Mr & Mrs|Mr\.|Mrs\.|Miss|Ms\.)\s+(.*)/i);
+            const match2 = p2.match(/^(Mr & Mrs|Mr\.?|Mrs\.?|Miss|Ms\.?)\s+(.*)/i);
             if (match2) {
               const rawTitle = match2[1];
-              title2 = rawTitle.toLowerCase() === 'mr & mrs' ? 'Mr & Mrs' : rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1).toLowerCase();
+              if (/^mr & mrs$/i.test(rawTitle)) {
+                title2 = "Mr & Mrs";
+              } else if (/^mr\.?$/i.test(rawTitle)) {
+                title2 = "Mr.";
+              } else if (/^mrs\.?$/i.test(rawTitle)) {
+                title2 = "Mrs.";
+              } else if (/^miss$/i.test(rawTitle)) {
+                title2 = "Miss";
+              } else if (/^ms\.?$/i.test(rawTitle)) {
+                title2 = "Ms.";
+              } else {
+                title2 = "";
+              }
               name2 = match2[2].trim();
             } else {
-              name2 = p2;
+              title2 = "";
+              name2 = p2.trim();
             }
           }
         }
       }
 
-      let sTitle1 = "මහතා";
+      let sTitle1 = "";
       let sName1 = "";
       let sShowSecond = false;
-      let sTitle2 = "මහත්මිය";
+      let sTitle2 = "";
       let sName2 = "";
 
       if (guest.sinhalaName) {
@@ -103,9 +129,10 @@ export default function EditGuestModal({
           const titleMatch = p1.match(/(මයා|මිය|මහත්මිය|මෙනවිය|මහතා|යුවළ)$/);
           if (titleMatch) {
             sTitle1 = titleMatch[1];
-            sName1 = p1.replace(titleMatch[1], "").trim();
+            sName1 = p1.slice(0, -titleMatch[1].length).trim();
           } else {
-            sName1 = p1;
+            sTitle1 = "";
+            sName1 = p1.trim();
           }
         }
         
@@ -118,9 +145,10 @@ export default function EditGuestModal({
             const titleMatch = p2.match(/(මයා|මිය|මහත්මිය|මෙනවිය|මහතා|යුවළ)$/);
             if (titleMatch) {
               sTitle2 = titleMatch[1];
-              sName2 = p2.replace(titleMatch[1], "").trim();
+              sName2 = p2.slice(0, -titleMatch[1].length).trim();
             } else {
-              sName2 = p2;
+              sTitle2 = "";
+              sName2 = p2.trim();
             }
           }
         }
@@ -145,7 +173,7 @@ export default function EditGuestModal({
         category: guest.category === "Uncategorized" ? "" : (guest.category || ""),
       });
     }
-  }, [guest]);
+  }, [guest, open]);
 
   if (!open || !guest) return null;
 
@@ -165,26 +193,30 @@ export default function EditGuestModal({
 
     try {
       let constructedEnglishName = "";
-      if (form.englishName1) {
-        constructedEnglishName = `${form.englishTitle1} ${form.englishName1}`.trim();
+      if (form.englishName1.trim()) {
+        const title1 = form.englishTitle1 ? `${form.englishTitle1} ` : "";
+        constructedEnglishName = `${title1}${form.englishName1.trim()}`.trim();
         if (form.showSecondName) {
           if (form.englishTitle2 === "Family") {
             constructedEnglishName += " & Family";
-          } else if (form.englishName2) {
-            const part2 = `${form.englishTitle2} ${form.englishName2.trim()}`.trim();
+          } else if (form.englishName2.trim()) {
+            const title2 = form.englishTitle2 ? `${form.englishTitle2} ` : "";
+            const part2 = `${title2}${form.englishName2.trim()}`.trim();
             constructedEnglishName += ` & ${part2}`;
           }
         }
       }
 
       let constructedSinhalaName = "";
-      if (form.sinhalaName1) {
-        constructedSinhalaName = `${form.sinhalaName1.trim()} ${form.sinhalaTitle1}`.trim();
+      if (form.sinhalaName1.trim()) {
+        const title1 = form.sinhalaTitle1 ? ` ${form.sinhalaTitle1}` : "";
+        constructedSinhalaName = `${form.sinhalaName1.trim()}${title1}`.trim();
         if (form.showSecondSinhalaName) {
           if (form.sinhalaTitle2 === "යුවළ") {
             constructedSinhalaName += " සහ යුවළ";
-          } else if (form.sinhalaName2) {
-            const part2 = `${form.sinhalaName2.trim()} ${form.sinhalaTitle2}`.trim();
+          } else if (form.sinhalaName2.trim()) {
+            const title2 = form.sinhalaTitle2 ? ` ${form.sinhalaTitle2}` : "";
+            const part2 = `${form.sinhalaName2.trim()}${title2}`.trim();
             constructedSinhalaName += ` සහ ${part2}`;
           }
         }
@@ -343,7 +375,7 @@ export default function EditGuestModal({
                         ...prev,
                         showSecondName: false,
                         englishName2: "",
-                        englishTitle2: "Mrs.",
+                        englishTitle2: "",
                       }))
                     }
                     className="cursor-pointer text-sm text-red-500 hover:underline px-2"
@@ -431,7 +463,7 @@ export default function EditGuestModal({
                         ...prev,
                         showSecondSinhalaName: false,
                         sinhalaName2: "",
-                        sinhalaTitle2: "මහත්මිය",
+                        sinhalaTitle2: "",
                       }))
                     }
                     className="cursor-pointer text-sm text-red-500 hover:underline px-2"
