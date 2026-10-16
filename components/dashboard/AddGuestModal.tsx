@@ -85,12 +85,18 @@ export default function AddGuestModal({
         const title1 = form.sinhalaTitle1 ? ` ${form.sinhalaTitle1}` : "";
         constructedSinhalaName = `${form.sinhalaName1.trim()}${title1}`.trim();
         if (form.showSecondSinhalaName) {
-          if (form.sinhalaTitle2 === "යුවළ") {
-            constructedSinhalaName += " සහ යුවළ";
+          if (form.sinhalaTitle2 === "දෙපළ") {
+            constructedSinhalaName += " සහ දෙපළ";
+          } else if (form.sinhalaTitle2 === "මහතා සහ මහත්මිය" || form.sinhalaTitle2 === "සහ මහත්මිය") {
+            constructedSinhalaName += form.sinhalaTitle1 === "මහතා" ? " සහ මහත්මිය" : " මහතා සහ මහත්මිය";
+          } else if (form.sinhalaTitle2 === "මහත්මිය සහ මහතා") {
+            constructedSinhalaName += form.sinhalaTitle1 === "මහත්මිය" ? " සහ මහතා" : " මහත්මිය සහ මහතා";
           } else if (form.sinhalaName2.trim()) {
             const title2 = form.sinhalaTitle2 ? ` ${form.sinhalaTitle2}` : "";
             const part2 = `${form.sinhalaName2.trim()}${title2}`.trim();
             constructedSinhalaName += ` සහ ${part2}`;
+          } else if (form.sinhalaTitle2) {
+            constructedSinhalaName += ` සහ ${form.sinhalaTitle2}`;
           }
         }
       }
@@ -105,7 +111,7 @@ export default function AddGuestModal({
         englishGreeting: form.englishGreeting,
         sinhalaGreeting: form.sinhalaGreeting,
         englishName: constructedEnglishName.replace(/([^\s])&/g, '$1 &').replace(/&([^\s])/g, '& $1'),
-        sinhalaName: constructedSinhalaName.replace(/([^\s])සහ/g, '$1 සහ').replace(/සහ([^\s])/g, 'සහ $1'),
+        sinhalaName: constructedSinhalaName.replace(/\s+/g, ' ').trim(),
         category: finalCategory,
       };
 
@@ -281,14 +287,16 @@ export default function AddGuestModal({
                   onChange={(e) =>
                     setForm((prev) => ({ ...prev, sinhalaTitle1: e.target.value }))
                   }
-                  className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
+                  className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-3 sm:px-4 py-3 text-xs sm:text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-44 sm:w-48"
                 >
                   <option value="">None</option>
                   <option value="මහතා">මහතා</option>
                   <option value="මයා">මයා</option>
                   <option value="මහත්මිය">මහත්මිය</option>
                   <option value="මෙනවිය">මෙනවිය</option>
-                  <option value="යුවළ">යුවළ</option>
+                  <option value="මහතා සහ මහත්මිය">මහතා සහ මහත්මිය</option>
+                  <option value="මහත්මිය සහ මහතා">මහත්මිය සහ මහතා</option>
+                  <option value="දෙපළ">දෙපළ</option>
                 </select>
               </div>
 
@@ -305,7 +313,10 @@ export default function AddGuestModal({
               ) : (
                 <div className="flex gap-2 items-center">
                   <span className="text-[#5f5246] text-sm">සහ</span>
-                  {form.sinhalaTitle2 !== "යුවළ" && (
+                  {form.sinhalaTitle2 !== "දෙපළ" &&
+                    form.sinhalaTitle2 !== "මහතා සහ මහත්මිය" &&
+                    form.sinhalaTitle2 !== "මහත්මිය සහ මහතා" &&
+                    form.sinhalaTitle2 !== "සහ මහත්මිය" && (
                     <input
                       type="text"
                       value={form.sinhalaName2}
@@ -321,14 +332,16 @@ export default function AddGuestModal({
                     onChange={(e) =>
                       setForm((prev) => ({ ...prev, sinhalaTitle2: e.target.value }))
                     }
-                    className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
+                    className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-3 sm:px-4 py-3 text-xs sm:text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-44 sm:w-48"
                   >
                     <option value="">None</option>
                     <option value="මහතා">මහතා</option>
                     <option value="මයා">මයා</option>
                     <option value="මහත්මිය">මහත්මිය</option>
                     <option value="මෙනවිය">මෙනවිය</option>
-                    <option value="යුවළ">යුවළ</option>
+                    <option value="මහතා සහ මහත්මිය">මහතා සහ මහත්මිය</option>
+                    <option value="මහත්මිය සහ මහතා">මහත්මිය සහ මහතා</option>
+                    <option value="දෙපළ">දෙපළ</option>
                   </select>
                   <button
                     type="button"

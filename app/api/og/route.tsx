@@ -15,7 +15,8 @@ export async function GET(req: NextRequest) {
       await dbConnect();
       const guest = await Guest.findOne({ token }).lean();
       if (guest) {
-        displayName = guest.sinhalaName || guest.name;
+        const rawSinhala = (guest.sinhalaName || "").replace(/^සහ\s+([^\s]+)/, 'සහ$1');
+        displayName = rawSinhala || guest.name;
       }
     }
 

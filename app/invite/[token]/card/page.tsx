@@ -49,7 +49,7 @@ export default async function InviteCardPage({
         englishGreeting: guest.englishGreeting || "None",
         sinhalaGreeting: guest.sinhalaGreeting || "None",
         englishName: guest.englishName || "",
-        sinhalaName: guest.sinhalaName || "",
+        sinhalaName: (guest.sinhalaName || "").replace(/^සහ\s+([^\s]+)/, 'සහ$1'),
       }}
     />
   );

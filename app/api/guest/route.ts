@@ -9,6 +9,15 @@ export async function GET() {
 
     const guests = await Guest.find().sort({ createdAt: -1 });
 
+    // Auto-heal any guests previously corrupted with "සහ <single letter>" (e.g., "සහ න්" -> "සහන්")
+    for (const g of guests) {
+      if (g.sinhalaName && /^සහ\s+[^\s]+/.test(g.sinhalaName)) {
+        const healed = g.sinhalaName.replace(/^සහ\s+([^\s]+)/, 'සහ$1');
+        await Guest.updateOne({ _id: g._id }, { $set: { sinhalaName: healed } });
+        g.sinhalaName = healed;
+      }
+    }
+
     return NextResponse.json({
       success: true,
       guests,

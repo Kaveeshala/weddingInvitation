@@ -123,32 +123,65 @@ export default function EditGuestModal({
       let sName2 = "";
 
       if (guest.sinhalaName) {
-        const parts = guest.sinhalaName.split("සහ").map((s) => s.trim());
-        if (parts.length > 0 && parts[0]) {
-          const p1 = parts[0];
-          const titleMatch = p1.match(/(මයා|මිය|මහත්මිය|මෙනවිය|මහතා|යුවළ)$/);
-          if (titleMatch) {
-            sTitle1 = titleMatch[1];
-            sName1 = p1.slice(0, -titleMatch[1].length).trim();
-          } else {
-            sTitle1 = "";
-            sName1 = p1.trim();
-          }
-        }
-        
-        if (parts.length > 1 && parts[1]) {
-          sShowSecond = true;
-          const p2 = parts[1];
-          if (p2 === "යුවළ") {
-            sTitle2 = "යුවළ";
-          } else {
-            const titleMatch = p2.match(/(මයා|මිය|මහත්මිය|මෙනවිය|මහතා|යුවළ)$/);
+        let cleanSinhalaName = guest.sinhalaName.trim();
+        // Heal previously corrupted names starting with "සහ " (e.g. "සහ න්" -> "සහන්")
+        cleanSinhalaName = cleanSinhalaName.replace(/^සහ\s+([^\s]+)/, 'සහ$1');
+
+        // Check if the entire name has a combined couple title at the end:
+        // e.g. "සහන් මහතා සහ මහත්මිය", "සහන් මහත්මිය සහ මහතා", "සහන් සහ මහත්මිය"
+        const coupleMatch = cleanSinhalaName.match(/^(.*?)\s+(මහතා සහ මහත්මිය|මහත්මිය සහ මහතා|සහ මහත්මිය)$/);
+        if (coupleMatch) {
+          sName1 = coupleMatch[1].trim();
+          sTitle1 = coupleMatch[2] === "සහ මහත්මිය" ? "මහතා සහ මහත්මිය" : coupleMatch[2];
+          sShowSecond = false;
+        } else {
+          // Otherwise split by the standalone conjunction word " සහ " (surrounded by whitespace)
+          const parts = cleanSinhalaName.split(/\s+සහ\s+/).map((s) => s.trim());
+          if (parts.length > 0 && parts[0]) {
+            const p1 = parts[0];
+            const titleMatch = p1.match(/(මහතා සහ මහත්මිය|මහත්මිය සහ මහතා|සහ මහත්මිය|මයා|මිය|මහත්මිය|මෙනවිය|මහතා|දෙපළ|යුවළ)$/);
             if (titleMatch) {
-              sTitle2 = titleMatch[1];
-              sName2 = p2.slice(0, -titleMatch[1].length).trim();
+              sTitle1 = titleMatch[1] === "යුවළ" ? "දෙපළ" : (titleMatch[1] === "සහ මහත්මිය" ? "මහතා සහ මහත්මිය" : titleMatch[1]);
+              sName1 = p1.slice(0, -titleMatch[1].length).trim();
             } else {
-              sTitle2 = "";
-              sName2 = p2.trim();
+              sTitle1 = "";
+              sName1 = p1.trim();
+            }
+          }
+          
+          if (parts.length > 1 && parts[1]) {
+            const p2 = parts[1];
+            if (p2 === "දෙපළ" || p2 === "යුවළ") {
+              sShowSecond = true;
+              sTitle2 = "දෙපළ";
+            } else if (p2 === "මහත්මිය" || p2 === "සහ මහත්මිය" || p2 === "මහතා සහ මහත්මිය") {
+              if (!sTitle1) {
+                sTitle1 = "මහතා සහ මහත්මිය";
+                sShowSecond = false;
+              } else {
+                sShowSecond = true;
+                sTitle2 = "මහතා සහ මහත්මිය";
+                sName2 = "";
+              }
+            } else if (p2 === "මහත්මිය සහ මහතා") {
+              if (!sTitle1) {
+                sTitle1 = "මහත්මිය සහ මහතා";
+                sShowSecond = false;
+              } else {
+                sShowSecond = true;
+                sTitle2 = "මහත්මිය සහ මහතා";
+                sName2 = "";
+              }
+            } else {
+              sShowSecond = true;
+              const titleMatch = p2.match(/(මහතා සහ මහත්මිය|මහත්මිය සහ මහතා|සහ මහත්මිය|මයා|මිය|මහත්මිය|මෙනවිය|මහතා|දෙපළ|යුවළ)$/);
+              if (titleMatch) {
+                sTitle2 = titleMatch[1] === "යුවළ" ? "දෙපළ" : (titleMatch[1] === "සහ මහත්මිය" ? "මහතා සහ මහත්මිය" : titleMatch[1]);
+                sName2 = p2.slice(0, -titleMatch[1].length).trim();
+              } else {
+                sTitle2 = "";
+                sName2 = p2.trim();
+              }
             }
           }
         }
@@ -212,12 +245,18 @@ export default function EditGuestModal({
         const title1 = form.sinhalaTitle1 ? ` ${form.sinhalaTitle1}` : "";
         constructedSinhalaName = `${form.sinhalaName1.trim()}${title1}`.trim();
         if (form.showSecondSinhalaName) {
-          if (form.sinhalaTitle2 === "යුවළ") {
-            constructedSinhalaName += " සහ යුවළ";
+          if (form.sinhalaTitle2 === "දෙපළ") {
+            constructedSinhalaName += " සහ දෙපළ";
+          } else if (form.sinhalaTitle2 === "මහතා සහ මහත්මිය" || form.sinhalaTitle2 === "සහ මහත්මිය") {
+            constructedSinhalaName += form.sinhalaTitle1 === "මහතා" ? " සහ මහත්මිය" : " මහතා සහ මහත්මිය";
+          } else if (form.sinhalaTitle2 === "මහත්මිය සහ මහතා") {
+            constructedSinhalaName += form.sinhalaTitle1 === "මහත්මිය" ? " සහ මහතා" : " මහත්මිය සහ මහතා";
           } else if (form.sinhalaName2.trim()) {
             const title2 = form.sinhalaTitle2 ? ` ${form.sinhalaTitle2}` : "";
             const part2 = `${form.sinhalaName2.trim()}${title2}`.trim();
             constructedSinhalaName += ` සහ ${part2}`;
+          } else if (form.sinhalaTitle2) {
+            constructedSinhalaName += ` සහ ${form.sinhalaTitle2}`;
           }
         }
       }
@@ -232,7 +271,7 @@ export default function EditGuestModal({
         englishGreeting: form.englishGreeting,
         sinhalaGreeting: form.sinhalaGreeting,
         englishName: constructedEnglishName.replace(/([^\s])&/g, '$1 &').replace(/&([^\s])/g, '& $1'),
-        sinhalaName: constructedSinhalaName.replace(/([^\s])සහ/g, '$1 සහ').replace(/සහ([^\s])/g, 'සහ $1'),
+        sinhalaName: constructedSinhalaName.replace(/\s+/g, ' ').trim(),
         category: finalCategory,
       };
 
@@ -407,14 +446,16 @@ export default function EditGuestModal({
                   onChange={(e) =>
                     setForm((prev) => ({ ...prev, sinhalaTitle1: e.target.value }))
                   }
-                  className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
+                  className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-3 sm:px-4 py-3 text-xs sm:text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-44 sm:w-48"
                 >
                   <option value="">None</option>
                   <option value="මහතා">මහතා</option>
                   <option value="මයා">මයා</option>
                   <option value="මහත්මිය">මහත්මිය</option>
                   <option value="මෙනවිය">මෙනවිය</option>
-                  <option value="යුවළ">යුවළ</option>
+                  <option value="මහතා සහ මහත්මිය">මහතා සහ මහත්මිය</option>
+                  <option value="මහත්මිය සහ මහතා">මහත්මිය සහ මහතා</option>
+                  <option value="දෙපළ">දෙපළ</option>
                 </select>
               </div>
 
@@ -431,7 +472,10 @@ export default function EditGuestModal({
               ) : (
                 <div className="flex gap-2 items-center">
                   <span className="text-[#5f5246] text-sm">සහ</span>
-                  {form.sinhalaTitle2 !== "යුවළ" && (
+                  {form.sinhalaTitle2 !== "දෙපළ" &&
+                    form.sinhalaTitle2 !== "මහතා සහ මහත්මිය" &&
+                    form.sinhalaTitle2 !== "මහත්මිය සහ මහතා" &&
+                    form.sinhalaTitle2 !== "සහ මහත්මිය" && (
                     <input
                       type="text"
                       value={form.sinhalaName2}
@@ -447,14 +491,16 @@ export default function EditGuestModal({
                     onChange={(e) =>
                       setForm((prev) => ({ ...prev, sinhalaTitle2: e.target.value }))
                     }
-                    className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-28"
+                    className="cursor-pointer rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-3 sm:px-4 py-3 text-xs sm:text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57] w-44 sm:w-48"
                   >
                     <option value="">None</option>
                     <option value="මහතා">මහතා</option>
                     <option value="මයා">මයා</option>
                     <option value="මහත්මිය">මහත්මිය</option>
                     <option value="මෙනවිය">මෙනවිය</option>
-                    <option value="යුවළ">යුවළ</option>
+                    <option value="මහතා සහ මහත්මිය">මහතා සහ මහත්මිය</option>
+                    <option value="මහත්මිය සහ මහතා">මහත්මිය සහ මහතා</option>
+                    <option value="දෙපළ">දෙපළ</option>
                   </select>
                   <button
                     type="button"
