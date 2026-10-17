@@ -20,7 +20,7 @@ type CreateGuestResponse = {
 const initialForm = {
   name: "",
   partySize: 1,
-  side: "bride" as "bride" | "groom" | "both",
+  side: "bride" as "bride" | "groom" | "both" | "abroad",
   englishGreeting: "None",
   sinhalaGreeting: "None",
   englishTitle1: "Mr.",
@@ -401,7 +401,7 @@ export default function AddGuestModal({
               onChange={(e) =>
                 setForm((prev) => ({
                   ...prev,
-                  side: e.target.value as "bride" | "groom" | "both",
+                  side: e.target.value as "bride" | "groom" | "both" | "abroad",
                 }))
               }
               className="cursor-pointer w-full rounded-2xl border border-[#e7d9c8] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a24] outline-none transition focus:border-[#b08d57]"
@@ -410,6 +410,7 @@ export default function AddGuestModal({
               <option value="bride">Bride Side</option>
               <option value="groom">Groom Side</option>
               <option value="both">Both Sides</option>
+              <option value="abroad">Abroad</option>
             </select>
           </div>
 

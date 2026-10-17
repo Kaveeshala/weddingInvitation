@@ -21,8 +21,8 @@ const GuestSchema = new Schema(
     side: {
       type: String,
       enum: {
-        values: ["bride", "groom", "both"],
-        message: "Guest side must be bride, groom, or both",
+        values: ["bride", "groom", "both", "abroad"],
+        message: "Guest side must be bride, groom, both, or abroad",
       },
       required: [true, "Guest side is required"],
     },

@@ -8,7 +8,7 @@ export type Guest = {
   name: string;
   token: string;
   partySize?: number;
-  side?: "bride" | "groom" | "both";
+  side?: "bride" | "groom" | "both" | "abroad";
   rsvpStatus?: "default" | "invited" | "attending" | "declined";
   englishGreeting?: string;
   sinhalaGreeting?: string;
@@ -48,7 +48,7 @@ export default function GuestListTable({
   onErrorMessage,
 }: GuestListTableProps) {
   const [search, setSearch] = useState("");
-  const [sideFilter, setSideFilter] = useState<"all" | "bride" | "groom" | "both">(
+  const [sideFilter, setSideFilter] = useState<"all" | "bride" | "groom" | "both" | "abroad">(
     "all"
   );
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -247,6 +247,15 @@ export default function GuestListTable({
             className="cursor-pointer px-5 py-3 h-auto text-sm"
           >
             Both Sides
+          </Button>
+
+          <Button
+            type="button"
+            variant={sideFilter === "abroad" ? "default" : "outline"}
+            onClick={() => setSideFilter("abroad")}
+            className="cursor-pointer px-5 py-3 h-auto text-sm"
+          >
+            Abroad
           </Button>
 
           <select
@@ -599,7 +608,7 @@ export default function GuestListTable({
                         <p className="text-sm text-[#5f5246] mt-0.5 font-normal">{guest.sinhalaName}</p>
                       )}
                       <p className="text-sm text-[#5f5246] capitalize mt-0.5">
-                        {guest.side || "-"} Side • {guest.partySize ?? 1} Guests
+                        {guest.side === "abroad" ? "Abroad" : guest.side === "both" ? "Both Sides" : `${guest.side || "-"} Side`} • {guest.partySize ?? 1} Guests
                       </p>
                       {(guest.liquorCount || guest.beerCount) ? (
                         <p className="text-sm text-[#5f5246] mt-0.5">

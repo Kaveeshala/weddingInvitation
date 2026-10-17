@@ -10,7 +10,7 @@ type Guest = {
   partySize?: number;
   rsvpStatus?: "pending" | "attending" | "declined";
   respondedGuestCount?: number;
-  side?: "bride" | "groom" | "both";
+  side?: "bride" | "groom" | "both" | "abroad";
 };
 
 type GuestsResponse = {
@@ -23,7 +23,7 @@ export default function RSVPsPage() {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
-  const [sideFilter, setSideFilter] = useState<"all" | "bride" | "groom" | "both">("all");
+  const [sideFilter, setSideFilter] = useState<"all" | "bride" | "groom" | "both" | "abroad">("all");
   const [rsvpFilter, setRsvpFilter] = useState<"all" | "attending" | "declined" | "pending">("all");
   const [unlockedId, setUnlockedId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -196,6 +196,15 @@ export default function RSVPsPage() {
               className="cursor-pointer px-5 py-3 h-auto text-sm"
             >
               Both Sides
+            </Button>
+
+            <Button
+              type="button"
+              variant={sideFilter === "abroad" ? "default" : "outline"}
+              onClick={() => setSideFilter("abroad")}
+              className="cursor-pointer px-5 py-3 h-auto text-sm"
+            >
+              Abroad
             </Button>
 
             <div className="hidden sm:block h-8 w-px bg-[#e7d9c8] mx-1"></div>

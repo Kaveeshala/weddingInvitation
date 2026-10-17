@@ -175,11 +175,14 @@ export default function GuestsPage() {
     const bothSides = guests.filter(
       (guest) => guest.side === "both"
     ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
+    const abroad = guests.filter(
+      (guest) => guest.side === "abroad"
+    ).reduce((acc, guest) => acc + (guest.partySize ?? 1), 0);
 
     const totalLiquor = guests.reduce((acc, guest) => acc + (guest.liquorCount ?? 0), 0);
     const totalBeer = guests.reduce((acc, guest) => acc + (guest.beerCount ?? 0), 0);
 
-    return { totalGuests, attending, declined, invited, groomSide, brideSide, bothSides, totalLiquor, totalBeer };
+    return { totalGuests, attending, declined, invited, groomSide, brideSide, bothSides, abroad, totalLiquor, totalBeer };
   }, [guests]);
 
   const categories = useMemo(() => {
@@ -214,10 +217,11 @@ export default function GuestsPage() {
         <StatsCard label="Declined" value={totals.declined} tone="rose" />
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-3 xl:grid-cols-5">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <StatsCard label="Bride Side" value={totals.brideSide} tone="neutral" />
         <StatsCard label="Groom Side" value={totals.groomSide} tone="neutral" />
         <StatsCard label="Both Sides" value={totals.bothSides} tone="neutral" />
+        <StatsCard label="Abroad" value={totals.abroad} tone="neutral" />
         <StatsCard label="Total Liquor" value={totals.totalLiquor} tone="neutral" />
         <StatsCard label="Total Beer" value={totals.totalBeer} tone="neutral" />
       </section>
