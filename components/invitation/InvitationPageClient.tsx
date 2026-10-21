@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InvitationHeroCard from "@/components/invitation/InvitationHeroCard";
 import RSVPSection from "@/components/invitation/RSVPSection";
 import { LanguageProvider } from "@/components/invitation/InvitationLanguageContext";
 import LanguageToggle from "@/components/invitation/LanguageToggle";
+import { useInvitationAudio } from "@/components/invitation/InvitationAudioContext";
 
 interface InvitationPageClientProps {
   guest: {
@@ -24,6 +25,27 @@ interface InvitationPageClientProps {
 export default function InvitationPageClient({
   guest,
 }: InvitationPageClientProps) {
+  const { isPlaying, userPaused, playMusic } = useInvitationAudio();
+
+  // If user opened card directly or refreshed, resume playing on first interaction if not explicitly paused
+  useEffect(() => {
+    if (isPlaying || userPaused) return;
+
+    playMusic();
+
+    const handleFirstTouch = () => {
+      playMusic();
+    };
+
+    window.addEventListener("click", handleFirstTouch, { once: true });
+    window.addEventListener("touchstart", handleFirstTouch, { once: true });
+
+    return () => {
+      window.removeEventListener("click", handleFirstTouch);
+      window.removeEventListener("touchstart", handleFirstTouch);
+    };
+  }, [isPlaying, userPaused, playMusic]);
+
   const weddingDate = new Date("2027-01-28T00:00:00+05:30");
 
   const alreadySubmitted =

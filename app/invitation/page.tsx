@@ -1,5 +1,5 @@
-import InviteIntroClient from "@/components/invitation/InviteIntroClient";
+import { redirect } from "next/navigation";
 
 export default function InvitationPage() {
-  return <InviteIntroClient token="preview" />;
+  redirect("/invite/preview");
 }

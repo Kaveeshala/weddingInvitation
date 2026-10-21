@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import InvitationIntro from "@/components/invitation/InvitationIntro";
 import { LanguageProvider } from "@/components/invitation/InvitationLanguageContext";
 import LanguageToggle from "@/components/invitation/LanguageToggle";
+import { useInvitationAudio } from "@/components/invitation/InvitationAudioContext";
 
 interface InviteIntroClientProps {
   token: string;
@@ -15,11 +16,17 @@ export default function InviteIntroClient({
   token,
 }: InviteIntroClientProps) {
   const router = useRouter();
+  const { playMusic } = useInvitationAudio();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [showVideo, setShowVideo] = useState(false);
   const [videoFadingOut, setVideoFadingOut] = useState(false);
 
   const cardTarget = token === "preview" ? "/invite/preview/card" : `/invite/${token}/card`;
+
+  const handleOpen = () => {
+    playMusic();
+    setShowVideo(true);
+  };
 
   useEffect(() => {
     if (!showVideo) return;
@@ -59,7 +66,7 @@ export default function InviteIntroClient({
               exit={{ opacity: 0 }}
               transition={{ duration: 1.2, ease: "easeInOut" }}
             >
-              <InvitationIntro onOpen={() => setShowVideo(true)} />
+              <InvitationIntro onOpen={handleOpen} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -76,7 +83,7 @@ export default function InviteIntroClient({
             >
               <video
                 ref={videoRef}
-                src="/videos/Cover_video.mp4"
+                src="/videos/Cover_video4.mp4"
                 className="w-full h-full object-cover"
                 muted
                 playsInline
