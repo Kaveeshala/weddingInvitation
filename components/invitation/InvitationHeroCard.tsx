@@ -32,8 +32,8 @@ export default function InvitationHeroCard({
       {/* Full Screen Background Image */}
       <div className="absolute inset-0 z-0 bg-[#fdfbf7] overflow-hidden">
         <div 
-          className="sticky top-0 w-full h-dvh md:h-screen bg-size-[100%_100%] md:bg-contain bg-center bg-no-repeat scale-105 sm:scale-[1.08]" 
-          style={{ backgroundImage: "url('/images/invitation-card-bg-image.jpeg')" }} 
+          className="sticky top-0 w-full h-dvh md:h-screen bg-size-[100%_100%] md:bg-contain bg-center bg-no-repeat" 
+          style={{ backgroundImage: "url('/images/bgimage.png')" }} 
         />
       </div>
 
@@ -379,18 +379,11 @@ export default function InvitationHeroCard({
               </motion.button>
 
               <motion.div
-                className="mt-2 sm:mt-3 flex items-center justify-center gap-4 sm:gap-6 w-full px-2 sm:px-4"
+                className="mt-2 sm:mt-3 flex flex-col items-center justify-center w-full px-2 sm:px-4 text-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
-                {/* Left Image */}
-                <img
-                  src="/images/glasses.jpeg"
-                  alt="Glasses"
-                  className="w-16 h-16 sm:w-20 sm:h-20 object-contain mix-blend-multiply"
-                />
-
                 <div className="flex flex-col items-center">
                   <p
                     style={{
@@ -426,13 +419,6 @@ export default function InvitationHeroCard({
                       : "(පෝරුවේ චාරිත්‍ර  පෙ:ව: 10:00 ට)"}
                   </p>
                 </div>
-
-                {/* Right Image */}
-                <img
-                  src="/images/ring.jpeg"
-                  alt="Ring"
-                  className="w-16 h-16 sm:w-20 sm:h-20 object-contain mix-blend-multiply"
-                />
               </motion.div>
 
               <motion.button
