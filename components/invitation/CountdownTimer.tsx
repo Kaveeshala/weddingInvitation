@@ -97,6 +97,7 @@ export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
             <div key={item.key} className="contents">
               <div className="flex flex-col items-center min-w-0">
                 <p
+                  suppressHydrationWarning
                   style={{
                     fontFamily: "var(--font-geist-sans)",
                     fontSize: "clamp(1.7rem, 5.4vw, 5rem)",

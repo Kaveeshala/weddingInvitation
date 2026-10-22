@@ -33,7 +33,7 @@ export default function InvitationHeroCard({
       <div className="absolute inset-0 z-0 bg-[#fdfbf7] overflow-hidden">
         <div 
           className="sticky top-0 w-full h-dvh md:h-screen bg-size-[100%_100%] md:bg-contain bg-center bg-no-repeat" 
-          style={{ backgroundImage: "url('/images/bgimage.png')" }} 
+          style={{ backgroundImage: "url('/images/bgimage3.png')" }} 
         />
       </div>
 
@@ -45,7 +45,7 @@ export default function InvitationHeroCard({
           className="flex flex-col items-center text-center h-full w-full"
         >
           {/* CONTENT CONTAINER */}
-          <div className="relative w-full flex flex-col items-center justify-between h-full pt-[5vh] sm:pt-[6vh] pb-[3vh] sm:pb-[4vh]">
+          <div className="relative w-full flex flex-col items-center justify-between h-full pt-[7vh] sm:pt-[6vh] pb-[3vh] sm:pb-[4vh]">
             
             {/* Content Wrapper */}
             <div className="relative z-10 px-2 sm:px-8 pb-2 flex flex-col items-center justify-evenly text-center w-full h-full">
@@ -55,7 +55,7 @@ export default function InvitationHeroCard({
                   key="sinhala-topic-img"
                   src="/images/texts/sri suba mangalam.png"
                   alt="ශ්‍රී සුභ මංගලම්"
-                  className="w-40 sm:w-56 md:w-[260px] h-auto object-contain mb-2 sm:mb-3 z-20"
+                  className="w-40 sm:w-56 md:w-[260px] h-auto object-contain mt-1.5 sm:mt-0 mb-2 sm:mb-3 z-20"
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.7 }}
@@ -66,7 +66,7 @@ export default function InvitationHeroCard({
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.7 }}
-                  className="flex flex-col items-center gap-1.5 w-full mb-2 sm:mb-3 z-20"
+                  className="flex flex-col items-center gap-1.5 w-full mt-1.5 sm:mt-0 mb-2 sm:mb-3 z-20"
                 >
                   <span
                     style={{
@@ -83,7 +83,7 @@ export default function InvitationHeroCard({
               )}
 
               <motion.div
-                className="mt-2 w-full px-6 sm:px-10 md:px-14 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-1 sm:gap-4"
+                className="mt-5 sm:mt-2 w-full px-6 sm:px-10 md:px-14 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-1 sm:gap-4"
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
@@ -147,18 +147,11 @@ export default function InvitationHeroCard({
                   </p>
                 </div>
 
-                {/* Couple photo */}
-                <div className="flex justify-center z-10 px-1 self-center mt-2 sm:mt-3">
-                  <div
-                    className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 transition-all duration-300 mix-blend-multiply flex items-center justify-center"
-                  >
-                    <img
-                      src="/images/weddingcardbg.jpeg"
-                      alt="Dilma and Isuru"
-                      className="w-full h-full object-contain object-center scale-125 sm:scale-110"
-                    />
-                  </div>
-                </div>
+                {/* Spacer reserving center space for illustration in bgimage2 */}
+                <div 
+                  className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 pointer-events-none self-center" 
+                  aria-hidden="true" 
+                />
 
                 {/* Groom */}
                 <div className="flex flex-col items-center text-center gap-1 min-w-0 break-words w-full">
@@ -220,7 +213,7 @@ export default function InvitationHeroCard({
                 </div>
               </motion.div>
 
-              <div className="flex flex-col items-center w-full mt-5 sm:mt-6 gap-0 sm:gap-1">
+              <div className="flex flex-col items-center w-full mt-3 sm:mt-6 gap-0 sm:gap-1">
                 <motion.p
                   className="max-w-md px-2"
                   style={{
